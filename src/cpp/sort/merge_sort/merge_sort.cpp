@@ -166,17 +166,17 @@ int merge_sort_tests()
      * except for the specific one whose steps you are interested in.
      */
 
-    (merge_sort_test_0()) ? pass++ : fail++;
-    (merge_sort_test_1()) ? pass++ : fail++;
-    (merge_sort_test_2()) ? pass++ : fail++;
-    (merge_sort_test_3()) ? pass++ : fail++;
-    (merge_sort_test_4()) ? pass++ : fail++;
+    merge_sort_test_0() ? pass++ : fail++;
+    merge_sort_test_1() ? pass++ : fail++;
+    merge_sort_test_2() ? pass++ : fail++;
+    merge_sort_test_3() ? pass++ : fail++;
+    merge_sort_test_4() ? pass++ : fail++;
 
 #if !SHOW_STEPS
     /* Disable following tests in SHOW_STEPS mode
      * (solely for readability -> the array is too big for a human to understand the steps)
      */
-    (merge_sort_test_5()) ? pass++ : fail++;
+    merge_sort_test_5() ? pass++ : fail++;
 #endif
 
     std::cerr << "[PASS] " << pass << "/" << pass + fail << std::endl;
