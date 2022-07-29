@@ -9,7 +9,7 @@
 /**
  * find the index of value in sorted array! O(log(n))
  */
-const int binary_search(const int *array, const size_t n, const int value)
+int binary_search(const int *array, const size_t n, const int value)
 {
     size_t high = n - 1, mid = 0, low = 0;
     while (low <= high) {
