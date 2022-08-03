@@ -1,6 +1,5 @@
+#include <gtest/gtest.h>
 #include "binary_search.h"
-#include "gtest/gtest.h"
-
 
 int binary_search_test(const int *array, const int value, const int eindex)
 {

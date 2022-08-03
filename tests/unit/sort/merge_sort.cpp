@@ -2,8 +2,8 @@
 #include <array>    // std::array
 #include <iostream>
 
+#include <gtest/gtest.h>
 #include "merge_sort.hpp"
-#include "gtest/gtest.h"
 
 template <const std::size_t n>
 bool merge_sort_test(std::array<int, n> &A, const std::array<int, n> &A_expected)
