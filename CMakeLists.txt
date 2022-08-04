@@ -11,6 +11,7 @@ enable_testing()
 
 # so tests can find the header files
 include_directories(src/c/search)
+include_directories(src/c/sort)
 include_directories(src/cpp/common)
 include_directories(src/cpp/sort)
 
