@@ -1,14 +1,17 @@
 #pragma once
 
-#ifndef A_ELEM_SWAP
-#define A_ELEM_SWAP
-inline void swap(int a[], int i, int j)
+#ifndef QPTR_SWAP_P_Q
+#define QPTR_SWAP_P_Q
+/**
+ * swap pointers
+ */
+inline void qptr_swap(int *p, int *q)
 {
-    int tmp = a[i];
-    a[i] = a[j];
-    a[j] = tmp;
+    int tp = *p;
+    *p = *q;
+    *q = tp;
 }
-#endif // A_ELEM_SWAP
+#endif // QPTR_SWAP_P_Q
 
 /**
  * performs Hoare partition algorithm for quick sort
@@ -21,7 +24,7 @@ inline int hoare_partition(int a[], int lo, int hi)
         do { i++; } while(a[i] < pivot);
         do { j--; } while(a[j] > pivot);
         if (i >= j) return j;
-        swap(a, i, j);
+        qptr_swap(&a[i], &a[j]);
     }
 }
 

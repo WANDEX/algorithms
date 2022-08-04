@@ -2,24 +2,27 @@
 
 #include <stddef.h>  // size_t
 
-#ifndef A_ELEM_SWAP
-#define A_ELEM_SWAP
-inline void swap(int array[], int i, int j)
+#ifndef QPTR_SWAP_P_Q
+#define QPTR_SWAP_P_Q
+/**
+ * swap pointers
+ */
+inline void qptr_swap(int *p, int *q)
 {
-    int tmp = array[i];
-    array[i] = array[j];
-    array[j] = tmp;
+    int tp = *p;
+    *p = *q;
+    *q = tp;
 }
-#endif // A_ELEM_SWAP
+#endif // QPTR_SWAP_P_Q
 
-inline void bubble_sort(int array[], const size_t n)
+inline void bubble_sort(int a[], const size_t n)
 {
     int sorted = 0;
     while (!sorted) {
         sorted = 1;
-        for (size_t i = 1; i < n; ++i) {
-            if (array[i] < array[i - 1]) {
-                swap(array, i - 1, i);
+        for (size_t i = 1; i < n; i++) {
+            if (a[i] < a[i - 1]) {
+                qptr_swap(&a[i - 1], &a[i]);
                 sorted = 0;
             }
         }
