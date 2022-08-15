@@ -28,9 +28,9 @@ public:
         delete[] m_e;
     }
 public:
-    virtual bool are_equal() const;
+    bool are_equal() const;
     // check that sort() gives the same result as std::sort()
-    virtual bool sort_test() const;
+    bool sort_test() const;
 };
 
 template <typename A, const std::size_t n>
