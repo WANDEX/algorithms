@@ -24,7 +24,7 @@ inline void swap(auto* p, auto* q)
  */
 inline int hoare_partition(auto a[], int lo, int hi)
 {
-    int pivot = a[lo];
+    auto pivot = a[lo];
     int i = lo - 1, j = hi + 1;
     while (true) {
         do { i++; } while(a[i] < pivot);
@@ -51,7 +51,7 @@ inline void quick_sort(auto a[], int lo, int hi)
 template<typename T, const std::size_t n>
 inline int hoare_partition(std::array<T, n> &a, int lo, int hi)
 {
-    int pivot = a[lo];
+    T pivot = a[lo];
     int i = lo - 1, j = hi + 1;
     while (true) {
         do { i++; } while(a[i] < pivot);
@@ -75,7 +75,7 @@ inline void quick_sort(std::array<T, n> &a, int lo, int hi)
 template<typename T>
 inline int hoare_partition(std::vector<T> &a, int lo, int hi)
 {
-    int pivot = a[lo];
+    T pivot = a[lo];
     int i = lo - 1, j = hi + 1;
     while (true) {
         do { i++; } while(a[i] < pivot);
