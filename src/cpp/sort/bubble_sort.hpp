@@ -11,9 +11,9 @@ namespace srt {
 /**
  * swap pointers
  */
-inline void swap(int *p, int *q)
+inline void swap(auto* p, auto* q)
 {
-    int tp { *p }; // tmp ptr
+    auto tp { *p }; // tmp ptr
     *p = *q;
     *q = tp;
 }
