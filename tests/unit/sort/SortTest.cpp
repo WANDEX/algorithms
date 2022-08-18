@@ -2,6 +2,7 @@
 
 #include "Sort.hpp"
 
+#include "gen.hpp"
 #include "bubble_sort.hpp"
 #include "insertion_sort.hpp"
 #include "quick_sort.hpp"
@@ -11,6 +12,7 @@
 
 #include <algorithm>  // std::stable_sort, std::copy_n
 #include <array>
+#include <cstdint>    // other types, *_MIN, etc
 #include <cstddef>    // std::size_t
 #include <vector>
 
@@ -18,7 +20,8 @@
 // -> accepts arguments that differ from other functions
 
 // functions to call on C arrays
-std::vector<void (*)(int*, const std::size_t)> srt_func_carray = {
+template<typename T>
+std::vector<void (*)(T*, const std::size_t)> srt_func_c_array = {
     &srt::bubble_sort,
     &srt::insertion_sort,
     &srt::selection_sort,
@@ -40,103 +43,159 @@ std::vector<void (*)(std::vector<T>&)> srt_func_std_vector = {
     &srt::selection_sort,
 };
 
-// check that C arrays are equal
-bool are_equal(const int* const a, const int* const e, const std::size_t n)
+
+/**
+ * check that C arrays are equal
+ */
+bool c_are_equal(const auto* const a, const auto* const e, const std::size_t n)
 {
     return std::memcmp(a, e, n * sizeof(a[0])) == 0;
 }
 
-TEST(sort_algos_c_array, 0)
-{
-    const std::size_t n = 0;
-    const int e[n] = {};
+/****************************************************************************
+ * C array random tests
+ */
 
-    for (const auto &algo : srt_func_carray) {
-        int a[n] = {};
-        algo(a, n);
-        EXPECT_TRUE(are_equal(a, e, n));
+TEST(sort_algos_c_array_random, int)
+{
+    const std::size_t n = 9;
+    for (const auto &algo : srt_func_c_array<int>) {
+        int a_rnd[n]; gen::random(a_rnd, n, 0, 1000);
+        int a_exp[n]; std::copy_n(a_rnd, n, a_exp);
+        std::sort(a_exp, a_exp + n);
+        algo(a_rnd, n);
+        EXPECT_TRUE(c_are_equal(a_rnd, a_exp, n));
     }
-    // quick sort has different arguments
-    int a[n] = {};
-    srt::quick_sort(a, 0, n);
-    EXPECT_TRUE(are_equal(a, e, n));
 }
 
-TEST(sort_algos_c_array, 1)
+TEST(sort_algos_c_array_random, double)
 {
-    const std::size_t n = 1;
-    const int e[n] = {1};
-
-    for (const auto &algo : srt_func_carray) {
-        int a[n] = {1};
-        algo(a, n);
-        EXPECT_TRUE(are_equal(a, e, n));
+    const std::size_t n = 10;
+    for (const auto &algo : srt_func_c_array<double>) {
+        double a_rnd[n]; gen::random(a_rnd, n, 0, 99);
+        double a_exp[n]; std::copy_n(a_rnd, n, a_exp);
+        std::sort(a_exp, a_exp + n);
+        algo(a_rnd, n);
+        EXPECT_TRUE(c_are_equal(a_rnd, a_exp, n));
     }
-    // quick sort has different arguments
-    int a[n] = {1};
-    srt::quick_sort(a, 0, n - 1);
-    EXPECT_TRUE(are_equal(a, e, n));
 }
 
-TEST(sort_algos_c_array, 2)
-{
-    const std::size_t n = 5;
-    const int e[n] = {0, 1, 3, 4, 5};
-
-    for (const auto &algo : srt_func_carray) {
-        int a[n] = {0, 3, 5, 1, 4};
-        algo(a, n);
-        EXPECT_TRUE(are_equal(a, e, n));
-    }
-    // quick sort has different arguments
-    int a[n] = {0, 3, 5, 1, 4};
-    srt::quick_sort(a, 0, n - 1);
-    EXPECT_TRUE(are_equal(a, e, n));
-}
-
-TEST(sort_algos_c_array, 3)
-{
-    const std::size_t n = 8;
-    const int e[n] = {0, 1, 2, 2, 3, 5, 6, 7};
-
-    for (const auto &algo : srt_func_carray) {
-        int a[n] = {1, 2, 7, 0, 3, 2, 5, 6};
-        algo(a, n);
-        EXPECT_TRUE(are_equal(a, e, n));
-    }
-    // quick sort has different arguments
-    int a[n] = {1, 2, 7, 0, 3, 2, 5, 6};
-    srt::quick_sort(a, 0, n - 1);
-    EXPECT_TRUE(are_equal(a, e, n));
-}
-
-TEST(sort_algos_std_array, 1)
+TEST(sort_algos_c_array_random, negative_int8_t)
 {
     const std::size_t n = 11;
-    const std::array<int, n> e = {1, 4, 6, 43, 45, 47, 50, 62, 72, 84, 93};
-
-    for (const auto &algo : srt_func_std_array<int, n>) {
-        std::array<int, n> a = {50, 84, 43, 4, 47, 45, 62, 72, 93, 6, 1};
-        algo(a);
-        EXPECT_EQ(a, e);
+    for (const auto &algo : srt_func_c_array<std::int8_t>) {
+        std::int8_t a_rnd[n]; gen::random(a_rnd, n, INT8_MIN, 0);
+        std::int8_t a_exp[n]; std::copy_n(a_rnd, n, a_exp);
+        std::sort(a_exp, a_exp + n);
+        algo(a_rnd, n);
+        EXPECT_TRUE(c_are_equal(a_rnd, a_exp, n));
     }
-    // quick sort has different arguments
-    std::array<int, n> a = {50, 84, 43, 4, 47, 45, 62, 72, 93, 6, 1};
-    srt::quick_sort(a, 0, n - 1);
-    EXPECT_EQ(a, e);
 }
 
-TEST(sort_algos_std_vector, 1)
-{
-    const std::vector<int> e = {7, 10, 42, 53, 54, 68, 69, 81, 85, 99};
+/****************************************************************************
+ * std::array random tests
+ */
 
-    for (const auto &algo : srt_func_std_vector<int>) {
-        std::vector<int> a = {7, 69, 10, 81, 54, 53, 99, 42, 85, 68};
-        algo(a);
-        EXPECT_EQ(a, e);
+TEST(sort_algos_std_array_random, int)
+{
+    const std::size_t n = 22;
+    for (const auto &algo : srt_func_std_array<int, n>) {
+        std::array<int, n> a_rnd = gen::random<int, n>(0, 10);
+        std::array<int, n> a_exp = a_rnd;
+        std::sort(a_exp.begin(), a_exp.end());
+        algo(a_rnd);
+        EXPECT_EQ(a_rnd, a_exp);
     }
-    // quick sort has different arguments
-    std::vector<int> a = {7, 69, 10, 81, 54, 53, 99, 42, 85, 68};
-    srt::quick_sort(a, 0, a.size() - 1);
-    EXPECT_EQ(a, e);
+}
+
+TEST(sort_algos_std_array_random, double)
+{
+    const std::size_t n = 22;
+    for (const auto &algo : srt_func_std_array<double, n>) {
+        std::array<double, n> a_rnd = gen::random<double, n>(0, 1000);
+        std::array<double, n> a_exp = a_rnd;
+        std::sort(a_exp.begin(), a_exp.end());
+        algo(a_rnd);
+        EXPECT_EQ(a_rnd, a_exp);
+    }
+}
+
+TEST(sort_algos_std_array_random, negative_int_least_16t)
+{
+    const std::size_t n = 22;
+    for (const auto &algo : srt_func_std_array<std::int_least16_t, n>) {
+        std::array<std::int_least16_t, n> a_rnd = gen::random<std::int_least16_t, n>(INT_LEAST16_MIN, 0);
+        std::array<std::int_least16_t, n> a_exp = a_rnd;
+        std::sort(a_exp.begin(), a_exp.end());
+        algo(a_rnd);
+        EXPECT_EQ(a_rnd, a_exp);
+    }
+}
+
+/****************************************************************************
+ * std::vector random tests
+ */
+
+TEST(sort_algos_std_vector_random, int)
+{
+    const std::size_t n = 99;
+    for (const auto &algo : srt_func_std_vector<int>) {
+        std::vector<int> a_rnd = gen::random<int>(n, 0, 99);
+        std::vector<int> a_exp = a_rnd;
+        std::sort(a_exp.begin(), a_exp.end());
+        algo(a_rnd);
+        EXPECT_EQ(a_rnd, a_exp);
+    }
+}
+
+TEST(sort_algos_std_vector_random, double)
+{
+    const std::size_t n = 100;
+    for (const auto &algo : srt_func_std_vector<double>) {
+        std::vector<double> a_rnd = gen::random<double>(n, 0, 100);
+        std::vector<double> a_exp = a_rnd;
+        std::sort(a_exp.begin(), a_exp.end());
+        algo(a_rnd);
+        EXPECT_EQ(a_rnd, a_exp);
+    }
+}
+
+TEST(sort_algos_std_vector_random, negative_int32_t)
+{
+    const std::size_t n = 101;
+    for (const auto &algo : srt_func_std_vector<std::int32_t>) {
+        std::vector<std::int32_t> a_rnd = gen::random<std::int32_t>(n, INT32_MIN, 0);
+        std::vector<std::int32_t> a_exp = a_rnd;
+        std::sort(a_exp.begin(), a_exp.end());
+        algo(a_rnd);
+        EXPECT_EQ(a_rnd, a_exp);
+    }
+}
+
+
+/****************************************************************************
+ * quick sort tests (no quick sort algorithm in above tests!).
+ * => accepts arguments that differ from other functions.
+ */
+
+TEST(sort_quick_sort_c_array_random, int)
+{
+    for (std::size_t n = 0; n < 55; n+=11) {
+        int a_rnd[n]; gen::random(a_rnd, n, 0, 1000);
+        int a_exp[n]; std::copy_n(a_rnd, n, a_exp);
+        std::sort(a_exp, a_exp + n);
+        srt::quick_sort(a_rnd, 0, n - 1);
+        EXPECT_TRUE(c_are_equal(a_rnd, a_exp, n));
+    }
+}
+
+TEST(sort_quick_sort_std_vector_random, int) // TODO: double instead of int
+{
+    for (std::size_t n = 0; n < 55; n+=11) {
+        std::vector<int> a_rnd = gen::random<int>(n, -99, 99);
+        std::vector<int> a_exp = a_rnd;
+        std::sort(a_exp.begin(), a_exp.end());
+        srt::quick_sort(a_rnd, 0, n - 1);
+        EXPECT_EQ(a_rnd, a_exp);
+    }
 }
