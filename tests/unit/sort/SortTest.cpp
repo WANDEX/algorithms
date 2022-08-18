@@ -10,7 +10,7 @@
 
 #include <gtest/gtest.h>
 
-#include <algorithm>  // std::stable_sort, std::copy_n
+#include <algorithm>  // std::sort, std::copy_n
 #include <array>
 #include <cstdint>    // other types, *_MIN, etc
 #include <cstddef>    // std::size_t
@@ -160,12 +160,12 @@ TEST(sort_algos_std_vector_random, double)
     }
 }
 
-TEST(sort_algos_std_vector_random, negative_int32_t)
+TEST(sort_algos_std_vector_random, negative_int16_t)
 {
     const std::size_t n = 101;
-    for (const auto &algo : srt_func_std_vector<std::int32_t>) {
-        std::vector<std::int32_t> a_rnd = gen::random<std::int32_t>(n, INT32_MIN, 0);
-        std::vector<std::int32_t> a_exp = a_rnd;
+    for (const auto &algo : srt_func_std_vector<std::int16_t>) {
+        std::vector<std::int16_t> a_rnd = gen::random<std::int16_t>(n, INT16_MIN, 0);
+        std::vector<std::int16_t> a_exp = a_rnd;
         std::sort(a_exp.begin(), a_exp.end());
         algo(a_rnd);
         EXPECT_EQ(a_rnd, a_exp);
@@ -178,7 +178,7 @@ TEST(sort_algos_std_vector_random, negative_int32_t)
  * => accepts arguments that differ from other sort functions.
  */
 
-TEST(sort_quick_sort_c_array_random, int)
+TEST(sort_algos_c_array_random, quick_sort__int)
 {
     for (std::size_t n = 0; n < 55; n+=11) {
         int a_rnd[n]; gen::random(a_rnd, n, 0, 1000);
@@ -189,7 +189,7 @@ TEST(sort_quick_sort_c_array_random, int)
     }
 }
 
-TEST(sort_quick_sort_std_vector_random, double)
+TEST(sort_algos_std_vector_random, quick_sort__double)
 {
     for (std::size_t n = 0; n < 33; n+=3) {
         std::vector<double> a_rnd = gen::random<double>(n, -99, 99);
@@ -200,12 +200,12 @@ TEST(sort_quick_sort_std_vector_random, double)
     }
 }
 
-TEST(sort_quick_sort_std_array_random, negative_int_fast64_t)
+TEST(sort_algos_std_array_random, quick_sort__negative_int_fast8_t)
 {
     constexpr std::size_t n = 21; // => require constexpr size
     for (int i = 0; i < 5; i++) {
-        std::array<std::int_fast64_t, n> a_rnd = gen::random<std::int_fast64_t, n>(INT_FAST64_MIN, 0);
-        std::array<std::int_fast64_t, n> a_exp = a_rnd;
+        std::array<std::int_fast8_t, n> a_rnd = gen::random<std::int_fast8_t, n>(INT_FAST8_MIN, 0);
+        std::array<std::int_fast8_t, n> a_exp = a_rnd;
         std::sort(a_exp.begin(), a_exp.end());
         srt::quick_sort(a_rnd, 0, n - 1);
         EXPECT_EQ(a_rnd, a_exp);
