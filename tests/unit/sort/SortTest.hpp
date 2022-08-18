@@ -2,8 +2,6 @@
 
 #include "Sort.hpp"
 
-#include "print.hpp" // XXX
-
 #include <algorithm> // std::stable_sort, std::copy_n
 
 #include <cstddef>   // std::size_t
@@ -21,7 +19,7 @@ public:
         m_e = new A[n]; // allocate memory for the array
         std::copy_n(this->a, n, m_e); // deep copy array
         // sort member array for later comparison with the result
-        std::stable_sort(m_e, m_e + n, std::less<A>());
+        std::stable_sort(m_e, m_e + n);
     }
     ~SortTest()
     {
