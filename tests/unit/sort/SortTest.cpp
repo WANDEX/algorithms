@@ -175,7 +175,7 @@ TEST(sort_algos_std_vector_random, negative_int32_t)
 
 /****************************************************************************
  * quick sort tests (no quick sort algorithm in above tests!).
- * => accepts arguments that differ from other functions.
+ * => accepts arguments that differ from other sort functions.
  */
 
 TEST(sort_quick_sort_c_array_random, int)
@@ -189,11 +189,23 @@ TEST(sort_quick_sort_c_array_random, int)
     }
 }
 
-TEST(sort_quick_sort_std_vector_random, int) // TODO: double instead of int
+TEST(sort_quick_sort_std_vector_random, double)
 {
-    for (std::size_t n = 0; n < 55; n+=11) {
-        std::vector<int> a_rnd = gen::random<int>(n, -99, 99);
-        std::vector<int> a_exp = a_rnd;
+    for (std::size_t n = 0; n < 33; n+=3) {
+        std::vector<double> a_rnd = gen::random<double>(n, -99, 99);
+        std::vector<double> a_exp = a_rnd;
+        std::sort(a_exp.begin(), a_exp.end());
+        srt::quick_sort(a_rnd, 0, n - 1);
+        EXPECT_EQ(a_rnd, a_exp);
+    }
+}
+
+TEST(sort_quick_sort_std_array_random, negative_int_fast64_t)
+{
+    constexpr std::size_t n = 21; // => require constexpr size
+    for (int i = 0; i < 5; i++) {
+        std::array<std::int_fast64_t, n> a_rnd = gen::random<std::int_fast64_t, n>(INT_FAST64_MIN, 0);
+        std::array<std::int_fast64_t, n> a_exp = a_rnd;
         std::sort(a_exp.begin(), a_exp.end());
         srt::quick_sort(a_rnd, 0, n - 1);
         EXPECT_EQ(a_rnd, a_exp);
