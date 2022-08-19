@@ -5,6 +5,7 @@
 #include "gen.hpp"
 #include "bubble_sort.hpp"
 #include "insertion_sort.hpp"
+#include "merge_sort.hpp"
 #include "quick_sort.hpp"
 #include "selection_sort.hpp"
 
@@ -16,33 +17,52 @@
 #include <cstddef>    // std::size_t
 #include <vector>
 
-// NOTE: no quick sort in those lists
-// -> accepts arguments that differ from other functions
+/****************************************************************************
+ * sort functions for different value types & containers
+ */
 
-// functions to call on C arrays
-template<typename T>
+template<typename T> // C arrays
 std::vector<void (*)(T*, const std::size_t)> srt_func_c_array = {
     &srt::bubble_sort,
     &srt::insertion_sort,
     &srt::selection_sort,
 };
 
-// functions to call on std::array
-template<typename T, const std::size_t n>
+template<typename T, const std::size_t n> // std::array
 std::vector<void (*)(std::array<T, n>&)> srt_func_std_array = {
     &srt::bubble_sort,
     &srt::insertion_sort,
     &srt::selection_sort,
 };
 
-// functions to call on std::vector
-template<typename T>
+template<typename T> // std::vector
 std::vector<void (*)(std::vector<T>&)> srt_func_std_vector = {
     &srt::bubble_sort,
     &srt::insertion_sort,
     &srt::selection_sort,
 };
 
+/****************************************************************************
+ * slightly different arguments are required to call the function
+ */
+
+template<typename T> // C arrays
+std::vector<void (*)(T*, const int a, const int b)> srt_func_c_array_mq = {
+    &srt::merge_sort,
+    &srt::quick_sort,
+};
+
+template<typename T, const std::size_t n>
+std::vector<void (*)(std::array<T, n>&, const int a, const int b)> srt_func_std_array_mq = {
+    &srt::merge_sort,
+    &srt::quick_sort,
+};
+
+template<typename T>
+std::vector<void (*)(std::vector<T>&, const int a, const int b)> srt_func_std_vector_mq = {
+    &srt::merge_sort,
+    &srt::quick_sort,
+};
 
 /**
  * check that C arrays are equal
@@ -174,40 +194,46 @@ TEST(sort_algos_std_vector_random, negative_int16_t)
 
 
 /****************************************************************************
- * quick sort tests (no quick sort algorithm in above tests!).
+ * merge/quick sort tests.
  * => accepts arguments that differ from other sort functions.
  */
 
-TEST(sort_algos_c_array_random, quick_sort__int)
+TEST(sort_algos_c_array_random, mq__int)
 {
-    for (std::size_t n = 0; n < 55; n+=11) {
-        int a_rnd[n]; gen::random(a_rnd, n, 0, 1000);
-        int a_exp[n]; std::copy_n(a_rnd, n, a_exp);
-        std::sort(a_exp, a_exp + n);
-        srt::quick_sort(a_rnd, 0, n - 1);
-        EXPECT_TRUE(c_are_equal(a_rnd, a_exp, n));
+    for (const auto &algo : srt_func_c_array_mq<int>) {
+        for (std::size_t n = 0; n < 55; n+=11) {
+            int a_rnd[n]; gen::random(a_rnd, n, 0, 1000);
+            int a_exp[n]; std::copy_n(a_rnd, n, a_exp);
+            std::sort(a_exp, a_exp + n);
+            algo(a_rnd, 0, n - 1);
+            EXPECT_TRUE(c_are_equal(a_rnd, a_exp, n));
+        }
     }
 }
 
-TEST(sort_algos_std_vector_random, quick_sort__double)
+TEST(sort_algos_std_vector_random, mq__double)
 {
-    for (std::size_t n = 0; n < 33; n+=3) {
-        std::vector<double> a_rnd = gen::random<double>(n, -99, 99);
-        std::vector<double> a_exp = a_rnd;
-        std::sort(a_exp.begin(), a_exp.end());
-        srt::quick_sort(a_rnd, 0, n - 1);
-        EXPECT_EQ(a_rnd, a_exp);
+    for (const auto &algo : srt_func_std_vector_mq<double>) {
+        for (std::size_t n = 0; n < 33; n+=3) {
+            std::vector<double> a_rnd = gen::random<double>(n, -99, 99);
+            std::vector<double> a_exp = a_rnd;
+            std::sort(a_exp.begin(), a_exp.end());
+            algo(a_rnd, 0, n - 1);
+            EXPECT_EQ(a_rnd, a_exp);
+        }
     }
 }
 
-TEST(sort_algos_std_array_random, quick_sort__negative_int_fast8_t)
+TEST(sort_algos_std_array_random, mq__negative_int_fast8_t)
 {
     constexpr std::size_t n = 21; // => require constexpr size
-    for (int i = 0; i < 5; i++) {
-        std::array<std::int_fast8_t, n> a_rnd = gen::random<std::int_fast8_t, n>(INT_FAST8_MIN, 0);
-        std::array<std::int_fast8_t, n> a_exp = a_rnd;
-        std::sort(a_exp.begin(), a_exp.end());
-        srt::quick_sort(a_rnd, 0, n - 1);
-        EXPECT_EQ(a_rnd, a_exp);
+    for (const auto &algo : srt_func_std_array_mq<std::int_fast8_t, n>) {
+        for (int i = 0; i < 5; i++) {
+            std::array<std::int_fast8_t, n> a_rnd = gen::random<std::int_fast8_t, n>(INT_FAST8_MIN, 0);
+            std::array<std::int_fast8_t, n> a_exp = a_rnd;
+            std::sort(a_exp.begin(), a_exp.end());
+            algo(a_rnd, 0, n - 1);
+            EXPECT_EQ(a_rnd, a_exp);
+        }
     }
 }
