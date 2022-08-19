@@ -1,8 +1,5 @@
-#include "SortTest.hpp"
-
-#include "Sort.hpp"
-
 #include "gen.hpp"
+
 #include "bubble_sort.hpp"
 #include "insertion_sort.hpp"
 #include "merge_sort.hpp"
@@ -13,8 +10,9 @@
 
 #include <algorithm>  // std::sort, std::copy_n
 #include <array>
-#include <cstdint>    // other types, *_MIN, etc
 #include <cstddef>    // std::size_t
+#include <cstdint>    // other types, *_MIN, etc
+#include <cstring>    // std::memcmp
 #include <vector>
 
 /****************************************************************************
