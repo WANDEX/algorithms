@@ -1,9 +1,8 @@
 #include "DoublyLinkedList.hpp"
 
-#include "gen.hpp"
-
 #include <gtest/gtest.h>
 
+#include <stdexcept>    // runtime_error
 #include <string>
 
 class DoublyLinkedListTest : public ::testing::Test {
