@@ -15,6 +15,7 @@ include_directories(src/c/sort)
 
 include_directories(src/cpp/common)
 include_directories(src/cpp/datastructures/linkedlist)
+include_directories(src/cpp/datastructures/stack)
 include_directories(src/cpp/sort)
 
 add_subdirectory(tests/unit)
