@@ -2,7 +2,8 @@
 
 #include <gtest/gtest.h>
 
-#include <stdexcept>    // runtime_error
+#include <stdexcept>        // runtime_error
+#include <string>
 
 class ListStackTest : public ::testing::Test {
 protected:
