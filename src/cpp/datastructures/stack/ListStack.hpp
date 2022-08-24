@@ -62,19 +62,21 @@ public:
     }
 
     /**
-     * return & remove elem at the top of the stack, O(1)
+     * return & remove elem at the top of the stack, O(1).
+     * throws error if the stack is empty.
      */
     virtual T pop()
     {
         if (isEmpty()) throw std::runtime_error("Empty Stack");
-        T data = stack.front(); // tmp store the data
+        T data { stack.front() }; // tmp store the data
         stack.pop_front();
         --m_size;
         return data;
     }
 
     /**
-     * return elem at the top of the stack, O(1)
+     * return elem at the top of the stack, O(1).
+     * throws error if the stack is empty.
      */
     virtual T peek() const
     {
