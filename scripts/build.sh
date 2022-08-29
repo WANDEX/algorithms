@@ -7,6 +7,8 @@
 # ./scripts/build.sh tests
 ## just build:
 # ./scripts/build.sh
+## build & run tests filtered by --gtest_filter:
+# ./scripts/build.sh tests *filter*
 
 bdir="build"
 NOT_USE_MAKE_C_DIR=1 # NOTE: comment out if you prefer to use make -C option
@@ -23,10 +25,12 @@ else
 fi
 
 opt="$1"
+test_filter="$2"
 case "$opt" in
   clean|c)
     [ -d "$bdir" ] && rm -rf "$bdir"
     opt="$2"
+    test_filter="$3"
     ;;
 esac
 
@@ -48,7 +52,11 @@ run_tests="./$bdir/tests/unit/algorithms_tests"
 case "$opt" in
   tests|tests/|test|t)
     if [ -x "$run_tests" ]; then
-      "$run_tests"
+      if [ -n "$test_filter" ]; then
+        "$run_tests" --gtest_filter="$test_filter"
+      else
+        "$run_tests"
+      fi
     else
       printf "%s\n^ %s\n" "$run_tests" \
         "File not found or not executable, exit."
