@@ -5,11 +5,9 @@
  * with a hash table for quick removals.
  */
 
-// #include "pprint.hpp"   // XXX
-#include <iostream>     // XXX
-
 #include <algorithm>    // std::max
 #include <cstddef>      // size_t
+#include <iostream>
 #include <map>
 #include <set>
 #include <sstream>      // ostream
@@ -41,18 +39,9 @@ public:
         heap.reserve(sz);
     }
 
-    // FIXME: why not prints set?
-    // XXX breaks std::string <<
-    // friend std::ostream& operator<<(std::ostream &os, const std::set<std::size_t> &s)
-    // {
-    //     for (auto const &i : s)
-    //         os << i << " ";
-    //     return os;
-    // }
-
     /**
      * Construct a priority queue using heapify in O(n) time, a great explanation can be found at:
-     * http://www.cs.umd.edu/~meesh/351/mount/lectures/lect14-heapsort-analysis-part.pdf
+     * https://www.cs.umd.edu/~meesh/351/mount/lectures/lect14-heapsort-analysis-part.pdf
      */
     BinaryHeapQ(const std::vector<T> &v)
     {
@@ -83,17 +72,33 @@ public:
         std::cout <<   *++it << ')';
     }
 
+    // following should print all std::set elements
+    /*
+     * friend std::ostream& operator<<(std::ostream& os, const std::set<std::size_t>& s)
+     * {
+     *     std::set<std::size_t>::iterator it = s.begin();
+     *     os << '(';
+     *     for (; it != std::prev(s.end()); it++)
+     *         os << *it << ", ";
+     *     os <<   *++it << ')';
+     *     return os;
+     * }
+     */
+
     void print_test()
     {
+        std::cout << "heap\t= ";
+        for (const auto &e : heap)
+            std::cout << "[" << e << "] ";
+        std::cout << '\n';
+
         for (const auto &e : map) {
-            // TODO: make printing set work!
-            // std::cout << '[' << e.first << "=" << e.second << "]\n";
-            std::cout << "map value:[" << e.first << "] ";
+            // TODO: make printing std::set e.second with overloaded operator<< work!
+            // std::cout << "map value:[" << e.first << "] = " << e.second << '\n';
+
+            std::cout << "map[" << e.first << "]\t= ";
             print_set(e.second);
             std::cout << '\n';
-        }
-        for (const auto &e : heap) {
-            std::cout << "heap value:[" << e << "]\n";
         }
     }
 
@@ -156,12 +161,9 @@ public:
      */
     virtual void add(const T &elem)
     {
-        // if (elem == nullptr) throw std::invalid_argument("Invalid Index");
-
         heap.push_back(elem);
         const std::size_t index_last_elem { size() - 1 };
         mapAdd(elem, index_last_elem);
-
         swim(index_last_elem);
     }
 
