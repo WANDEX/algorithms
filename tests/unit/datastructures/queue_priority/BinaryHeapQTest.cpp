@@ -48,7 +48,6 @@ protected:
             ASSERT_EQ(pq.size(), sv.size());
             EXPECT_TRUE(pq.isMinHeap(0));
         }
-
     }
 
 };

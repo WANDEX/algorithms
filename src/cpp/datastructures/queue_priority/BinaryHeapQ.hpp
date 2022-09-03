@@ -354,7 +354,6 @@ private:
 
         umap[val1] = set1;
         umap[val2] = set2;
-
     }
 
 };
