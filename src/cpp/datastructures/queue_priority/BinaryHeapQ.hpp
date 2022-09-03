@@ -172,8 +172,7 @@ public:
      */
     virtual bool remove(const T &elem)
     {
-        // Logarithmic removal with map, O(log(n))
-        std::size_t idx{ mapGet(elem) };
+        const std::size_t idx { mapGet(elem) };
         if (idx >= size()) return false; // not found => nothing to remove
         removeAt(idx);
         return true;
@@ -185,7 +184,7 @@ public:
      * sure the heap invariant is still being maintained.
      * Call this method with k=0 to start at the root.
      */
-    bool isMinHeap(const std::size_t k)
+    bool isMinHeap(const std::size_t k) const
     {
         // If we are outside the bounds of the heap return true
         const std::size_t hsz { size() };
@@ -280,7 +279,7 @@ private:
         if (isEmpty()) throw std::runtime_error("Empty Heap");
 
         const std::size_t index_last_elem { size() - 1 };
-        T removed_data { heap[i] };
+        const T removed_data { heap[i] };
         swap(i, index_last_elem);
 
         heap.erase(heap.begin()+index_last_elem);
@@ -288,7 +287,7 @@ private:
 
         // Removed last element
         if (i == index_last_elem) return removed_data;
-        T elem { heap[i] };
+        const T elem { heap[i] };
 
         // Try sinking element
         sink(i);
