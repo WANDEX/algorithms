@@ -2,9 +2,6 @@
 
 #include "gen.hpp"
 
-// #include "pprint.hpp"       // XXX
-// #include <iostream>         // XXX
-
 #include <gtest/gtest.h>
 
 #include <algorithm>        // sort, find
