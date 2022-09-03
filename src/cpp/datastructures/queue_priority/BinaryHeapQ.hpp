@@ -8,10 +8,10 @@
 #include <algorithm>    // std::max
 #include <cstddef>      // size_t
 #include <iostream>
-#include <map>
 #include <set>
 #include <sstream>      // ostream
 #include <stdexcept>    // runtime_error, out_of_range
+#include <unordered_map>
 #include <vector>
 
 template<typename T>
@@ -27,7 +27,7 @@ protected:
      * us have O(log(n)) removals and O(1) element containment check
      * at the cost of some additional space and minor overhead
      */
-    std::map<T, std::set<std::size_t>> map;
+    std::unordered_map<T, std::set<std::size_t>> umap;
 
 public:
     // Construct and initially empty priority queue
@@ -92,11 +92,11 @@ public:
             std::cout << "[" << e << "] ";
         std::cout << '\n';
 
-        for (const auto &e : map) {
+        for (const auto &e : umap) {
             // TODO: make printing std::set e.second with overloaded operator<< work!
-            // std::cout << "map value:[" << e.first << "] = " << e.second << '\n';
+            // std::cout << "umap value:[" << e.first << "] = " << e.second << '\n';
 
-            std::cout << "map[" << e.first << "]\t= ";
+            std::cout << "umap[" << e.first << "] = ";
             print_set(e.second);
             std::cout << '\n';
         }
@@ -108,7 +108,7 @@ public:
     virtual void clear()
     {
         heap.clear();
-        map.clear();
+        umap.clear();
     }
 
     /**
@@ -147,12 +147,11 @@ public:
     }
 
     /**
-     * check that element is in heap
+     * check that element is in heap, O(1)
      */
     virtual bool contains(const T &elem) const
     {
-        // FIXME: should be O(1)
-        return map.contains(elem); // log(n)
+        return umap.contains(elem);
     }
 
     /**
@@ -299,14 +298,14 @@ private:
     }
 
     /**
-     * add a node value and its index to the map.
+     * add a node value and its index to the map, O(log(n)).
      * key: val, value: set(of indexes)
      */
     void mapAdd(const T val, const std::size_t idx)
     {
-        std::set<std::size_t> set { map[val] };
+        std::set<std::size_t> set { umap[val] };
         set.insert(idx);
-        map.insert_or_assign(val, set);
+        umap.insert_or_assign(val, set);
     }
 
     /**
@@ -314,10 +313,10 @@ private:
      */
     void mapRemove(const T val, const std::size_t idx)
     {
-        std::set<std::size_t> set { map[val] };
-        set.erase(idx); // O(log(c.size()) + c.count(key))
-        if (set.size() == 0) map.erase(val);
-        else map[val] = set;
+        std::set<std::size_t> set { umap[val] };
+        set.erase(idx);
+        if (set.size() == 0) umap.erase(val);
+        else umap[val] = set;
     }
 
     /**
@@ -330,7 +329,7 @@ private:
     {
         std::set<std::size_t> set;
         try {
-            set = map.at(val);
+            set = umap.at(val);
         } catch(std::out_of_range) {
             return size();
         }
@@ -344,8 +343,8 @@ private:
      */
     void mapSwap(const T val1, const T val2, const std::size_t iv1, const std::size_t iv2)
     {
-        std::set<std::size_t> set1 { map[val1] };
-        std::set<std::size_t> set2 { map[val2] };
+        std::set<std::size_t> set1 { umap[val1] };
+        std::set<std::size_t> set2 { umap[val2] };
 
         set1.erase(iv1);
         set2.erase(iv2);
@@ -353,8 +352,9 @@ private:
         set1.insert(iv2);
         set2.insert(iv1);
 
-        map[val1] = set1;
-        map[val2] = set2;
+        umap[val1] = set1;
+        umap[val2] = set2;
+
     }
 
 };
