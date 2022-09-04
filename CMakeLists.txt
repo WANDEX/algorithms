@@ -9,15 +9,22 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 find_package(GTest REQUIRED)
 enable_testing()
 
-# so tests can find the header files
-include_directories(src/c/search)
-include_directories(src/c/sort)
+# recursively include all sub-directories of the given dir
+function(include_subdirs arg_dir)
+    file(GLOB_RECURSE recurse_subdirs LIST_DIRECTORIES true
+        RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${arg_dir}/$")
+    # ^ list only sub-directories of the given dir using relative path
+    list(FILTER recurse_subdirs EXCLUDE REGEX "/\\.") # exclude paths with .dirs
+    foreach(subdir ${recurse_subdirs})
+        # uncomment to see which dirs are included in the build process
+        # message("include subdir: ${subdir}")
+        if (IS_DIRECTORY "${subdir}") # double check that this is directory
+            include_directories("${subdir}")
+        endif()
+    endforeach(subdir)
+endfunction(include_subdirs)
 
-include_directories(src/cpp/common)
-include_directories(src/cpp/datastructures/linkedlist)
-include_directories(src/cpp/datastructures/stack)
-include_directories(src/cpp/datastructures/queue)
-include_directories(src/cpp/datastructures/queue_priority)
-include_directories(src/cpp/sort)
+# so that the project sources can find the necessary project header files
+include_subdirs(src)
 
 add_subdirectory(tests/unit)
