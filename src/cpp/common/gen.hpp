@@ -13,6 +13,7 @@ namespace gen {
  */
 inline void random(auto out[], const std::size_t n, const double fr, const double to)
 {
+    if (n < 1) return;
     std::random_device rd;
     std::default_random_engine rng(rd());
     std::uniform_real_distribution<> dist(fr, to);
@@ -27,6 +28,7 @@ inline void random(auto out[], const std::size_t n, const double fr, const doubl
 template<typename T, const std::size_t n>
 inline std::array<T, n> random(const double fr, const double to)
 {
+    if (n < 1) return {};
     std::array<T, n> out;
     std::random_device rd;
     std::default_random_engine rng(rd());
@@ -43,6 +45,7 @@ inline std::array<T, n> random(const double fr, const double to)
 template<typename T>
 inline std::vector<T> random(const std::size_t n, const double fr, const double to)
 {
+    if (n < 1) return {};
     std::vector<T> out;
     out.reserve(n);
     std::random_device rd;
