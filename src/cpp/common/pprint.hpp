@@ -13,6 +13,10 @@ namespace pp { // pretty print
  */
 inline void print(const auto a[], const std::size_t n, const std::string prefix="")
 {
+    if (n < 1) {
+        std::cout << prefix << "{}" << std::endl;
+        return;
+    }
     std::cout << prefix << "{";
     for (std::size_t i = 0; i < n - 1; i++)
         std::cout << a[i] << ", ";
@@ -25,6 +29,10 @@ inline void print(const auto a[], const std::size_t n, const std::string prefix=
 template <typename T, const std::size_t n>
 inline void print(const std::array<T, n> &a, const std::string prefix="")
 {
+    if (n < 1) {
+        std::cout << prefix << "{}" << std::endl;
+        return;
+    }
     std::cout << prefix << "{";
     for (std::size_t i = 0; i < n - 1; i++)
         std::cout << a[i] << ", ";
@@ -38,6 +46,10 @@ template <typename T>
 inline void print(const std::vector<T> &a, const std::string prefix="")
 {
     const std::size_t n = a.size();
+    if (n < 1) {
+        std::cout << prefix << "{}" << std::endl;
+        return;
+    }
     std::cout << prefix << "{";
     for (std::size_t i = 0; i < n - 1; i++)
         std::cout << a[i] << ", ";
