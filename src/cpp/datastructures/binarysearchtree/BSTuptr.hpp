@@ -20,7 +20,7 @@
 #include <utility>          // std::move
 
 template<typename T>
-class BinarySearchTree
+class BSTuptr
 {
 protected:
     // forward declare
@@ -37,15 +37,15 @@ protected:
         T m_data;
         node_ptr l, r; // left/right node
 
-        // BinarySearchTree need an access to the Node information
-        friend class BinarySearchTree<T>;
+        // BSTuptr need an access to the Node information
+        friend class BSTuptr<T>;
 
     public:
-        Node(const T data, node_ptr& left, node_ptr& right)
+        Node(const T& data, node_ptr& left, node_ptr& right)
             : m_data{ data }, l{ left }, r{ right }
         {}
 
-        Node(const T data)
+        Node(const T& data)
             : m_data{ data }
         {}
 
@@ -56,14 +56,14 @@ protected:
     // tracks the number of nodes in this BST
     std::size_t m_nodeCount {0};
 
-    // this BST is a rooted tree so we maintain a handle on the m_root node
+    // this BST is a rooted tree so we maintain a handle on the root node
     node_ptr m_root;
 
 public:
-    BinarySearchTree()
+    BSTuptr()
     {}
 
-    virtual ~BinarySearchTree() = default;
+    virtual ~BSTuptr() = default;
 
     enum TreeTravOrder : std::uint8_t
     {
@@ -74,7 +74,7 @@ public:
     };
 
     /**
-     * the number of nodes in binary tree
+     * @brief the number of nodes in binary tree
      */
     std::size_t size() const
     {
@@ -82,7 +82,7 @@ public:
     }
 
     /**
-     * check if binary tree is empty
+     * @brief check if binary tree is empty
      */
     bool isEmpty() const
     {
@@ -91,8 +91,10 @@ public:
 
 public:
     /**
-     * add an element to this binary tree.
-     * returns true if we successfully perform an insertion.
+     * @brief add an element to this binary tree.
+     *
+     * @param data The data/value to add.
+     * @return true If the insertion operation was successful.
      */
     bool add(const T& data)
     {
@@ -104,7 +106,10 @@ public:
     }
 private:
     /**
-     * private method to recursively add a value in the binary tree.
+     * @brief private method to recursively add a value in the binary tree.
+     *
+     * @param node The node to search from.
+     * @param data The data/value to add.
      */
     node_ptr add(node_ptr& node, const T& data)
     {
@@ -121,19 +126,19 @@ private:
 
 public:
     /**
-     * remove a value from binary tree if it exists, O(n).
-     * bool_rm_algo flag triggers usage of different removing algorithm.
+     * @brief Remove a value from binary tree if it exists, O(n).
+     *
+     * @param rm_data The data/value to remove.
      */
-    bool remove(const T rm_data, bool bool_rm_algo=true)
+    bool remove(const T& rm_data)
     {
         // check that node is actually exist
         if (contains(rm_data)) {
-            if (bool_rm_algo) {
-                if (!remove(m_root, m_root, rm_data)) return false;
-            } else {
+            if (true) { // to use a different removal algorithm.
                 m_root = std::move(remove(m_root, rm_data));
+            } else {
+                if (!remove(m_root, m_root, rm_data)) return false;
             }
-            // if (!remove(m_root, rm_data)) return false; // XXX FOR the strange remove algo
             m_nodeCount--;
             return true;
         }
@@ -142,7 +147,11 @@ public:
 
 private:
     /**
-     * private recursive method to find & remove an element from the tree, O(n).
+     * @brief private recursive method to find & remove an element from the tree, O(n).
+     *
+     * @param node The node to search from.
+     * @param rm_data The data/value to remove.
+     * @return reference of the node pointer to update the tree.
      * usage: m_root = std::move(remove(m_root, rm_data));
      */
     node_ptr& remove(node_ptr& node, const T& rm_data)
@@ -187,9 +196,14 @@ private:
     }
 
     /**
-     * private recursive method to find & remove an element from the tree, O(n).
-     * (another version of removing algorithm).
+     * @brief private recursive method to find & remove an element from the tree, O(n).
+     *
+     * @param parent The parent node of node.
+     * @param node The node to search from.
+     * @param rm_data The data/value to remove.
+     * @return true If the removal operation was successful.
      * usage: remove(m_root, m_root, data);
+     * (another version of removing algorithm).
      */
     bool remove(node_ptr& parent, node_ptr& node, const T& rm_data)
     {
@@ -226,7 +240,7 @@ private:
     }
 
     /**
-     * Helper method to find the leftmost node (which has the smallest value).
+     * @brief Helper method to find the leftmost node (which has the smallest value).
      * usage: node_ptr& successor{ findMin(node->r) };
      */
     node_ptr& findMin(node_ptr& node)
@@ -236,7 +250,7 @@ private:
     }
 
     /**
-     * Helper method to find the rightmost node (which has the largest value).
+     * @brief Helper method to find the rightmost node (which has the largest value).
      * usage: node_ptr& successor{ findMax(node->l) };
      */
     node_ptr& findMax(node_ptr& node)
@@ -247,7 +261,7 @@ private:
 
 public:
     /**
-     * returns true if the element exists in the tree.
+     * @brief returns true if the element exists in the tree.
      */
     bool contains(const T& data)
     {
@@ -255,7 +269,7 @@ public:
     }
 private:
     /**
-     * private recursive method to find an element in the tree.
+     * @brief private recursive method to find an element in the tree.
      */
     bool contains(node_ptr& node, const T& data)
     {
@@ -273,7 +287,7 @@ private:
 
 public:
     /**
-     * compute the height of the tree, O(n).
+     * @brief compute the height of the tree, O(n).
      */
     std::size_t height()
     {
@@ -281,7 +295,7 @@ public:
     }
 private:
     /**
-     * recursive helper method to compute the height of the tree.
+     * @brief recursive helper method to compute the height of the tree.
      */
     std::size_t height(const node_ptr& node)
     {
@@ -343,7 +357,7 @@ private:
 
 public:
     /**
-     * pass enum to print tree in specific order i.e. tree.IN_ORDER
+     * @brief pass enum to print tree in specific order i.e. tree.IN_ORDER
      */
     void print(const TreeTravOrder order, const std::string& prefix="")
     {
