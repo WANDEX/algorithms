@@ -49,6 +49,11 @@ protected:
             : m_data{ data }
         {}
 
+        Node() = default;
+        Node(Node &&) = default;
+        Node(const Node &) = default;
+        Node &operator=(Node &&) = default;
+        Node &operator=(const Node &) = default;
         virtual ~Node() = default;
     };
 
@@ -60,9 +65,11 @@ protected:
     node_ptr m_root;
 
 public:
-    BSTuptr()
-    {}
-
+    BSTuptr() = default;
+    BSTuptr(BSTuptr &&) = default;
+    BSTuptr(const BSTuptr &) = default;
+    BSTuptr &operator=(BSTuptr &&) = default;
+    BSTuptr &operator=(const BSTuptr &) = default;
     virtual ~BSTuptr() = default;
 
     enum TreeTravOrder : std::uint8_t
