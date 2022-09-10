@@ -1,11 +1,38 @@
 #pragma once
 
 #include <array>
-#include <cstddef>      // std::size_t
+#include <cstddef>          // std::size_t
 #include <random>
+#include <unordered_set>
 #include <vector>
 
 namespace gen {
+
+/**
+ * generate random unordered_set containing n unique elements.
+ * n: size, limits: fr ... to
+ */
+template<typename T>
+inline std::unordered_set<T> random_uset(const std::size_t n, const double fr, const double to)
+{
+    if (n < 1) return {};
+    std::unordered_set<T> uset;
+    uset.reserve(n);
+    std::random_device rd;
+    std::default_random_engine rng(rd());
+    std::uniform_real_distribution<> dist(fr, to);
+
+    // TODO: if n > fr..to possible unique elements
+    // => throw error ("impossible to generate enough unique elements for the given span fr..to")
+    T rn {}; // randomly generated value
+    for (std::size_t i = 0; i < n; i++) {
+        do {
+            rn = dist(rng);
+        } while(!((uset.insert(rn)).second));
+        // ^ loop till successful insert of unique value
+    }
+    return std::move(uset);
+}
 
 /**
  * generate random C array.
