@@ -319,31 +319,31 @@ protected:
         std::cout << prefix << "h:(" << height() << ")\t[" << str << "]\n";
     }
 
-    void preorder(const node_ptr& node, std::ostringstream& oss) const
+    void print_preorder(const node_ptr& node, std::ostream& oss = std::cout) const
     {
         if (!node) return;
         oss << node->m_data << ", ";
-        preorder(node->l, oss);
-        preorder(node->r, oss);
+        print_preorder(node->l, oss);
+        print_preorder(node->r, oss);
     }
 
-    void inorder(const node_ptr& node, std::ostringstream& oss) const
+    void print_inorder(const node_ptr& node, std::ostream& oss = std::cout) const
     {
         if (!node) return;
-        inorder(node->l, oss);
+        print_inorder(node->l, oss);
         oss << node->m_data << ", ";
-        inorder(node->r, oss);
+        print_inorder(node->r, oss);
     }
 
-    void postorder(const node_ptr& node, std::ostringstream& oss) const
+    void print_postorder(const node_ptr& node, std::ostream& oss = std::cout) const
     {
         if (!node) return;
-        postorder(node->l, oss);
-        postorder(node->r, oss);
+        print_postorder(node->l, oss);
+        print_postorder(node->r, oss);
         oss << node->m_data << ", ";
     }
 
-    void levelorder(const node_ptr& node, std::ostringstream& oss)
+    void print_levelorder(const node_ptr& node, std::ostream& oss = std::cout)
     {
         for (std::size_t i = 0; i <= height(); i++) {
             lorder_cur_lvl(node, i, oss);
@@ -351,7 +351,7 @@ protected:
     }
 
 private:
-    void lorder_cur_lvl(const node_ptr& node, const std::size_t lvl, std::ostringstream& oss) const
+    void lorder_cur_lvl(const node_ptr& node, const std::size_t& lvl, std::ostream& oss = std::cout) const
     {
         if (!node) return;
         if (lvl == 1) {
@@ -371,16 +371,16 @@ public:
         std::ostringstream oss;
         switch (order) {
             case PRE_ORDER:
-                preorder(m_root, oss);
+                print_preorder(m_root, oss);
                 break;
             case IN_ORDER:
-                inorder(m_root, oss);
+                print_inorder(m_root, oss);
                 break;
             case POST_ORDER:
-                postorder(m_root, oss);
+                print_postorder(m_root, oss);
                 break;
             case LEVEL_ORDER:
-                levelorder(m_root, oss);
+                print_levelorder(m_root, oss);
                 break;
             default:
                 throw std::invalid_argument("No such Tree Traversal Order.");
