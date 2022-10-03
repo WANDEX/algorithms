@@ -5,7 +5,9 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>        // std::for_each
 #include <cstddef>          // size_t
+#include <initializer_list>
 #include <string>
 #include <vector>
 
@@ -27,6 +29,22 @@ protected:
         tree.print(tree.LEVEL_ORDER, "lvl : ");
         pp::print(rndm, "vector sz=" + std::to_string(tree.size()) + "\t");
         std::cout << "initial =============^" << '\n';
+    }
+
+    template<typename T>
+    void testTraversalOrder
+        (
+            const std::initializer_list<T> l_i,
+            const std::initializer_list<T> l_o,
+            const TreeTravOrder order
+        )
+    {
+        BSTuptr tree = BSTuptr<T>(l_i, order);
+        const T* it{ l_o.begin() };
+        // check size
+        ASSERT_EQ(tree.size(), l_o.size());
+        // check if the traversal order matches the expected order
+        for (const T& e : tree) ASSERT_EQ(e, *(it++));
     }
 
 };
@@ -135,13 +153,14 @@ TEST_F(BSTuptrTest, testRemove)
 
 TEST_F(BSTuptrTest, testRemoveRandom)
 {
-    std::vector<int> rndm;
-    BSTuptr    <int> tree;
+    using Ty = int;
+    std::vector<Ty> rndm;
+    BSTuptr    <Ty> tree;
     for (std::size_t i = 0; i < LOOPS; i++) {
         const std::size_t size { i };
         // unique=true -> rndm should contain only unique values!
-        rndm = gen::random<int>(size, 0, LOOPS, true);
-        tree = BSTuptr    <int>();
+        rndm = gen::random<Ty>(size, 0, LOOPS, true);
+        tree = BSTuptr    <Ty>();
 
         // assertion to make sure all values are inserted and unique!
         for (const std::size_t x : rndm)
@@ -149,10 +168,60 @@ TEST_F(BSTuptrTest, testRemoveRandom)
 
         // remove all the elements we just placed in the tree
         for (std::size_t j = 0; j < size; j++) {
-            const int value { rndm[j] };
+            const Ty value { rndm[j] };
             ASSERT_TRUE(tree.remove(value));
             ASSERT_EQ(tree.size(), size - j - 1);
         }
         ASSERT_TRUE(tree.isEmpty());
     }
+}
+
+TEST_F(BSTuptrTest, iterator)
+{
+    using Ty = int;
+    BSTuptr tree = BSTuptr<Ty>({ 3, 2, 4, 1}, TreeTravOrder::IN_ORDER);
+    auto it = tree.begin();
+
+    // equality / inequality
+    ASSERT_EQ(it == it, 1);
+    ASSERT_EQ(it != it, 0);
+
+    // dereferencing & iteration
+    ASSERT_EQ(*it,     1);
+    ASSERT_EQ(*(++it), 2);
+    ASSERT_EQ(*(--it), 1);
+    ASSERT_EQ(*(++it), 2);
+    ASSERT_EQ(*(it++), 2);
+    ASSERT_EQ(*it,     3);
+    ASSERT_EQ(*(++it), 4);
+
+    Ty i {0}; // range for loop
+    for (const Ty& n : tree) {
+        ASSERT_EQ(n, ++i);
+    }
+
+    i = 0; // standard library algorithm
+    std::for_each(tree.begin(), tree.end(), [&](const Ty& n) {
+        ASSERT_EQ(n, ++i);
+    });
+}
+
+TEST_F(BSTuptrTest, iteratorTraversalOrderIn)
+{
+    testTraversalOrder({3, 2, 4, 1}, {1, 2, 3, 4}, TreeTravOrder::IN_ORDER);
+}
+
+TEST_F(BSTuptrTest, iteratorTraversalOrderPre)
+{
+    testTraversalOrder({3, 2, 4, 1}, {3, 2, 1, 4}, TreeTravOrder::PRE_ORDER);
+}
+
+TEST_F(BSTuptrTest, iteratorTraversalOrderPost)
+{
+    testTraversalOrder({3, 2, 4, 1}, {1, 2, 4, 3}, TreeTravOrder::POST_ORDER);
+}
+
+TEST_F(BSTuptrTest, iteratorTraversalOrderLevel)
+{
+    testTraversalOrder({3, 2, 4, 1}, {3, 2, 4, 1}, TreeTravOrder::LEVEL_ORDER);
 }
