@@ -3,16 +3,20 @@
  * Binary Search Tree (BST) using std::unique_ptr.
  * Any comparable data is allowed within this tree.
  * Supported operations include adding, removing, height, and containment checks.
- * Multiple tree traversal Iterators are provided including:
+ * Multiple tree traversal orders are provided including non-recursive traversal via iterator:
  * 1) Preorder
  * 2) Inorder
  * 3) Postorder
  * 4) Levelorder
  */
 
+#include "BSTuptrNode.hpp"
+#include "BSTuptrIterator.hpp"
+
 #include <algorithm>        // std::max
 #include <cstddef>          // std::size_t
 #include <cstdint>          // std::uint8_t
+#include <initializer_list>
 #include <iostream>
 #include <memory>           // std::unique_ptr
 #include <sstream>
@@ -22,42 +26,17 @@
 template<typename T>
 class BSTuptr
 {
-protected:
-    // forward declare
-    template<typename U> class Node;
+public:
+    using enum TreeTravOrder;
+
     // alias to the node pointer
     using node_ptr = std::unique_ptr<Node<T>>;
 
-    /* nested/internal Node class. U - Unused (required)
-     * 'https://en.cppreference.com/w/cpp/language/template_specialization' */
-    template <typename U>
-    class Node
-    {
-    protected:
-        T m_data;
-        node_ptr l, r; // left/right node
-
-        // BSTuptr need an access to the Node information
-        friend class BSTuptr<T>;
-
-    public:
-        Node(const T& data, node_ptr& left, node_ptr& right)
-            : m_data{ data }, l{ left }, r{ right }
-        {}
-
-        Node(const T& data)
-            : m_data{ data }
-        {}
-
-        Node() = default;
-        Node(Node &&) = default;
-        Node(const Node &) = default;
-        Node &operator=(Node &&) = default;
-        Node &operator=(const Node &) = default;
-        virtual ~Node() = default;
-    };
+    using const_iterator = BSTuptrIterator<T>;
 
 protected:
+    enum TreeTravOrder trav_order{ TreeTravOrder::IN_ORDER };
+
     // tracks the number of nodes in this BST
     std::size_t m_nodeCount {0};
 
@@ -65,6 +44,23 @@ protected:
     node_ptr m_root;
 
 public:
+    /**
+     * @brief use specific tree traversal order.
+     */
+    BSTuptr(const TreeTravOrder order)
+        : trav_order{ order }
+    {
+    }
+
+    /**
+     * @brief support list initialization, optionally use specified tree traversal order.
+     */
+    BSTuptr(const std::initializer_list<T> il, const TreeTravOrder order=IN_ORDER)
+        : trav_order{ order }
+    {
+        for (const T n : il) add(n);
+    }
+
     BSTuptr() = default;
     BSTuptr(BSTuptr &&) = default;
     BSTuptr(const BSTuptr &) = default;
@@ -72,13 +68,11 @@ public:
     BSTuptr &operator=(const BSTuptr &) = default;
     virtual ~BSTuptr() = default;
 
-    enum TreeTravOrder : std::uint8_t
-    {
-        PRE_ORDER,
-        IN_ORDER,
-        POST_ORDER,
-        LEVEL_ORDER,
-    };
+public:
+    const_iterator cbegin() const noexcept { return const_iterator(m_root.get(), trav_order); }
+    const_iterator cend()   const noexcept { return const_iterator(nullptr); }
+    const_iterator begin()  const noexcept { return const_iterator(m_root.get(), trav_order); }
+    const_iterator end()    const noexcept { return const_iterator(nullptr); }
 
     /**
      * @brief the number of nodes in binary tree
@@ -311,6 +305,9 @@ private:
     }
 
 protected:
+    /**
+     * @brief helper method to pretty print tree.
+     */
     void cout_tree_info(std::ostringstream& oss, const std::string& prefix)
     {
         std::string str { oss.str() };
@@ -319,6 +316,9 @@ protected:
         std::cout << prefix << "h:(" << height() << ")\t[" << str << "]\n";
     }
 
+    /**
+     * @brief recursive method to print tree in preorder.
+     */
     void print_preorder(const node_ptr& node, std::ostream& oss = std::cout) const
     {
         if (!node) return;
@@ -327,6 +327,9 @@ protected:
         print_preorder(node->r, oss);
     }
 
+    /**
+     * @brief recursive method to print tree in inorder.
+     */
     void print_inorder(const node_ptr& node, std::ostream& oss = std::cout) const
     {
         if (!node) return;
@@ -335,6 +338,9 @@ protected:
         print_inorder(node->r, oss);
     }
 
+    /**
+     * @brief recursive method to print tree in postorder.
+     */
     void print_postorder(const node_ptr& node, std::ostream& oss = std::cout) const
     {
         if (!node) return;
@@ -343,6 +349,9 @@ protected:
         oss << node->m_data << ", ";
     }
 
+    /**
+     * @brief recursive method to print tree in levelorder.
+     */
     void print_levelorder(const node_ptr& node, std::ostream& oss = std::cout)
     {
         for (std::size_t i = 0; i <= height(); i++) {
