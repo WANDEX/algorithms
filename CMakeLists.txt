@@ -25,6 +25,6 @@ function(include_subdirs arg_dir)
 endfunction(include_subdirs)
 
 # so that the project sources can find the necessary project header files
-include_subdirs(src)
+include_subdirs(include)
 
 add_subdirectory(tests/unit)
