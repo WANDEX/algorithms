@@ -14,7 +14,6 @@ to make clean build & run tests:
 ```
 
 ## Tree Of Implemented DSA
-<code><p style="line-height:1.0;color:gray;margin-top:-60px;margin-bottom:-50px;"><br>
 include/\
 ├── c/\
 │   ├── datastructures/\
@@ -54,7 +53,6 @@ include/\
         ├── [merge_sort.hpp](./include/cpp/sort/merge_sort.hpp)\
         ├── [quick_sort.hpp](./include/cpp/sort/quick_sort.hpp)\
         └── [selection_sort.hpp](./include/cpp/sort/selection_sort.hpp)\
-<br></p></code>
 
 ## Hall of Fame
 DSA implemented in [Java](https://github.com/williamfiset/Algorithms),
