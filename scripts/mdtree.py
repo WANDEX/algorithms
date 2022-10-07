@@ -18,30 +18,27 @@ __author__ = "WANDEX"
 
 import FSTreeDisplay
 
+import pprint
 import subprocess
 
 from collections import OrderedDict
+from filecmp import cmp
 from pathlib import Path
 from shutil import copy2, which
 
 
-has_pprint = False
-if 1:
-    try:
-        import pprint
-    except ImportError:
-        has_pprint = False
-    else:
-        has_pprint = True
+# Global Constants - for easier adoption in other projects
+TXT_DIR = Path("./scripts/.cache/raw/")
+TXT_NEW = TXT_DIR.joinpath("tree.new.txt")
+TXT_OLD = TXT_DIR.joinpath("tree.old.txt")
+README = Path("./README.md")
+TESTS_DIR = Path("./tests/")
+INCLUDE_DIR = Path("./include/")
 
 
 def ppr(arg):
-    """pprint."""
-    if not has_pprint:
-        return
-    pp = pprint.PrettyPrinter()
-    pp.pprint(arg)
-    print()
+    """pprint()"""
+    pprint.PrettyPrinter().pprint(arg)
 
 
 def at_path(executable) -> bool:
@@ -94,7 +91,7 @@ def filter_paths(paths: list, globs: tuple) -> list:
 
 def list_tests() -> list:
     """Construct list of file paths of the tests dir."""
-    tests = [f for f in Path("./tests/").rglob("*") if f.is_file()]
+    tests = [f for f in TESTS_DIR.rglob("*") if f.is_file()]
     tests = filter_paths(tests, ("*.txt", "*main.cc"))
     return tests
 
@@ -126,10 +123,9 @@ def make_md_url_and_find_tests(fpath: Path) -> str:
     return f"{hurl}"  # only file url (test file not found)
 
 
-def make_md_tree() -> OrderedDict:
+def make_md_tree(rws=True) -> OrderedDict:
     """Make specific fs tree for embedding into markdown."""
     # TODO: criteria to check if path is under git version control
-    include_dir = "./include/"
     FSTD = FSTreeDisplay
 
     #  def mdcriteria(ipath: str):
@@ -137,12 +133,13 @@ def make_md_tree() -> OrderedDict:
     #      #      return False
     #      return sane_criteria(ipath)
 
-    paths = FSTD.FSTreeDisplay.make_tree(include_dir, criteria=FSTD.sane_criteria)
+    paths = FSTD.FSTreeDisplay.make_tree(INCLUDE_DIR, criteria=FSTD.sane_criteria)
     od_tree = OrderedDict()
     for path in paths:
-        #  od_tree[path.paths] = path.displayable().replace(' ', ' ') + '\\'  # ws -> En Space
-        # XXX ^use
-        od_tree[path.paths] = path.displayable() + '\\'  # XXX ws -> En Space
+        if rws:  # replace whitespaces: ws -> En Space
+            od_tree[path.paths] = path.displayable().replace(' ', ' ') + '\\'
+        else:
+            od_tree[path.paths] = path.displayable() + '\\'
     return od_tree
 
 
@@ -169,18 +166,22 @@ def md_tree_lines() -> list:
     return lines
 
 
-def write_tree(lines: list) -> int:
+def write_tree(lines: list) -> bool:
     """Write lines of the markdown tree into file."""
-    txt_new = './scripts/.cache/raw/DSAtree.new.txt'
-    txt_old = './scripts/.cache/raw/DSAtree.old.txt'
-    dir_name = Path(txt_new).parent
-    dir_name.mkdir(parents=True, exist_ok=True)
-    if Path(txt_new).is_file():
-        copy2(txt_new, txt_old)
-    with open(txt_new, 'w', encoding='utf-8') as f:
+    TXT_DIR.mkdir(parents=True, exist_ok=True)
+    if TXT_NEW.is_file():
+        copy2(TXT_NEW, TXT_OLD)
+    else:
+        TXT_NEW.touch()
+        TXT_OLD.touch()
+    with open(TXT_NEW, 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines))
-    # TODO: compare new & old file contents and if they differ -> return 0 - otherwise return 1
-    return 1  # files have equal content
+    # -> True (files have equal content)
+    return cmp(TXT_NEW, TXT_OLD, shallow=False)
+
+
+def embed_tree():
+    pass
 
 
 def main():
@@ -191,7 +192,9 @@ def main():
         print(line)
 
     # XXX uncomment!
-    #  ret = write_tree(lines)
+    is_equal = write_tree(lines)
+    if not is_equal:
+        print("files are not equal!")
 
 
 if __name__ == "__main__":
