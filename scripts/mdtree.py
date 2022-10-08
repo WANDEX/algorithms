@@ -34,6 +34,7 @@ GRN = '\033[1;32m'
 CYN = '\033[1;36m'
 # TODO: disable colors if script were piped
 
+# jump to the 'md_criteria' to exclude certain paths from the tree
 # Global Constants - for easier adoption in other projects
 INCLUDE_DIR = Path("./include/")
 BACKUP_DIR = Path("./scripts/.cache/md_backup/")
@@ -151,15 +152,18 @@ def make_md_link_and_find_tests(fpath: Path) -> tuple[str, set]:
 
 def make_md_tree(rws=True) -> OrderedDict:
     """Make specific fs tree for embedding into markdown."""
-    # TODO: criteria to check if path is under git version control
     FSTD = FSTreeDisplay
 
-    #  def mdcriteria(ipath: str):
-    #      #  if FSTD.is_empty(ipath):
-    #      #      return False
-    #      return sane_criteria(ipath)
+    def md_criteria(ipath: str):
+        if not FSTD.sane_criteria(ipath):
+            return False
+        if FSTD.FSTreeDisplay.exclude(ipath, ("common", "__pycache__", "c")):
+            return False
+        if not FSTD.FSTreeDisplay.under_gvc(ipath):
+            return False
+        return True
 
-    paths = FSTD.FSTreeDisplay.make_tree(INCLUDE_DIR, criteria=FSTD.sane_criteria)
+    paths = FSTD.FSTreeDisplay.make_tree(INCLUDE_DIR, criteria=md_criteria)
     od_tree = OrderedDict()
     for path in paths:
         if rws:  # replace whitespaces: ws -> En Space
