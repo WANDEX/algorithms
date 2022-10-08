@@ -118,21 +118,35 @@ def find_respective_test_files(fpath: Path) -> list:
     return resp_tests
 
 
-def make_md_url(fpath: Path) -> str:
-    """Make relative url of file path to embed into markdown file."""
+def make_md_link_rel(fpath: Path) -> str:
+    """Make relative link of file path to embed into markdown file."""
     return f"[{fpath.name}](./{fpath})"
 
 
-def make_md_url_and_find_tests(fpath: Path) -> str:
-    """Make & add md urls of the test files if any."""
-    hurl = make_md_url(fpath)
+def make_md_link_var(fpath: Path) -> tuple[str, str]:
+    """Make relative link & link variable definition to embed into markdown file."""
+    return f"[{fpath.name}]", f"[{fpath.name:<28}]: ./{fpath}"
+
+
+def make_md_link_and_find_tests(fpath: Path) -> tuple[str, set]:
+    """Make & add md links & test files if any."""
+    link_defs = set()
+
+    link_name, link_def = make_md_link_var(fpath)
+    link_defs.add(link_def)
+
     resp_tests = find_respective_test_files(fpath)
-    test_files_urls = []
     if resp_tests:  # if not empty (found respective test files)
-        for f in resp_tests:
-            test_files_urls.append(make_md_url(f))
-        return f"{hurl} {test_files_urls[:]}"
-    return f"{hurl}"  # only file url (test file not found)
+        lnt = set()
+        for test_fpath in resp_tests:
+            tlink_name, tlink_def = make_md_link_var(test_fpath)
+            lnt.add(tlink_name)
+            link_defs.add(tlink_def)
+        # specific string format to make less noisy visually (more pleasant)
+        tests_lnames = str(sorted(lnt))\
+            .replace("['", '( *').replace("']", '* )').replace("', '", ' | ')
+        return f"{link_name} {tests_lnames}", link_defs
+    return link_name, link_defs  # only file url (test file not found)
 
 
 def make_md_tree(rws=True) -> OrderedDict:
@@ -158,12 +172,15 @@ def make_md_tree(rws=True) -> OrderedDict:
 def gen_md_tree_lines() -> list:
     """Specifically process OrderedDict of fs tree for embedding into markdown."""
     od_tree = make_md_tree()
+    link_defs = set()
 
     def is_file(fpath: Path) -> bool:
         return fpath.is_file()
 
     def replace_fname(fpath: Path, s: str):
-        od_tree[fpath] = str(s).replace(fpath.name, make_md_url_and_find_tests(fpath))
+        link_name, ldefs = make_md_link_and_find_tests(fpath)
+        link_defs.update(ldefs)
+        od_tree[fpath] = str(s).replace(fpath.name, link_name)
 
     for (k_fpath, v_str) in od_tree.items():
         if not is_file(k_fpath):
@@ -173,8 +190,17 @@ def gen_md_tree_lines() -> list:
     lines = []
     for v_str in od_tree.values():
         lines.append(v_str)
-    # remove last \\ character from the last line
-    lines[-1] = str(lines[-1]).removesuffix('\\')
+
+    # replace last \\ character from the last line
+    # to insert proper empty line between tree & link definitions
+    lines[-1] = str(lines[-1]).replace('\\', '\n')
+
+    # append sorted list of unique link definitions
+    sorted_link_defs = sorted(link_defs)
+    #  for link_def in link_defs:
+    for link_def in sorted_link_defs:
+        lines.append(link_def)
+
     return lines
 
 
