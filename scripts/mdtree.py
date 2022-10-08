@@ -13,12 +13,12 @@ __author__ = "WANDEX"
 # TODO remove leading & trailing whitespaces from each line
 # TODO create dict fname[file_description]
 # TODO output mp_file_url & description into raw txt file
-# TODO compare new txt file with old if files differ => update README
 # TODO insert text into README between <details> </details>
 
 import FSTreeDisplay
 
 import pprint
+import re
 import subprocess
 
 from collections import OrderedDict
@@ -27,13 +27,29 @@ from pathlib import Path
 from shutil import copy2, which
 
 
+# Constants for the colored terminal text
+# (deliberately used very little)
+END = '\033[0m'
+RED = '\033[1;31m'
+GRN = '\033[1;32m'
+CYN = '\033[1;36m'
+# TODO: disable colors if script were piped
+
 # Global Constants - for easier adoption in other projects
 TXT_DIR = Path("./scripts/.cache/raw/")
 TXT_NEW = TXT_DIR.joinpath("tree.new.txt")
+TXT_TMP = TXT_DIR.joinpath("tree.tmp.txt")
 TXT_OLD = TXT_DIR.joinpath("tree.old.txt")
-README = Path("./README.md")
-TESTS_DIR = Path("./tests/")
+
 INCLUDE_DIR = Path("./include/")
+TESTS_DIR = Path("./tests/")
+README = Path("./README.md")
+
+# regex to select everything between this two headers
+README_MULTILINE_RE = r'\
+^## Tree Of Implemented DSA$\
+(.*)\
+^## Hall of Fame$'
 
 
 def ppr(arg):
@@ -166,9 +182,41 @@ def md_tree_lines() -> list:
     return lines
 
 
-def write_tree(lines: list) -> bool:
-    """Write lines of the markdown tree into file."""
+def fread_to_str(fpath: Path | str) -> str:
+    """Read file & return its contents as string."""
+    fcontent = ""
+    with open(fpath, 'r', encoding='utf-8') as f:
+        fcontent = f.read()
+    return fcontent
+
+
+def freplace(fpath: Path | str, old: str, new: str) -> bool:
+    """Replace old by the new string in the file."""
+    old_file_content = fread_to_str(fpath)
+    new_file_content = old_file_content.replace(old, new)
+    with open(fpath, 'r+', encoding='utf-8') as f:
+        f.write(new_file_content)
+        # validate that new tree is in the file
+        if new not in f.read():
+            return False
+    return True
+
+
+def extract_md_tree() -> str:
+    """Extract tree from markdown by regex for later replacement."""
+    fcontent = fread_to_str(README)
+    res = re.search(README_MULTILINE_RE, fcontent, flags=re.DOTALL | re.MULTILINE)
+    if not res:
+        raise re.error("Nothing was found by the provided regex.")
+    return res.group(1)
+
+
+def write_cmp_tmp_trees(lines: list) -> bool:
+    """Write lines of the new tree into tmp file & compare old with new."""
     TXT_DIR.mkdir(parents=True, exist_ok=True)
+    # FIXME: obsolete logic of the function!
+    # TODO: make another .tmp. file
+    # TODO: TXT_TMP or fread_to_str()
     if TXT_NEW.is_file():
         copy2(TXT_NEW, TXT_OLD)
     else:
@@ -180,21 +228,26 @@ def write_tree(lines: list) -> bool:
     return cmp(TXT_NEW, TXT_OLD, shallow=False)
 
 
-def embed_tree():
-    pass
+def update_tree_in_markdown() -> bool:
+    """Replace old by the new tree in markdown file."""
+    old = extract_md_tree()
+    new = fread_to_str(TXT_NEW) + '\n'
+    return freplace(README, old, new)
 
 
 def main():
+    # generate and specifically process fs tree for the markdown file
     lines = md_tree_lines()
 
-    # XXX for ease of viewing result in terminal
-    for line in lines:
-        print(line)
+    # compare the newly processed tree with the previously generated one
+    if write_cmp_tmp_trees(lines):
+        print(f"{CYN}New tree is equal to the old => no need in update of markdown file.{END}")
+        exit(0)
 
-    # XXX uncomment!
-    is_equal = write_tree(lines)
-    if not is_equal:
-        print("files are not equal!")
+    # Attempting to update markdown file...
+    if not update_tree_in_markdown():
+        raise Exception(f"{RED}something went wrong, tree was not updated!{END}")
+    print(f"{GRN}Updated tree was successfully embedded! 1337{END}")
 
 
 if __name__ == "__main__":
