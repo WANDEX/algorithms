@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
+import subprocess
+
 from pathlib import Path
 from sys import argv
 
@@ -66,16 +68,15 @@ class FSTreeDisplay(object):
     def is_hidden(cls, path):
         return not path.name.startswith(".")
 
-    # TODO: criteria to check if path is under git version control
-    #  @classmethod
-    #  """Is path under git version control."""
-    #  def under_gvc(cls, path):
-
-    # XXX THIS IS NOT WORKING FOR DIRS!
-    #  @classmethod
-    #  def is_empty(cls, path):
-    #      """Check if path dir/file is empty."""
-    #      return not path.stat().st_size
+    @classmethod
+    def under_gvc(cls, path) -> bool:
+        """Criteria: is path under git version control?"""
+        p = subprocess.run(
+            ['git', 'ls-files', '--error-unmatch', path],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL)
+        return not bool(p.returncode)
 
     @classmethod
     def exclude(cls, path, exclude_paths):
