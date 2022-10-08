@@ -15,20 +15,7 @@ to make clean build & run tests:
 
 ## Tree Of Implemented DSA
 include/\
-├── c/\
-│   ├── search/\
-│   │   └── [binary_search.h] ( *[binary_search.cc]* )\
-│   └── sort/\
-│       ├── [bubble_sort.h] ( *[SortTest.cpp]* )\
-│       ├── [insertion_sort.h] ( *[SortTest.cpp]* )\
-│       ├── [quick_sort.h] ( *[SortTest.cpp]* )\
-│       └── [selection_sort.h] ( *[SortTest.cpp]* )\
 └── cpp/\
-    ├── common/\
-    │   ├── [gen.hpp] ( *[BSTuptrTest.cpp] | [BinaryHeapQTest.cpp] | [SortTest.cpp]* )\
-    │   ├── [macro.hpp]\
-    │   ├── [pprint.hpp] ( *[BSTuptrTest.cpp]* )\
-    │   └── [timer.hpp]\
     ├── datastructures/\
     │   ├── binarysearchtree/\
     │   │   ├── [BSTuptr.hpp] ( *[BSTuptrTest.cpp]* )\
@@ -70,21 +57,11 @@ include/\
 [SortTest.cpp                ]: ./tests/unit/sort/SortTest.cpp
 [UnionFind.hpp               ]: ./include/cpp/datastructures/unionfind/UnionFind.hpp
 [UnionFindTest.cpp           ]: ./tests/unit/datastructures/unionfind/UnionFindTest.cpp
-[binary_search.cc            ]: ./tests/unit/search/binary_search.cc
-[binary_search.h             ]: ./include/c/search/binary_search.h
-[bubble_sort.h               ]: ./include/c/sort/bubble_sort.h
 [bubble_sort.hpp             ]: ./include/cpp/sort/bubble_sort.hpp
-[gen.hpp                     ]: ./include/cpp/common/gen.hpp
-[insertion_sort.h            ]: ./include/c/sort/insertion_sort.h
 [insertion_sort.hpp          ]: ./include/cpp/sort/insertion_sort.hpp
-[macro.hpp                   ]: ./include/cpp/common/macro.hpp
 [merge_sort.hpp              ]: ./include/cpp/sort/merge_sort.hpp
-[pprint.hpp                  ]: ./include/cpp/common/pprint.hpp
-[quick_sort.h                ]: ./include/c/sort/quick_sort.h
 [quick_sort.hpp              ]: ./include/cpp/sort/quick_sort.hpp
-[selection_sort.h            ]: ./include/c/sort/selection_sort.h
 [selection_sort.hpp          ]: ./include/cpp/sort/selection_sort.hpp
-[timer.hpp                   ]: ./include/cpp/common/timer.hpp
 
 ## Hall of Fame
 DSA implemented in [Java](https://github.com/williamfiset/Algorithms),
