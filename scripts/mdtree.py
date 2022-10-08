@@ -22,7 +22,6 @@ import re
 import subprocess
 
 from collections import OrderedDict
-from filecmp import cmp
 from pathlib import Path
 from shutil import copy2, which
 
@@ -36,14 +35,11 @@ CYN = '\033[1;36m'
 # TODO: disable colors if script were piped
 
 # Global Constants - for easier adoption in other projects
-TXT_DIR = Path("./scripts/.cache/raw/")
-TXT_NEW = TXT_DIR.joinpath("tree.new.txt")
-TXT_TMP = TXT_DIR.joinpath("tree.tmp.txt")
-TXT_OLD = TXT_DIR.joinpath("tree.old.txt")
-
 INCLUDE_DIR = Path("./include/")
+BACKUP_DIR = Path("./scripts/.cache/md_backup/")
 TESTS_DIR = Path("./tests/")
 README = Path("./README.md")
+README_BACKUP = BACKUP_DIR.joinpath("README.md")
 
 # regex to select everything between this two headers
 README_MULTILINE_RE = r'\
@@ -72,7 +68,7 @@ def get_grep_cmd() -> list:
     raise Exception("grep/rg executable not found at path!")
 
 
-def grep(pattern: str, path) -> str:
+def grep(pattern: str, path: Path | str) -> str:
     """grep path for pattern."""
     cmd = get_grep_cmd()
     cmd.append(pattern)
@@ -86,7 +82,7 @@ def grep(pattern: str, path) -> str:
     return out
 
 
-def grep_bool(pattern: str, path) -> bool:
+def grep_bool(pattern: str, path: Path | str) -> bool:
     if not grep(pattern, path):
         return False
     return True
@@ -159,7 +155,7 @@ def make_md_tree(rws=True) -> OrderedDict:
     return od_tree
 
 
-def md_tree_lines() -> list:
+def gen_md_tree_lines() -> list:
     """Specifically process OrderedDict of fs tree for embedding into markdown."""
     od_tree = make_md_tree()
 
@@ -171,7 +167,7 @@ def md_tree_lines() -> list:
 
     for (k_fpath, v_str) in od_tree.items():
         if not is_file(k_fpath):
-            continue
+            continue  # skip
         replace_fname(k_fpath, v_str)
 
     lines = []
@@ -190,16 +186,12 @@ def fread_to_str(fpath: Path | str) -> str:
     return fcontent
 
 
-def freplace(fpath: Path | str, old: str, new: str) -> bool:
+def freplace(fpath: Path | str, old: str, new: str):
     """Replace old by the new string in the file."""
     old_file_content = fread_to_str(fpath)
     new_file_content = old_file_content.replace(old, new)
-    with open(fpath, 'r+', encoding='utf-8') as f:
+    with open(fpath, 'w', encoding='utf-8') as f:
         f.write(new_file_content)
-        # validate that new tree is in the file
-        if new not in f.read():
-            return False
-    return True
 
 
 def extract_md_tree() -> str:
@@ -211,43 +203,40 @@ def extract_md_tree() -> str:
     return res.group(1)
 
 
-def write_cmp_tmp_trees(lines: list) -> bool:
-    """Write lines of the new tree into tmp file & compare old with new."""
-    TXT_DIR.mkdir(parents=True, exist_ok=True)
-    # FIXME: obsolete logic of the function!
-    # TODO: make another .tmp. file
-    # TODO: TXT_TMP or fread_to_str()
-    if TXT_NEW.is_file():
-        copy2(TXT_NEW, TXT_OLD)
-    else:
-        TXT_NEW.touch()
-        TXT_OLD.touch()
-    with open(TXT_NEW, 'w', encoding='utf-8') as f:
-        f.write('\n'.join(lines))
-    # -> True (files have equal content)
-    return cmp(TXT_NEW, TXT_OLD, shallow=False)
-
-
-def update_tree_in_markdown() -> bool:
-    """Replace old by the new tree in markdown file."""
+def cmp_and_upd() -> int:
+    """Compare tree with tree in md, and update tree if trees are different."""
+    # generate and specifically process fs tree for the markdown file
+    gen = gen_md_tree_lines()
     old = extract_md_tree()
-    new = fread_to_str(TXT_NEW) + '\n'
-    return freplace(README, old, new)
+    new = '\n'.join(gen) + '\n'
+    if old == new:
+        return 2  # -> success => no need to replace tree in md
+
+    # make backup before making file modifications
+    BACKUP_DIR.mkdir(parents=True, exist_ok=True)
+    copy2(README, README_BACKUP)
+    # replace old tree by the new one
+    freplace(README, old, new)
+
+    # double check after replacing
+    updated = extract_md_tree()
+    if new == updated:
+        return 1  # -> success
+
+    # use backup file to revert md to state before replacement
+    copy2(README_BACKUP, README)
+    return 3  # -> fail but backup were used! (state of md file should be reverted)
 
 
 def main():
-    # generate and specifically process fs tree for the markdown file
-    lines = md_tree_lines()
-
-    # compare the newly processed tree with the previously generated one
-    if write_cmp_tmp_trees(lines):
+    ret = cmp_and_upd()
+    if ret == 3:
+        print(f"{RED}Something gone wrong!\nAs a result the md file was restored from a backup!{END}")
+        exit(3)
+    elif ret == 1:
+        print(f"{GRN}Updated tree was successfully embedded! 1337{END}")
+    elif ret == 2:
         print(f"{CYN}New tree is equal to the old => no need in update of markdown file.{END}")
-        exit(0)
-
-    # Attempting to update markdown file...
-    if not update_tree_in_markdown():
-        raise Exception(f"{RED}something went wrong, tree was not updated!{END}")
-    print(f"{GRN}Updated tree was successfully embedded! 1337{END}")
 
 
 if __name__ == "__main__":
