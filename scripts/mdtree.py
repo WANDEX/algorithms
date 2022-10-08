@@ -24,7 +24,9 @@ import subprocess
 from collections import OrderedDict
 from pathlib import Path
 from shutil import copy2, which
+from sys import argv
 
+TPRINT = False
 
 # Constants for the colored terminal text
 # (deliberately used very little)
@@ -193,6 +195,8 @@ def gen_md_tree_lines() -> list:
 
     lines = []
     for v_str in od_tree.values():
+        if TPRINT:
+            print(v_str)
         lines.append(v_str)
 
     # replace last \\ character from the last line
@@ -270,4 +274,8 @@ def main():
 
 
 if __name__ == "__main__":
+    if len(argv[:]) > 1:
+        arg = str(argv[1])
+        if 'p' in arg:
+            TPRINT = True
     main()
