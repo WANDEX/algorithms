@@ -10,16 +10,14 @@
 
 #include "BSTuptrNode.hpp"
 
-#include <cstddef>          // std::size_t, std::ptrdiff_t
+#include <cstddef>          // std::ptrdiff_t
 #include <cstdint>          // std::uint8_t
-#include <iterator>         // std::forward_iterator ? or input_iterator ...
-#include <stdexcept>        // std::logic_error
+#include <iterator>
 
 #include <initializer_list>
 #include <deque>
 #include <queue>
 #include <stack>
-#include <vector>
 
 enum class TreeTravOrder : std::uint8_t
 {
