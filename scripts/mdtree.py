@@ -46,7 +46,7 @@ README_BACKUP = BACKUP_DIR.joinpath("README.md")
 
 # regex to select everything between this two headers
 README_MULTILINE_RE = r'\
-^## Tree Of Implemented DSA$\
+^## Tree of Implemented DSA$\
 (.*)\
 ^## Hall of Fame$'
 

@@ -13,7 +13,7 @@ to make clean build & run tests:
 ./scripts/build.sh clean tests
 ```
 
-## Tree Of Implemented DSA
+## Tree of Implemented DSA
 include/\
 └── cpp/\
     ├── datastructures/\
