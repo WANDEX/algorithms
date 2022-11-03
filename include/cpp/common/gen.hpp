@@ -24,8 +24,11 @@ inline static double srng(const double fr, const double to)
 }
 
 /**
- * generate random unordered_set containing n unique elements.
- * n: size, limits: fr ... to
+ * @brief @return generate random unordered_set containing n unique elements.
+ *
+ * @param  fr - range from the number (lower bound of the distribution).
+ * @param  to - range to the number (upper bound of the distribution).
+ * @param  n  - size.
  */
 template<typename T>
 inline std::unordered_set<T> random_uset(const std::size_t n, const double fr, const double to)
@@ -47,8 +50,11 @@ inline std::unordered_set<T> random_uset(const std::size_t n, const double fr, c
 }
 
 /**
- * generate random C array.
- * n: size, limits: fr ... to
+ * @brief generate random C array.
+ *
+ * @param  fr - range from the number (lower bound of the distribution).
+ * @param  to - range to the number (upper bound of the distribution).
+ * @param  n  - size.
  */
 inline void random(auto out[], const std::size_t n, const double fr, const double to)
 {
@@ -58,8 +64,11 @@ inline void random(auto out[], const std::size_t n, const double fr, const doubl
 }
 
 /**
- * generate random std::array.
- * n: size, limits: fr ... to
+ * @brief generate random std::array.
+ *
+ * @param  fr - range from the number (lower bound of the distribution).
+ * @param  to - range to the number (upper bound of the distribution).
+ * @param  n  - size.
  */
 template<typename T, const std::size_t n>
 inline std::array<T, n> random(const double fr, const double to)
@@ -72,9 +81,12 @@ inline std::array<T, n> random(const double fr, const double to)
 }
 
 /**
- * generate random std::vector.
- * n: size, limits: fr ... to
- * if unique=true vector will contain only unique elements.
+ * @brief generate random std::vector.
+ *
+ * @param  unique=true vector will contain only unique elements.
+ * @param  fr - range from the number (lower bound of the distribution).
+ * @param  to - range to the number (upper bound of the distribution).
+ * @param  n  - size.
  */
 template<typename T>
 inline std::vector<T> random(const std::size_t n, const double fr, const double to, const bool unique=false)
