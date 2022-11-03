@@ -17,6 +17,8 @@ to make clean build & run tests:
 include/\
 └── cpp/\
     ├── datastructures/\
+    │   ├── binary_indexed_tree/\
+    │   │   └── [BITreeRangeQueryPointUpdate.hpp] ( *[BITreeRangeQueryPointUpdateTest.cpp]* )\
     │   ├── binarysearchtree/\
     │   │   ├── [BSTuptr.hpp] ( *[BSTuptrTest.cpp]* )\
     │   │   ├── [BSTuptrIterator.hpp]\
@@ -40,6 +42,8 @@ include/\
         ├── [quick_sort.hpp] ( *[SortTest.cpp]* )\
         └── [selection_sort.hpp] ( *[SortTest.cpp]* )
 
+[BITreeRangeQueryPointUpdate.hpp]: ./include/cpp/datastructures/binary_indexed_tree/BITreeRangeQueryPointUpdate.hpp
+[BITreeRangeQueryPointUpdateTest.cpp]: ./tests/unit/datastructures/binary_indexed_tree/BITreeRangeQueryPointUpdateTest.cpp
 [BSTuptr.hpp                 ]: ./include/cpp/datastructures/binarysearchtree/BSTuptr.hpp
 [BSTuptrIterator.hpp         ]: ./include/cpp/datastructures/binarysearchtree/BSTuptrIterator.hpp
 [BSTuptrNode.hpp             ]: ./include/cpp/datastructures/binarysearchtree/BSTuptrNode.hpp
