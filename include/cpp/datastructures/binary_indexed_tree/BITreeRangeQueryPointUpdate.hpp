@@ -1,3 +1,4 @@
+#pragma once
 /**
  * @brief Binary Indexed Tree implementation which supports point updates and sum range queries.
  *
