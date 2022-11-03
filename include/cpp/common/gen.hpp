@@ -9,6 +9,21 @@
 namespace gen {
 
 /**
+ * @brief simple random number generator.
+ *
+ * @param  fr - range from the number (lower bound of the distribution).
+ * @param  to - range to the number (upper bound of the distribution).
+ * @return random number in range of distribution.
+ */
+inline static double srng(const double fr, const double to)
+{
+    std::random_device rd;
+    std::default_random_engine rng(rd());
+    std::uniform_real_distribution<> dist(fr, to);
+    return dist(rng);
+}
+
+/**
  * generate random unordered_set containing n unique elements.
  * n: size, limits: fr ... to
  */
@@ -18,16 +33,13 @@ inline std::unordered_set<T> random_uset(const std::size_t n, const double fr, c
     if (n < 1) return {};
     std::unordered_set<T> uset;
     uset.reserve(n);
-    std::random_device rd;
-    std::default_random_engine rng(rd());
-    std::uniform_real_distribution<> dist(fr, to);
 
     // TODO: if n > fr..to possible unique elements
     // => throw error ("impossible to generate enough unique elements for the given span fr..to")
     T rn {}; // randomly generated value
     for (std::size_t i = 0; i < n; i++) {
         do {
-            rn = dist(rng);
+            rn = gen::srng(fr, to);
         } while(!((uset.insert(rn)).second));
         // ^ loop till successful insert of unique value
     }
@@ -41,11 +53,8 @@ inline std::unordered_set<T> random_uset(const std::size_t n, const double fr, c
 inline void random(auto out[], const std::size_t n, const double fr, const double to)
 {
     if (n < 1) return;
-    std::random_device rd;
-    std::default_random_engine rng(rd());
-    std::uniform_real_distribution<> dist(fr, to);
     for (std::size_t i = 0; i < n; i++)
-        out[i] = dist(rng);
+        out[i] = gen::srng(fr, to);
 }
 
 /**
@@ -57,11 +66,8 @@ inline std::array<T, n> random(const double fr, const double to)
 {
     if (n < 1) return {};
     std::array<T, n> out;
-    std::random_device rd;
-    std::default_random_engine rng(rd());
-    std::uniform_real_distribution<> dist(fr, to);
     for (std::size_t i = 0; i < n; i++)
-        out[i] = dist(rng);
+        out[i] = gen::srng(fr, to);
     return std::move(out);
 }
 
@@ -82,11 +88,8 @@ inline std::vector<T> random(const std::size_t n, const double fr, const double 
 
     std::vector<T> out;
     out.reserve(n);
-    std::random_device rd;
-    std::default_random_engine rng(rd());
-    std::uniform_real_distribution<> dist(fr, to);
     for (std::size_t i = 0; i < n; i++)
-        out[i] = dist(rng);
+        out[i] = gen::srng(fr, to);
     return std::move(out);
 }
 
