@@ -19,11 +19,11 @@ include/\
     ├── datastructures/\
     │   ├── binary_indexed_tree/\
     │   │   └── [BITreeRangeQueryPointUpdate.hpp] ( *[BITreeRangeQueryPointUpdateTest.cpp]* )\
-    │   ├── binarysearchtree/\
+    │   ├── binary_search_tree/\
     │   │   ├── [BSTuptr.hpp] ( *[BSTuptrTest.cpp]* )\
     │   │   ├── [BSTuptrIterator.hpp]\
     │   │   └── [BSTuptrNode.hpp]\
-    │   ├── linkedlist/\
+    │   ├── linked_list/\
     │   │   └── [DoublyLinkedList.hpp] ( *[DoublyLinkedListTest.cpp]* )\
     │   ├── queue/\
     │   │   ├── [IQueue.hpp]\
@@ -33,7 +33,7 @@ include/\
     │   ├── stack/\
     │   │   ├── [IStack.hpp]\
     │   │   └── [ListStack.hpp] ( *[ListStackTest.cpp]* )\
-    │   └── unionfind/\
+    │   └── union_find/\
     │       └── [UnionFind.hpp] ( *[UnionFindTest.cpp]* )\
     └── sort/\
         ├── [bubble_sort.hpp] ( *[SortTest.cpp]* )\
@@ -44,14 +44,14 @@ include/\
 
 [BITreeRangeQueryPointUpdate.hpp]: ./include/cpp/datastructures/binary_indexed_tree/BITreeRangeQueryPointUpdate.hpp
 [BITreeRangeQueryPointUpdateTest.cpp]: ./tests/unit/datastructures/binary_indexed_tree/BITreeRangeQueryPointUpdateTest.cpp
-[BSTuptr.hpp                 ]: ./include/cpp/datastructures/binarysearchtree/BSTuptr.hpp
-[BSTuptrIterator.hpp         ]: ./include/cpp/datastructures/binarysearchtree/BSTuptrIterator.hpp
-[BSTuptrNode.hpp             ]: ./include/cpp/datastructures/binarysearchtree/BSTuptrNode.hpp
-[BSTuptrTest.cpp             ]: ./tests/unit/datastructures/binarysearchtree/BSTuptrTest.cpp
+[BSTuptr.hpp                 ]: ./include/cpp/datastructures/binary_search_tree/BSTuptr.hpp
+[BSTuptrIterator.hpp         ]: ./include/cpp/datastructures/binary_search_tree/BSTuptrIterator.hpp
+[BSTuptrNode.hpp             ]: ./include/cpp/datastructures/binary_search_tree/BSTuptrNode.hpp
+[BSTuptrTest.cpp             ]: ./tests/unit/datastructures/binary_search_tree/BSTuptrTest.cpp
 [BinaryHeapQ.hpp             ]: ./include/cpp/datastructures/queue_priority/BinaryHeapQ.hpp
 [BinaryHeapQTest.cpp         ]: ./tests/unit/datastructures/queue_priority/BinaryHeapQTest.cpp
-[DoublyLinkedList.hpp        ]: ./include/cpp/datastructures/linkedlist/DoublyLinkedList.hpp
-[DoublyLinkedListTest.cpp    ]: ./tests/unit/datastructures/linkedlist/DoublyLinkedListTest.cpp
+[DoublyLinkedList.hpp        ]: ./include/cpp/datastructures/linked_list/DoublyLinkedList.hpp
+[DoublyLinkedListTest.cpp    ]: ./tests/unit/datastructures/linked_list/DoublyLinkedListTest.cpp
 [IQueue.hpp                  ]: ./include/cpp/datastructures/queue/IQueue.hpp
 [IStack.hpp                  ]: ./include/cpp/datastructures/stack/IStack.hpp
 [ListQueue.hpp               ]: ./include/cpp/datastructures/queue/ListQueue.hpp
@@ -59,8 +59,8 @@ include/\
 [ListStack.hpp               ]: ./include/cpp/datastructures/stack/ListStack.hpp
 [ListStackTest.cpp           ]: ./tests/unit/datastructures/stack/ListStackTest.cpp
 [SortTest.cpp                ]: ./tests/unit/sort/SortTest.cpp
-[UnionFind.hpp               ]: ./include/cpp/datastructures/unionfind/UnionFind.hpp
-[UnionFindTest.cpp           ]: ./tests/unit/datastructures/unionfind/UnionFindTest.cpp
+[UnionFind.hpp               ]: ./include/cpp/datastructures/union_find/UnionFind.hpp
+[UnionFindTest.cpp           ]: ./tests/unit/datastructures/union_find/UnionFindTest.cpp
 [bubble_sort.hpp             ]: ./include/cpp/sort/bubble_sort.hpp
 [insertion_sort.hpp          ]: ./include/cpp/sort/insertion_sort.hpp
 [merge_sort.hpp              ]: ./include/cpp/sort/merge_sort.hpp
