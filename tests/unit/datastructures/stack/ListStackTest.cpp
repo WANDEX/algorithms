@@ -5,7 +5,8 @@
 #include <stdexcept>        // runtime_error
 #include <string>
 
-class ListStackTest : public ::testing::Test {
+class ListStackTest : public ::testing::Test
+{
 protected:
     ListStack<int> *stack;
 

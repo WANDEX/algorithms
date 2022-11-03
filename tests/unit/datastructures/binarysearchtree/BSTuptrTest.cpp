@@ -5,13 +5,14 @@
 
 #include <gtest/gtest.h>
 
-#include <algorithm>        // std::for_each
-#include <cstddef>          // size_t
+#include <algorithm>            // std::for_each
+#include <cstddef>              // size_t
 #include <initializer_list>
 #include <string>
 #include <vector>
 
-class BSTuptrTest : public ::testing::Test {
+class BSTuptrTest : public ::testing::Test
+{
 protected:
     const std::size_t LOOPS = 100;
 

@@ -2,10 +2,11 @@
 
 #include <gtest/gtest.h>
 
-#include <stdexcept>    // runtime_error
+#include <stdexcept>        // runtime_error
 #include <string>
 
-class DoublyLinkedListTest : public ::testing::Test {
+class DoublyLinkedListTest : public ::testing::Test
+{
 protected:
     DoublyLinkedList<int> *list;
 

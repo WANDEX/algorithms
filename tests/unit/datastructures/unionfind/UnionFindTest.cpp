@@ -1,4 +1,4 @@
-#include <UnionFind.hpp>
+#include "UnionFind.hpp"
 
 #include <gtest/gtest.h>
 

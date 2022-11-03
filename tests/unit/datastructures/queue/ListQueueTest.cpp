@@ -5,7 +5,8 @@
 #include <stdexcept>        // runtime_error
 #include <string>
 
-class ListQueueTest : public ::testing::Test {
+class ListQueueTest : public ::testing::Test
+{
 protected:
     ListQueue<int> *queue;
 
