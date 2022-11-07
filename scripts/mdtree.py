@@ -2,39 +2,25 @@
 # coding=utf-8
 
 __license__ = "0BSD"
-__description__ = "Script for embedding specific fs tree into README with relative markdown urls."
+__description__ = "Embed specific fs tree into markdown using relative links."
 __url_repository__ = "https://github.com/WANDEX/algorithms"
 __url_project__ = __url_repository__
 __url_repository_original__ = "https://github.com/WANDEX/algorithms"
 __author__ = "WANDEX"
 
-# TODO extract all inside /\*\* \*/
-# TODO remove leading "^ * "
-# TODO remove leading & trailing whitespaces from each line
-# TODO create dict fname[file_description]
-# TODO output mp_file_url & description into raw txt file
-# TODO insert text into README between <details> </details>
-
 import FSTreeDisplay
 
-import pprint
 import re
 import subprocess
 
 from collections import OrderedDict
 from pathlib import Path
+from pprint import PrettyPrinter
 from shutil import copy2, which
 from sys import argv
+from sys import stdout
 
 TPRINT = False
-
-# Constants for the colored terminal text
-# (deliberately used very little)
-END = '\033[0m'
-RED = '\033[1;31m'
-GRN = '\033[1;32m'
-CYN = '\033[1;36m'
-# TODO: disable colors if script were piped
 
 # jump to the 'md_criteria' to exclude certain paths from the tree
 # Global Constants - for easier adoption in other projects
@@ -52,18 +38,19 @@ README_MULTILINE_RE = r'\
 
 
 def ppr(arg):
-    """pprint()"""
-    pprint.PrettyPrinter().pprint(arg)
+    """pprint() - only for more readable visualization during debugging/developing."""
+    PrettyPrinter().pprint(arg)
 
 
 def at_path(executable) -> bool:
-    """return True if executable is found at PATH."""
+    """return True if executable is found at $PATH."""
     if which(executable):
         return True
     return False
 
 
 def get_grep_cmd() -> list:
+    """Use specific grep command based on availability of executable at $PATH."""
     if at_path("rg"):
         return "rg".split()
     if at_path("grep"):
@@ -86,6 +73,7 @@ def grep(pattern: str, path: Path | str) -> str:
 
 
 def grep_bool(pattern: str, path: Path | str) -> bool:
+    """grep & return only bool result of operation."""
     if not grep(pattern, path):
         return False
     return True
@@ -122,12 +110,12 @@ def find_respective_test_files(fpath: Path) -> list:
 
 
 def make_md_link_rel(fpath: Path) -> str:
-    """Make relative link of file path to embed into markdown file."""
+    """Make relative link of file path."""
     return f"[{fpath.name}](./{fpath})"
 
 
 def make_md_link_var(fpath: Path) -> tuple[str, str]:
-    """Make relative link & link variable definition to embed into markdown file."""
+    """Make relative link & link variable definition of file path."""
     return f"[{fpath.name}]", f"[{fpath.name:<28}]: ./{fpath}"
 
 
@@ -262,7 +250,31 @@ def cmp_and_upd() -> int:
     return 3  # -> fail but backup were used! (state of md file should be reverted)
 
 
+def output_is_piped() -> bool:
+    """Determine if script output were piped."""
+    return not stdout.isatty()
+
+
+def ccons():
+    """Constants for the colored terminal text.
+    Enable colors only if script output were not piped.
+    (moved into separate function to deliberately use colors very little)
+    """
+    RED = ''
+    GRN = ''
+    CYN = ''
+    END = ''
+    # allow to use ASCII escape sequences of colors
+    if not output_is_piped():
+        RED = '\033[1;31m'
+        GRN = '\033[1;32m'
+        CYN = '\033[1;36m'
+        END = '\033[0m'
+    return RED, GRN, CYN, END
+
+
 def main():
+    RED, GRN, CYN, END = ccons()
     ret = cmp_and_upd()
     if ret == 3:
         print(f"{RED}Something gone wrong!\nAs a result the md file was restored from a backup!{END}")
