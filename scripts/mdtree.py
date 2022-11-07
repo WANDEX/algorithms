@@ -17,8 +17,7 @@ from collections import OrderedDict
 from pathlib import Path
 from pprint import PrettyPrinter
 from shutil import copy2, which
-from sys import argv
-from sys import stdout
+from sys import argv, stdout
 
 TPRINT = False
 
