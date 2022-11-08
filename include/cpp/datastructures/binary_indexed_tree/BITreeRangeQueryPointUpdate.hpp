@@ -42,26 +42,26 @@ public:
      * The 'values' array MUST BE ONE BASED meaning values[0]
      * does not get used, O(n) construction.
      */
-    BITreeRangeQueryPointUpdate(const std::initializer_list<Ti> il)
+    BITreeRangeQueryPointUpdate(const std::initializer_list<Ti> &il)
         : m_sz{ il.size() }, m_tree{ il }
     {
         if (m_sz < 1) throw std::invalid_argument("size() < 1");
         m_tree.resize(m_sz);
         m_tree.at(0) = {};
         for (std::size_t i = 1; i < m_sz; i++) {
-            std::size_t parent = i + lsb(i);
+            const std::size_t parent { i + lsb(i) };
             if (parent < m_sz) m_tree.at(parent) += m_tree.at(i);
         }
     }
 
-    BITreeRangeQueryPointUpdate(const std::vector<Ti> v)
-        : m_sz{ v.size() }, m_tree{ std::move(v) }
+    BITreeRangeQueryPointUpdate(const std::vector<Ti> &v)
+        : m_sz{ v.size() }, m_tree{ v }
     {
         if (m_sz < 1) throw std::invalid_argument("size() < 1");
         m_tree.resize(m_sz);
         m_tree.at(0) = {};
         for (std::size_t i = 1; i < m_sz; i++) {
-            std::size_t parent = i + lsb(i);
+            const std::size_t parent { i + lsb(i) };
             if (parent < m_sz) m_tree.at(parent) += m_tree.at(i);
         }
     }
