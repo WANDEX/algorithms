@@ -15,6 +15,7 @@
 #include <vector>
 
 namespace wndx {
+namespace ds {
 
 class BITreeRangeQueryPointUpdate
 {
@@ -174,4 +175,5 @@ public:
 
 };
 
+} // namespace ds
 } // namespace wndx

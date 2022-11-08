@@ -3,6 +3,7 @@
 #include <cstddef>      // size_t
 
 namespace wndx {
+namespace ds {
 
 // Interface of the Queue data structure
 template<typename T>
@@ -29,4 +30,5 @@ public:
     virtual ~IQueue() {}
 };
 
+} // namespace ds
 } // namespace wndx

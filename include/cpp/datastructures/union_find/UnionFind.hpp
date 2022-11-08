@@ -7,6 +7,7 @@
 #include <vector>
 
 namespace wndx {
+namespace ds {
 
 class UnionFind
 {
@@ -121,4 +122,5 @@ public:
     }
 };
 
+} // namespace ds
 } // namespace wndx

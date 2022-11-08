@@ -15,6 +15,7 @@
 #include <vector>
 
 namespace wndx {
+namespace ds {
 
 template<typename T>
 class BinaryHeapQ
@@ -360,4 +361,5 @@ private:
 
 };
 
+} // namespace ds
 } // namespace wndx

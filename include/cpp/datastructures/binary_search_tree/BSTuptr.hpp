@@ -24,6 +24,7 @@
 #include <utility>          // std::move
 
 namespace wndx {
+namespace ds {
 
 template<typename T>
 class BSTuptr
@@ -401,4 +402,5 @@ public:
 
 };
 
+} // namespace ds
 } // namespace wndx

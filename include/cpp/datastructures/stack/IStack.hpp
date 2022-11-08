@@ -3,6 +3,7 @@
 #include <cstddef>      // size_t
 
 namespace wndx {
+namespace ds {
 
 // Interface of the Stack data structure
 template<typename T>
@@ -23,4 +24,5 @@ public:
     virtual ~IStack() {}
 };
 
+} // namespace ds
 } // namespace wndx

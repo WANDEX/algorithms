@@ -20,6 +20,7 @@
 #include <stack>
 
 namespace wndx {
+namespace ds {
 
 enum class TreeTravOrder : std::uint8_t
 {
@@ -186,4 +187,5 @@ public:
 
 };
 
+} // namespace ds
 } // namespace wndx

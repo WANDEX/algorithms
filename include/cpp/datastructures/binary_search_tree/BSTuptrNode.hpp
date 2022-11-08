@@ -3,6 +3,7 @@
 #include <memory>           // std::unique_ptr
 
 namespace wndx {
+namespace ds {
 
 template <typename T>
 class Node
@@ -28,4 +29,5 @@ public:
     virtual ~Node() = default;
 };
 
+} // namespace ds
 } // namespace wndx

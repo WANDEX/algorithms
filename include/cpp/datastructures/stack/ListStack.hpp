@@ -7,6 +7,7 @@
 #include <stdexcept>    // runtime_error
 
 namespace wndx {
+namespace ds {
 
 template<typename T>
 class ListStack : public IStack<T>
@@ -88,4 +89,5 @@ public:
 
 };
 
+} // namespace ds
 } // namespace wndx

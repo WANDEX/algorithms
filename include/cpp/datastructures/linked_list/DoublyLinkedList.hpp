@@ -6,6 +6,7 @@
 #include <string>
 
 namespace wndx {
+namespace ds {
 
 template<typename T>
 class DoublyLinkedList
@@ -289,4 +290,5 @@ public:
     }
 };
 
+} // namespace ds
 } // namespace wndx

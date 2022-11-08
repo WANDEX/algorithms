@@ -7,6 +7,7 @@
 #include <stdexcept>    // runtime_error
 
 namespace wndx {
+namespace ds {
 
 template<typename T>
 class ListQueue : public IQueue<T>
@@ -85,4 +86,5 @@ public:
 
 };
 
+} // namespace ds
 } // namespace wndx
