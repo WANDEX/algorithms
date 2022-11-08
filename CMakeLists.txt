@@ -8,6 +8,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(GTest REQUIRED)
 enable_testing()
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 # recursively include all sub-directories of the given dir
 function(include_subdirs arg_dir)
