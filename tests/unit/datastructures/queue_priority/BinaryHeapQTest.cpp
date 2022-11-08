@@ -30,7 +30,7 @@ protected:
     {
         ASSERT_EQ(input.size(), rmord.size());
 
-        BinaryHeapQ pq { BinaryHeapQ<int>(input) };
+        ds::BinaryHeapQ pq { ds::BinaryHeapQ<int>(input) };
 
         // make copy of input & sort vector
         std::vector<int> sv { input.begin(), input.end() };
@@ -56,7 +56,7 @@ protected:
 
 TEST_F(BinaryHeapQTest, testEmpty)
 {
-    BinaryHeapQ q = BinaryHeapQ<int>();
+    ds::BinaryHeapQ q = ds::BinaryHeapQ<int>();
     EXPECT_TRUE(q.isEmpty());
     EXPECT_EQ(q.size(), 0);
 }
@@ -66,13 +66,13 @@ TEST_F(BinaryHeapQTest, testHeapProperty)
     const std::vector<int> nums {3, 2, 5, 6, 7, 9, 4, 8, 1};
 
     // Try manually creating heap
-    BinaryHeapQ q = BinaryHeapQ<int>();
+    ds::BinaryHeapQ q = ds::BinaryHeapQ<int>();
     for (int n : nums) q.add(n);
     for (int i = 1; i <= nums.size(); i++) ASSERT_EQ(q.poll(), i);
     q.clear(); ASSERT_EQ(q.size(), 0);
 
     // Try heapify constructor
-    q = BinaryHeapQ<int>(nums);
+    q = ds::BinaryHeapQ<int>(nums);
     for (int i = 1; i <= nums.size(); i++) ASSERT_EQ(q.poll(), i);
     q.clear(); ASSERT_EQ(q.size(), 0);
 }
@@ -80,11 +80,11 @@ TEST_F(BinaryHeapQTest, testHeapProperty)
 TEST_F(BinaryHeapQTest, testHeapify)
 {
     std::priority_queue<i8f, std::vector<i8f>, std::greater<i8f>> PQ;
-    BinaryHeapQ<i8f> pq;
+    ds::BinaryHeapQ<i8f> pq;
     std::vector<i8f> rndm;
     for (int i = 1; i < LOOPS; i++) {
         rndm = gen::random<i8f>(i, INT_FAST8_MIN, INT_FAST8_MAX);
-        pq   = BinaryHeapQ<i8f>(rndm);
+        pq   = ds::BinaryHeapQ<i8f>(rndm);
         PQ   = { rndm.begin(), rndm.end() };
 
         EXPECT_TRUE(pq.isMinHeap(0));
@@ -98,7 +98,7 @@ TEST_F(BinaryHeapQTest, testHeapify)
 TEST_F(BinaryHeapQTest, testClear)
 {
     const std::vector<std::string> strs {"aa", "bb", "cc", "dd", "ee"};
-    BinaryHeapQ q { BinaryHeapQ<std::string>(strs) };
+    ds::BinaryHeapQ q { ds::BinaryHeapQ<std::string>(strs) };
     q.clear();
     ASSERT_EQ(q.size(), 0);
     ASSERT_TRUE(q.isEmpty());
@@ -107,7 +107,7 @@ TEST_F(BinaryHeapQTest, testClear)
 TEST_F(BinaryHeapQTest, testContainment)
 {
     const std::vector<std::string> strs {"aa", "bb", "cc", "dd", "ee"};
-    BinaryHeapQ q { BinaryHeapQ<std::string>(strs) };
+    ds::BinaryHeapQ q { ds::BinaryHeapQ<std::string>(strs) };
     EXPECT_FALSE(q.remove("NOT_EXIST"));
     q.remove("aa");
     EXPECT_FALSE(q.contains("aa"));
@@ -127,11 +127,11 @@ TEST_F(BinaryHeapQTest, testContainment)
 TEST_F(BinaryHeapQTest, testContainmentRandomized)
 {
     std::priority_queue<int, std::vector<int>, std::greater<int>> PQ;
-    BinaryHeapQ<int> pq;
+    ds::BinaryHeapQ<int> pq;
     std::vector<int> rndm;
     for (int i = 1; i < LOOPS; i++) {
         rndm = gen::random<int>(i, INT_MIN, INT_MAX);
-        pq   = BinaryHeapQ<int>(rndm);
+        pq   = ds::BinaryHeapQ<int>(rndm);
         PQ   = { rndm.begin(), rndm.end() };
 
         for (int j = 0; j < rndm.size(); j++) {
@@ -148,7 +148,7 @@ TEST_F(BinaryHeapQTest, testContainmentRandomized)
 TEST_F(BinaryHeapQTest, testRemovingDuplicates)
 {
     const std::vector<int> in {2, 7, 2, 11, 7, 13, 2};
-    BinaryHeapQ pq { BinaryHeapQ<int>(in) };
+    ds::BinaryHeapQ pq { ds::BinaryHeapQ<int>(in) };
     ASSERT_EQ(2,  pq.peek());
     pq.add(3);
     ASSERT_EQ(2,  pq.poll());

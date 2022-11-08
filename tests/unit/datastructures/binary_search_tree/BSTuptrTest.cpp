@@ -22,7 +22,7 @@ protected:
     {}
 
     template<typename T> // this is just a print degug info
-    void print_initial(BSTuptr<T> &tree, const std::vector<T> &rndm)
+    void print_initial(ds::BSTuptr<T> &tree, const std::vector<T> &rndm)
     {
         std::cout << '\n';
         std::cout << "initial =============v" << '\n';
@@ -39,10 +39,10 @@ protected:
         (
             const std::initializer_list<T> l_i,
             const std::initializer_list<T> l_o,
-            const TreeTravOrder order
+            const ds::TreeTravOrder order
         )
     {
-        BSTuptr tree = BSTuptr<T>(l_i, order);
+        ds::BSTuptr tree = ds::BSTuptr<T>(l_i, order);
         const T* it{ l_o.begin() };
         // check size
         ASSERT_EQ(tree.size(), l_o.size());
@@ -54,7 +54,7 @@ protected:
 
 TEST_F(BSTuptrTest, testEmpty)
 {
-    BSTuptr tree = BSTuptr<std::string>();
+    ds::BSTuptr tree = ds::BSTuptr<std::string>();
     ASSERT_TRUE(tree.isEmpty());
     tree.add("Hello World!");
     ASSERT_FALSE(tree.isEmpty());
@@ -62,7 +62,7 @@ TEST_F(BSTuptrTest, testEmpty)
 
 TEST_F(BSTuptrTest, testSize)
 {
-    BSTuptr tree = BSTuptr<std::string>();
+    ds::BSTuptr tree = ds::BSTuptr<std::string>();
     ASSERT_EQ(tree.size(), 0);
     tree.add("Hello World!");
     ASSERT_EQ(tree.size(), 1);
@@ -70,7 +70,7 @@ TEST_F(BSTuptrTest, testSize)
 
 TEST_F(BSTuptrTest, testAdd)
 {
-    BSTuptr tree = BSTuptr<char>();
+    ds::BSTuptr tree = ds::BSTuptr<char>();
     // Add element which does not yet exist
     ASSERT_TRUE(tree.add('A'));
     // Try to add duplicate element
@@ -81,7 +81,7 @@ TEST_F(BSTuptrTest, testAdd)
 
 TEST_F(BSTuptrTest, testContains)
 {
-    BSTuptr tree = BSTuptr<char>();
+    ds::BSTuptr tree = ds::BSTuptr<char>();
     tree.add('B');
     tree.add('A');
     tree.add('C');
@@ -97,7 +97,7 @@ TEST_F(BSTuptrTest, testContains)
 
 TEST_F(BSTuptrTest, testHeight)
 {
-    BSTuptr tree = BSTuptr<char>();
+    ds::BSTuptr tree = ds::BSTuptr<char>();
     /* Tree should look like:
      *        M
      *      J  S
@@ -128,7 +128,7 @@ TEST_F(BSTuptrTest, testHeight)
 
 TEST_F(BSTuptrTest, testRemove)
 {
-    BSTuptr tree = BSTuptr<char>();
+    ds::BSTuptr tree = ds::BSTuptr<char>();
     // Try removing an element which does not exist
     ASSERT_TRUE(tree.add('A'));
     ASSERT_TRUE(tree.contains('A'));
@@ -158,12 +158,12 @@ TEST_F(BSTuptrTest, testRemoveRandom)
 {
     using Ty = int;
     std::vector<Ty> rndm;
-    BSTuptr    <Ty> tree;
+    ds::BSTuptr<Ty> tree;
     for (std::size_t i = 0; i < LOOPS; i++) {
         const std::size_t size { i };
         // unique=true -> rndm should contain only unique values!
         rndm = gen::random<Ty>(size, 0, LOOPS, true);
-        tree = BSTuptr    <Ty>();
+        tree = ds::BSTuptr<Ty>();
 
         // assertion to make sure all values are inserted and unique!
         for (const std::size_t x : rndm)
@@ -182,7 +182,7 @@ TEST_F(BSTuptrTest, testRemoveRandom)
 TEST_F(BSTuptrTest, iterator)
 {
     using Ty = int;
-    BSTuptr tree = BSTuptr<Ty>({ 3, 2, 4, 1}, TreeTravOrder::IN_ORDER);
+    ds::BSTuptr tree = ds::BSTuptr<Ty>({ 3, 2, 4, 1}, ds::TreeTravOrder::IN_ORDER);
     auto it = tree.begin();
 
     // equality / inequality
@@ -211,20 +211,20 @@ TEST_F(BSTuptrTest, iterator)
 
 TEST_F(BSTuptrTest, iteratorTraversalOrderIn)
 {
-    testTraversalOrder({3, 2, 4, 1}, {1, 2, 3, 4}, TreeTravOrder::IN_ORDER);
+    testTraversalOrder({3, 2, 4, 1}, {1, 2, 3, 4}, ds::TreeTravOrder::IN_ORDER);
 }
 
 TEST_F(BSTuptrTest, iteratorTraversalOrderPre)
 {
-    testTraversalOrder({3, 2, 4, 1}, {3, 2, 1, 4}, TreeTravOrder::PRE_ORDER);
+    testTraversalOrder({3, 2, 4, 1}, {3, 2, 1, 4}, ds::TreeTravOrder::PRE_ORDER);
 }
 
 TEST_F(BSTuptrTest, iteratorTraversalOrderPost)
 {
-    testTraversalOrder({3, 2, 4, 1}, {1, 2, 4, 3}, TreeTravOrder::POST_ORDER);
+    testTraversalOrder({3, 2, 4, 1}, {1, 2, 4, 3}, ds::TreeTravOrder::POST_ORDER);
 }
 
 TEST_F(BSTuptrTest, iteratorTraversalOrderLevel)
 {
-    testTraversalOrder({3, 2, 4, 1}, {3, 2, 4, 1}, TreeTravOrder::LEVEL_ORDER);
+    testTraversalOrder({3, 2, 4, 1}, {3, 2, 4, 1}, ds::TreeTravOrder::LEVEL_ORDER);
 }

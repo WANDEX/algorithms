@@ -10,11 +10,11 @@ using namespace wndx;
 class DoublyLinkedListTest : public ::testing::Test
 {
 protected:
-    DoublyLinkedList<int> *list;
+    ds::DoublyLinkedList<int> *list;
 
     DoublyLinkedListTest()
     {
-        list = new DoublyLinkedList<int>();
+        list = new ds::DoublyLinkedList<int>();
     }
 
     virtual ~DoublyLinkedListTest()
@@ -174,7 +174,7 @@ TEST_F(DoublyLinkedListTest, testPeeking)
 
 TEST_F(DoublyLinkedListTest, testRemoving)
 {
-    DoublyLinkedList<std::string> strs = DoublyLinkedList<std::string>();
+    ds::DoublyLinkedList<std::string> strs = ds::DoublyLinkedList<std::string>();
     strs.add("a");
     strs.add("b");
     strs.add("c");
@@ -223,7 +223,7 @@ TEST_F(DoublyLinkedListTest, testClear)
 
 TEST_F(DoublyLinkedListTest, testToString)
 {
-    DoublyLinkedList<std::string> strs = DoublyLinkedList<std::string>();
+    ds::DoublyLinkedList<std::string> strs = ds::DoublyLinkedList<std::string>();
     ASSERT_EQ(strs.toString(), "{  }");
     strs.add("a");
     ASSERT_EQ(strs.toString(), "{ a }");

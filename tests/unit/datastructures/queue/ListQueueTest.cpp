@@ -10,16 +10,16 @@ using namespace wndx;
 class ListQueueTest : public ::testing::Test
 {
 protected:
-    ListQueue<int> *queue;
+    ds::ListQueue<int> *queue;
 
     ListQueueTest()
     {
-        queue = new ListQueue<int>();
+        queue = new ds::ListQueue<int>();
     }
 
     ListQueueTest(const int &elem)
     {
-        queue = new ListQueue<int>(elem);
+        queue = new ds::ListQueue<int>(elem);
     }
 
     virtual ~ListQueueTest()

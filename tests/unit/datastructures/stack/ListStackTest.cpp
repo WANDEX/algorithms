@@ -10,16 +10,16 @@ using namespace wndx;
 class ListStackTest : public ::testing::Test
 {
 protected:
-    ListStack<int> *stack;
+    ds::ListStack<int> *stack;
 
     ListStackTest()
     {
-        stack = new ListStack<int>();
+        stack = new ds::ListStack<int>();
     }
 
     ListStackTest(const int &elem)
     {
-        stack = new ListStack<int>(elem);
+        stack = new ds::ListStack<int>(elem);
     }
 
     virtual ~ListStackTest()
