@@ -15,6 +15,8 @@
 #include <cstring>    // std::memcmp
 #include <vector>
 
+using namespace wndx;
+
 /****************************************************************************
  * sort functions for different value types & containers
  */

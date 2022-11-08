@@ -4,6 +4,7 @@
 #include <array>
 #include <vector>
 
+namespace wndx {
 namespace srt {
 
 #ifndef SRT_SWAP_P_Q
@@ -96,3 +97,4 @@ inline void quick_sort(std::vector<T> &a, int lo, int hi)
 }
 
 } // namespace srt
+} // namespace wndx

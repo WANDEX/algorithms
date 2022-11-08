@@ -4,6 +4,7 @@
 #include <array>
 #include <vector>
 
+namespace wndx {
 namespace srt {
 
 template<typename T>
@@ -121,3 +122,4 @@ inline void merge_sort(std::vector<T> &A, int p, int r)
 }
 
 } // namespace srt
+} // namespace wndx

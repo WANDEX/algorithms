@@ -4,6 +4,7 @@
 #include <array>
 #include <vector>
 
+namespace wndx {
 namespace srt {
 
 #ifndef SRT_SWAP_P_Q
@@ -53,3 +54,4 @@ inline void selection_sort(std::vector<T> &a)
 }
 
 } // namespace srt
+} // namespace wndx
