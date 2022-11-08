@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+namespace wndx {
 namespace pp { // pretty print
 
 /**
@@ -57,3 +58,4 @@ inline void print(const std::vector<T> &a, const std::string prefix="")
 }
 
 } // namespace pp
+} // namespace wndx

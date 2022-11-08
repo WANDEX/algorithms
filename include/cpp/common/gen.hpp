@@ -6,6 +6,7 @@
 #include <unordered_set>
 #include <vector>
 
+namespace wndx {
 namespace gen {
 
 /**
@@ -106,3 +107,4 @@ inline std::vector<T> random(const std::size_t n, const double fr, const double 
 }
 
 } // namespace gen
+} // namespace wndx

@@ -2,6 +2,8 @@
 
 #include <chrono>
 
+namespace wndx {
+
 class Timer
 {
 private:
@@ -22,3 +24,5 @@ public:
         return std::chrono::duration_cast<second_type>(clock_type::now() - m_beg).count();
     }
 };
+
+} // namespace wndx
