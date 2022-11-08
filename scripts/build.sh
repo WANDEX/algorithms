@@ -46,7 +46,7 @@ else
   make -C "$bdir" all
 fi
 
-run_tests="./$bdir/tests/unit/algorithms_tests"
+run_tests="./$bdir/tests/units/algorithms_units"
 
 [ -n "$opt" ] && echo # extra empty line
 case "$opt" in
