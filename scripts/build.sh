@@ -46,20 +46,28 @@ else
   make -C "$bdir" all
 fi
 
-run_tests="./$bdir/tests/units/algorithms_units"
+gtest_binary="./$bdir/tests/units/algorithms_units"
+if [ ! -x "$gtest_binary" ]; then
+  printf "%s\n^ %s\n" "$gtest_binary" \
+    "File not found or not executable, exit."
+  exit 5
+fi
 
 [ -n "$opt" ] && echo # extra empty line
 case "$opt" in
-  tests|tests/|test|t)
-    if [ -x "$run_tests" ]; then
-      if [ -n "$test_filter" ]; then
-        "$run_tests" --gtest_filter="$test_filter"
-      else
-        "$run_tests"
-      fi
+  ctest|ct)
+    if [ -n "$test_filter" ]; then # regex
+      ctest --test-dir "$bdir" -R "$test_filter"
     else
-      printf "%s\n^ %s\n" "$run_tests" \
-        "File not found or not executable, exit."
+      ctest --test-dir "$bdir"
+    fi
+    ;;
+  gtest|gt)
+    if [ -n "$test_filter" ]; then
+      # wildcard ':'-separated patterns '*', '?' ('-' negative)
+      "$gtest_binary" --gtest_filter="$test_filter"
+    else
+      "$gtest_binary"
     fi
     ;;
 esac
