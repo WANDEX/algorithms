@@ -12,6 +12,8 @@
 #include <string>
 #include <vector>
 
+using namespace wndx;
+
 class BinaryHeapQTest : public ::testing::Test
 {
 protected:

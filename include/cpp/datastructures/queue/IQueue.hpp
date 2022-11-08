@@ -2,6 +2,8 @@
 
 #include <cstddef>      // size_t
 
+namespace wndx {
+
 // Interface of the Queue data structure
 template<typename T>
 class IQueue
@@ -26,3 +28,5 @@ public:
     // so the proper derived destructor is called
     virtual ~IQueue() {}
 };
+
+} // namespace wndx

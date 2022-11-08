@@ -19,6 +19,8 @@
 #include <queue>
 #include <stack>
 
+namespace wndx {
+
 enum class TreeTravOrder : std::uint8_t
 {
     PRE_ORDER,
@@ -183,3 +185,5 @@ public:
     }
 
 };
+
+} // namespace wndx

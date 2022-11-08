@@ -6,6 +6,8 @@
 #include <forward_list>
 #include <stdexcept>    // runtime_error
 
+namespace wndx {
+
 template<typename T>
 class ListStack : public IStack<T>
 {
@@ -85,3 +87,5 @@ public:
     }
 
 };
+
+} // namespace wndx

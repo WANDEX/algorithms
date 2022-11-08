@@ -8,6 +8,8 @@
 #include <initializer_list>
 #include <vector>
 
+using namespace wndx;
+
 class BITreeRangeQueryPointUpdateTest : public ::testing::Test
 {
 protected:

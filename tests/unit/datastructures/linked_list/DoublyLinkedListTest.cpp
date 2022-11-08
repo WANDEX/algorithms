@@ -5,6 +5,8 @@
 #include <stdexcept>        // runtime_error
 #include <string>
 
+using namespace wndx;
+
 class DoublyLinkedListTest : public ::testing::Test
 {
 protected:

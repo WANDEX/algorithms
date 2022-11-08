@@ -2,6 +2,8 @@
 
 #include <cstddef>      // size_t
 
+namespace wndx {
+
 // Interface of the Stack data structure
 template<typename T>
 class IStack
@@ -20,3 +22,5 @@ public:
     // so the proper derived destructor is called
     virtual ~IStack() {}
 };
+
+} // namespace wndx

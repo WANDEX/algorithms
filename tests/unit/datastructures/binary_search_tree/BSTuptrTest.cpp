@@ -11,6 +11,8 @@
 #include <string>
 #include <vector>
 
+using namespace wndx;
+
 class BSTuptrTest : public ::testing::Test
 {
 protected:

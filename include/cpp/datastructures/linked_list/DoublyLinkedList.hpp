@@ -5,6 +5,8 @@
 #include <stdexcept>    // runtime_error
 #include <string>
 
+namespace wndx {
+
 template<typename T>
 class DoublyLinkedList
 {
@@ -286,3 +288,5 @@ public:
         return strm << a.toString();
     }
 };
+
+} // namespace wndx

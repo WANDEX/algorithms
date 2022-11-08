@@ -5,6 +5,8 @@
 #include <stdexcept>        // runtime_error
 #include <string>
 
+using namespace wndx;
+
 class ListStackTest : public ::testing::Test
 {
 protected:

@@ -5,6 +5,8 @@
 #include <stdexcept>        // runtime_error
 #include <string>
 
+using namespace wndx;
+
 class ListQueueTest : public ::testing::Test
 {
 protected:

@@ -6,6 +6,8 @@
 #include <cstddef>          // size_t
 #include <vector>
 
+namespace wndx {
+
 class UnionFind
 {
 protected:
@@ -118,3 +120,5 @@ public:
         m_ncomp--;
     }
 };
+
+} // namespace wndx

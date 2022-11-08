@@ -2,6 +2,8 @@
 
 #include <gtest/gtest.h>
 
+using namespace wndx;
+
 class UnionFindTest : public ::testing::Test
 {
 };

@@ -14,6 +14,8 @@
 #include <utility>              // std::move
 #include <vector>
 
+namespace wndx {
+
 class BITreeRangeQueryPointUpdate
 {
 protected:
@@ -171,3 +173,5 @@ public:
     }
 
 };
+
+} // namespace wndx

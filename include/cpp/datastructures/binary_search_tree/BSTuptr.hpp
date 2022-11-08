@@ -23,6 +23,8 @@
 #include <stdexcept>        // std::invalid_argument
 #include <utility>          // std::move
 
+namespace wndx {
+
 template<typename T>
 class BSTuptr
 {
@@ -398,3 +400,5 @@ public:
     }
 
 };
+
+} // namespace wndx

@@ -14,6 +14,8 @@
 #include <unordered_map>
 #include <vector>
 
+namespace wndx {
+
 template<typename T>
 class BinaryHeapQ
 {
@@ -357,3 +359,5 @@ private:
     }
 
 };
+
+} // namespace wndx

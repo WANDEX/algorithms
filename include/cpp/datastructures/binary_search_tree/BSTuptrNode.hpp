@@ -2,6 +2,8 @@
 
 #include <memory>           // std::unique_ptr
 
+namespace wndx {
+
 template <typename T>
 class Node
 {
@@ -25,3 +27,5 @@ public:
     Node &operator=(const Node &) = default;
     virtual ~Node() = default;
 };
+
+} // namespace wndx
