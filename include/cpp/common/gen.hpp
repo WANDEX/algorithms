@@ -15,7 +15,7 @@ namespace gen {
  * @param  to - range to the number (upper bound of the distribution).
  * @return random number in range of distribution.
  */
-inline static double srng(const double fr, const double to)
+inline double srng(const double fr, const double to)
 {
     std::random_device rd;
     std::default_random_engine rng(rd());
