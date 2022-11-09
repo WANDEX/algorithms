@@ -6,10 +6,23 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-find_package(GTest REQUIRED)
-enable_testing()
+# the timestamps of extracted files. NEW = time of extraction
+cmake_policy(SET CMP0135 OLD)
+
+# prefer GoogleTest version installed in the system || fetch if not found
+find_package(GTest 1.12.1)
+if (NOT GTest_FOUND)
+    include(FetchContent)
+    FetchContent_Declare(
+      GoogleTest # release-1.12.1
+      URL https://github.com/google/googletest/archive/58d77fa8070e8cec2dc1ed015d66b454c8d78850.zip
+    )
+    FetchContent_MakeAvailable(GoogleTest)
+endif()
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+enable_testing()
+include(GoogleTest)
 
 # recursively include all sub-directories of the given dir
 function(include_subdirs arg_dir)

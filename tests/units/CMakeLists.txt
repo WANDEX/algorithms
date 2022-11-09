@@ -9,5 +9,4 @@ add_executable(${BINARY} ${TEST_SOURCES})
 target_link_libraries(${BINARY} GTest::gtest_main)
 
 # discover tests included in the gtest binary (for ctest)
-include(GoogleTest)
 gtest_discover_tests(${BINARY})
