@@ -1,3 +1,5 @@
+[![CI linux gcc/clang/msvc][ci_linux_bdg]]([ci_linux])
+
 # Algorithms
 
 A collection of **0BSD**-licensed algorithms that I wrote for self-education and reuse in my works.
@@ -76,3 +78,6 @@ for the gratuitous dissemination of knowledge. :godmode:
 
 ## License
 [0BSD](https://choosealicense.com/licenses/0bsd/)
+
+[ci_linux]:     https://github.com/WANDEX/algorithms/actions/workflows/ci_linux.yml
+[ci_linux_bdg]: https://github.com/WANDEX/algorithms/actions/workflows/ci_linux.yml/badge.svg
