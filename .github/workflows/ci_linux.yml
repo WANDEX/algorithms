@@ -1,0 +1,44 @@
+name: CI linux gcc/clang/msvc
+
+on:
+  push:
+      paths-ignore:
+        - '.*'
+        - 'scripts/**'
+        - 'README.md'
+  pull_request:
+      paths-ignore:
+        - '.*'
+        - 'scripts/**'
+        - 'README.md'
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Debug
+
+jobs:
+  build-and-tests:
+    runs-on: ubuntu-latest
+    continue-on-error: false
+
+    strategy:
+      fail-fast: true
+      matrix:
+        compiler: [gcc, clang, msvc]
+
+    name: ${{matrix.compiler}}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: CMake Configure
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Tests
+      working-directory: ${{github.workspace}}/build
+      env:
+        CTEST_OUTPUT_ON_FAILURE: 1
+      run: ctest -C ${{env.BUILD_TYPE}}
