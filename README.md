@@ -1,4 +1,4 @@
-[![CI linux gcc/clang/msvc][ci_linux_bdg]]([ci_linux])
+[![CI Linux][ci_linux_bdg]]([ci_linux])
 
 # Algorithms
 
