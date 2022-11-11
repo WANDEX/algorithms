@@ -1,4 +1,4 @@
-name: CI linux gcc/clang/msvc
+name: CI Linux
 
 on:
   push:
@@ -15,6 +15,9 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Debug
+  CMAKE_BUILD_TYPE:  {{BUILD_TYPE}}
+  CMAKE_CONFIG_TYPE: {{BUILD_TYPE}}
+  CTEST_OUTPUT_ON_FAILURE: 1
 
 jobs:
   build-and-tests:
@@ -23,22 +26,45 @@ jobs:
 
     strategy:
       fail-fast: true
+      # TODO: set env variable to actually use compiler
       matrix:
-        compiler: [gcc, clang, msvc]
+        compiler:
+          - gcc
+            env:
+              CC: /usr/bin/gcc
+              CXX: /usr/bin/g++
+          - clang
+            env:
+              CC: /usr/bin/clang
+              CXX: /usr/bin/clang++
+
+        # include:
+        #   - compiler: gcc
+        #     env:
+        #       CC:  /usr/bin/gcc
+        #       CXX: /usr/bin/g++
+        #   - compiler: clang
+        #     env:
+        #       CC:  /usr/bin/clang
+        #       CXX: /usr/bin/clang++
 
     name: ${{matrix.compiler}}
 
+    # TODO: cache deps
     steps:
     - uses: actions/checkout@v3
 
     - name: CMake Configure
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      # run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake -B ${{github.workspace}}/build
 
     - name: Build
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      # run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      run: cmake --build ${{github.workspace}}/build
 
     - name: Tests
       working-directory: ${{github.workspace}}/build
-      env:
-        CTEST_OUTPUT_ON_FAILURE: 1
-      run: ctest -C ${{env.BUILD_TYPE}}
+      # env:
+      #   CTEST_OUTPUT_ON_FAILURE: 1
+      # run: ctest -C ${{env.BUILD_TYPE}}
+      run: ctest
