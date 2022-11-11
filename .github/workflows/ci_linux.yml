@@ -1,5 +1,9 @@
 name: CI Linux
 
+defaults:
+  run:
+    shell: sh
+
 on:
   push:
       paths-ignore:
@@ -12,12 +16,10 @@ on:
         - 'scripts/**'
         - 'README.md'
 
+# Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
 env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Debug
-  CMAKE_BUILD_TYPE:  {{BUILD_TYPE}}
-  CMAKE_CONFIG_TYPE: {{BUILD_TYPE}}
-  CTEST_OUTPUT_ON_FAILURE: 1
+  BBDIR: ${{github.workspace}}/build
 
 jobs:
   build-and-tests:
@@ -26,45 +28,41 @@ jobs:
 
     strategy:
       fail-fast: true
-      # TODO: set env variable to actually use compiler
       matrix:
-        compiler:
-          - gcc
-            env:
-              CC: /usr/bin/gcc
-              CXX: /usr/bin/g++
+        toolchain:
           - clang
-            env:
-              CC: /usr/bin/clang
-              CXX: /usr/bin/clang++
+          - gcc
 
-        # include:
-        #   - compiler: gcc
-        #     env:
-        #       CC:  /usr/bin/gcc
-        #       CXX: /usr/bin/g++
-        #   - compiler: clang
-        #     env:
-        #       CC:  /usr/bin/clang
-        #       CXX: /usr/bin/clang++
+        include:
+          - toolchain: clang
+            cc : clang
+            cxx: clang++
 
-    name: ${{matrix.compiler}}
+          - toolchain: gcc
+            cc : gcc
+            cxx: g++
+
+    name: ${{matrix.toolchain}}
 
     # TODO: cache deps
     steps:
-    - uses: actions/checkout@v3
+      - name: ENV All
+        run : env
 
-    - name: CMake Configure
-      # run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      run: cmake -B ${{github.workspace}}/build
+      - uses: actions/checkout@v3
 
-    - name: Build
-      # run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-      run: cmake --build ${{github.workspace}}/build
+      - name: CMake Configure
+        run : >
+          cmake -S . -B ${{env.BBDIR}} -D CMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+          -D CMAKE_C_COMPILER=${{matrix.cc}} -D CMAKE_CXX_COMPILER=${{matrix.cxx}}
 
-    - name: Tests
-      working-directory: ${{github.workspace}}/build
-      # env:
-      #   CTEST_OUTPUT_ON_FAILURE: 1
-      # run: ctest -C ${{env.BUILD_TYPE}}
-      run: ctest
+      - name: Build
+        run : cmake --build ${{env.BBDIR}} --config ${{env.BUILD_TYPE}} -j$(nproc)
+
+      - name: Tests
+        run : ctest --test-dir ${{env.BBDIR}} -C ${{env.BUILD_TYPE}}
+
+      - name: Runner info lines
+        run : |
+          ls -la "${{env.BBDIR}}/_deps"
+
