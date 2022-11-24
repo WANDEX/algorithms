@@ -1,5 +1,6 @@
 .cache/
 build*/
 __pycache__/
+.vs/
 *.out
 compile_commands.json
