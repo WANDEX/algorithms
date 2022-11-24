@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.19)
 project(algorithms)
 
 # GoogleTest requires at least C++14
@@ -7,8 +7,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # the timestamps of extracted files. NEW = time of extraction
-cmake_policy(SET CMP0135 OLD)
+if(POLICY CMP0135)
+  cmake_policy(SET CMP0135 OLD)
+endif()
 
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 # prefer GoogleTest version installed in the system || fetch if not found
 find_package(GTest 1.12.1)
 if(NOT GTest_FOUND)
@@ -19,27 +23,36 @@ if(NOT GTest_FOUND)
     )
   FetchContent_MakeAvailable(GoogleTest)
 endif()
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 enable_testing()
 include(GoogleTest)
 
 # recursively include all sub-directories of the given dir
 function(include_subdirs arg_dir)
-  file(GLOB_RECURSE recurse_subdirs LIST_DIRECTORIES true
+  file(GLOB_RECURSE recurse_rpaths LIST_DIRECTORIES true
     RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${arg_dir}/$")
   # ^ list only sub-directories of the given dir using relative path
-  list(FILTER recurse_subdirs EXCLUDE REGEX "/\\.") # exclude paths with .dirs
-  foreach(subdir ${recurse_subdirs})
-    # uncomment to see which dirs are included in the build process
-    # message("include subdir: ${subdir}")
-    if(IS_DIRECTORY "${subdir}") # double check that this is directory
-      include_directories("${subdir}")
+  list(FILTER recurse_rpaths EXCLUDE REGEX "/\\.") # exclude paths with .dirs
+  foreach(rel_path ${recurse_rpaths})
+    # get absolute path (relative paths have problems particularly in windows)
+    file(REAL_PATH "${rel_path}" abs_path BASE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
+    # double check that this is directory
+    if(NOT IS_DIRECTORY "${abs_path}")
+      if(NOT CMAKE_BUILD_TYPE MATCHES Release)
+        message("(SKIP) THIS IS NOT DIRECTORY: ${abs_path}")
+      endif()
+      continue()
     endif()
-  endforeach(subdir)
+    # include
+    include_directories("${abs_path}")
+    # see which dirs are included in the build process
+    if(NOT CMAKE_BUILD_TYPE MATCHES Release)
+      message("included subdir: ${abs_path}")
+    endif()
+  endforeach(rel_path)
 endfunction(include_subdirs)
 
 # so that the project sources can find the necessary project header files
-include_subdirs(include)
+#include_subdirs(include)
+include_subdirs(include/cpp)
 
 add_subdirectory(tests/units)
