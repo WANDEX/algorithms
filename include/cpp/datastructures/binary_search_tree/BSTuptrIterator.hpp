@@ -53,7 +53,7 @@ protected:
 
 public:
     explicit BSTuptrIterator(const node_ptr ptr, const TreeTravOrder order=IN_ORDER)
-        : m_root(ptr), trav_order{ order }
+        : trav_order{ order }, m_root{ ptr }
     {
         traverse();
         m_deque.push_back(nullptr); // end() of the tree
