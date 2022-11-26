@@ -1,15 +1,23 @@
-cmake_minimum_required(VERSION 3.19)
-project(algorithms)
-
-# GoogleTest requires at least C++14
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+cmake_minimum_required(VERSION 3.24)
 
 # the timestamps of extracted files. NEW = time of extraction
 if(POLICY CMP0135)
   cmake_policy(SET CMP0135 OLD)
 endif()
+
+# Generate a compilation database for use with automated tools like IDE/editor
+# plugins. See https://clang.llvm.org/docs/JSONCompilationDatabase.html
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+project(algorithms)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -flto")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ftrapv") # XXX
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Werror -Wpedantic -Wall -Wextra -Wabi")
 
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -33,7 +41,7 @@ function(include_subdirs arg_dir)
   # ^ list only sub-directories of the given dir using relative path
   list(FILTER recurse_rpaths EXCLUDE REGEX "/\\.") # exclude paths with .dirs
   foreach(rel_path ${recurse_rpaths})
-    # get absolute path (relative paths have problems particularly in windows)
+    # get absolute path (relative paths have problems particularly in Windows)
     file(REAL_PATH "${rel_path}" abs_path BASE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
     # double check that this is directory
     if(NOT IS_DIRECTORY "${abs_path}")
