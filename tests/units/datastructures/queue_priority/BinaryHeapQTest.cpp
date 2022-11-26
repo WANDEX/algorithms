@@ -5,6 +5,7 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>        // sort, find
+#include <cstddef>          // std::size_t
 #include <cstdint>          // other types, *_MIN, etc
 #include <functional>       // std::greater
 #include <queue>            // priority_queue
@@ -40,7 +41,7 @@ protected:
 
         std::vector<int>::iterator rmpos;
 
-        for (int i = 0; i < rmord.size(); i++) {
+        for (std::size_t i = 0; i < rmord.size(); i++) {
             int elem { rmord[i] };
             // first found pos of elem in vector by value (to remove only one element, not duplicates)
             rmpos = std::find(sv.begin(), sv.end(), elem);
@@ -68,12 +69,12 @@ TEST_F(BinaryHeapQTest, testHeapProperty)
     // Try manually creating heap
     ds::BinaryHeapQ q = ds::BinaryHeapQ<int>();
     for (int n : nums) q.add(n);
-    for (int i = 1; i <= nums.size(); i++) ASSERT_EQ(q.poll(), i);
+    for (std::size_t i = 1; i <= nums.size(); i++) ASSERT_EQ(q.poll(), i);
     q.clear(); ASSERT_EQ(q.size(), 0);
 
     // Try heapify constructor
     q = ds::BinaryHeapQ<int>(nums);
-    for (int i = 1; i <= nums.size(); i++) ASSERT_EQ(q.poll(), i);
+    for (std::size_t i = 1; i <= nums.size(); i++) ASSERT_EQ(q.poll(), i);
     q.clear(); ASSERT_EQ(q.size(), 0);
 }
 
@@ -134,7 +135,7 @@ TEST_F(BinaryHeapQTest, testContainmentRandomized)
         pq   = ds::BinaryHeapQ<int>(rndm);
         PQ   = { rndm.begin(), rndm.end() };
 
-        for (int j = 0; j < rndm.size(); j++) {
+        for (std::size_t j = 0; j < rndm.size(); j++) {
             int randVal { rndm[j] };
             ASSERT_EQ(pq.contains(randVal), true);
             EXPECT_TRUE(pq.remove(randVal));
