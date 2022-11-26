@@ -1,17 +1,19 @@
 #!/bin/sh
 # build & optionally run tests
 #
-## make clean build & run tests:
-# ./scripts/build.sh clean tests
-## build & run tests:
-# ./scripts/build.sh tests
-## just build:
+## build:
 # ./scripts/build.sh
-## build & run tests filtered by --gtest_filter:
-# ./scripts/build.sh tests *filter*
+## build & run tests:
+# ./scripts/build.sh ctest
+## make clean build & run tests:
+# ./scripts/build.sh clean ctest
+## build & run filtered tests:
+# ./scripts/build.sh ctest .*regex.*
+## or
+# ./scripts/build.sh gtest *wildcard*
 
-bdir="build"
-NOT_USE_MAKE_C_DIR=1 # NOTE: comment out if you prefer to use make -C option
+bt="Debug"
+bdir="build/dev-${bt}"
 
 set -e
 
@@ -26,25 +28,26 @@ fi
 
 opt="$1"
 test_filter="$2"
+fresh=""
+clean_first=""
 case "$opt" in
   clean|c)
-    [ -d "$bdir" ] && rm -rf "$bdir"
     opt="$2"
     test_filter="$3"
+    fresh="--fresh"
+    clean_first="--clean-first"
     ;;
 esac
 
-cmake -S . -B "$bdir" -DCMAKE_BUILD_TYPE=Debug -G "Unix Makefiles"
+und='=========================='
+sep="${und}${und}${und}"
+vsep() { printf "\n%s[%s]\n%s\n\n" "${2}" "${1}" "${sep}${END}" ;}
 
-# NOTE: not using 'make -C' is my personal preference for such small projects
-# 'make -C build' option makes output more noisy - less readable
-if [ -n "$NOT_USE_MAKE_C_DIR" ]; then
-  cd "$bdir" || exit 3
-  make all
-  cd ..      || exit 4
-else
-  make -C "$bdir" all
-fi
+vsep "CONFIGURE" "${BLU}"
+cmake -S . -B "$bdir" -G Ninja -D CMAKE_BUILD_TYPE=${bt} -Wdev -Werror=dev ${fresh}
+
+vsep "BUILD" "${CYN}"
+cmake --build "$bdir" --config ${bt} ${clean_first}
 
 gtest_binary="./$bdir/tests/units/algorithms_units"
 if [ ! -x "$gtest_binary" ]; then
@@ -53,7 +56,7 @@ if [ ! -x "$gtest_binary" ]; then
   exit 5
 fi
 
-[ -n "$opt" ] && echo # extra empty line
+[ -n "$opt" ] && vsep "TESTS" "${RED}"
 case "$opt" in
   ctest|ct)
     if [ -n "$test_filter" ]; then # regex
