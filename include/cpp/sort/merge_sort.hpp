@@ -1,4 +1,6 @@
 #pragma once
+// merge sort algorithm without VLA (Variable Length Arrays).
+// VLA are a C99 feature and not supported by msvc.
 
 #include <cstddef>  // std::size_t
 #include <array>
@@ -8,12 +10,17 @@ namespace wndx {
 namespace srt {
 
 template<typename T>
-inline void merge(T A[], int p, int q, int r)
+inline void merge(T A[], const int p, const int q, const int r)
 {
     int x{0}, y{0}, z{0};
-    int lsub = q - p + 1;
-    int rsub = r - q;
-    T la[lsub], ra[rsub];
+    const int lsub{ q - p + 1 };
+    const int rsub{ r - q };
+
+    // FIXME: using vector might be ~x5 times slower than using VLA?
+    std::vector<T> la;
+    std::vector<T> ra;
+    la.resize(lsub);
+    ra.resize(rsub);
 
     // copy separate fragments of the input array into two temporary arrays
     for (x = 0; x < lsub; x++) la[x] = A[p + x];
@@ -32,12 +39,12 @@ inline void merge(T A[], int p, int q, int r)
 }
 
 template<typename T>
-inline void merge_sort(T A[], int p, int r)
+inline void merge_sort(T A[], const int p, const int r)
 {
     if (p >= r) return;
-    int q = (p + r) / 2; // middle_index (round down implicitly)
-    merge_sort(A, p, q);
-    merge_sort(A, q + 1, r);
+    const int q{ (p + r) / 2 }; // middle_index (round down implicitly)
+    srt::merge_sort(A, p, q);
+    srt::merge_sort(A, q + 1, r);
     srt::merge(A, p, q, r);
 }
 
@@ -48,12 +55,16 @@ inline void merge_sort(T A[], int p, int r)
  * @p left_index, @q middle_index, @r right_index
  */
 template<typename T, const std::size_t n>
-inline void merge(std::array<T, n> &A, int p, int q, int r)
+inline void merge(std::array<T, n> &A, const int p, const int q, const int r)
 {
     int x{0}, y{0}, z{0};
-    int lsub = q - p + 1;
-    int rsub = r - q;
-    T la[lsub], ra[rsub];
+    const int lsub{ q - p + 1 };
+    const int rsub{ r - q };
+
+    std::vector<T> la;
+    std::vector<T> ra;
+    la.resize(lsub);
+    ra.resize(rsub);
 
     // copy separate fragments of the input array into two temporary arrays
     for (x = 0; x < lsub; x++) la[x] = A[p + x];
@@ -78,22 +89,26 @@ inline void merge(std::array<T, n> &A, int p, int q, int r)
  * @p left_index, @r right_index
  */
 template<typename T, const std::size_t n>
-inline void merge_sort(std::array<T, n> &A, int p, int r)
+inline void merge_sort(std::array<T, n> &A, const int p, const int r)
 {
     if (p >= r) return;
-    int q = (p + r) / 2; // middle_index (round down implicitly)
-    merge_sort(A, p, q);
-    merge_sort(A, q + 1, r);
+    const int q{ (p + r) / 2 }; // middle_index (round down implicitly)
+    srt::merge_sort(A, p, q);
+    srt::merge_sort(A, q + 1, r);
     srt::merge(A, p, q, r);
 }
 
 template<typename T>
-inline void merge(std::vector<T> &A, int p, int q, int r)
+inline void merge(std::vector<T> &A, const int p, const int q, const int r)
 {
     int x{0}, y{0}, z{0};
-    int lsub = q - p + 1;
-    int rsub = r - q;
-    T la[lsub], ra[rsub];
+    const int lsub{ q - p + 1 };
+    const int rsub{ r - q };
+
+    std::vector<T> la;
+    std::vector<T> ra;
+    la.resize(lsub);
+    ra.resize(rsub);
 
     // copy separate fragments of the input array into two temporary arrays
     for (x = 0; x < lsub; x++) la[x] = A[p + x];
@@ -112,12 +127,12 @@ inline void merge(std::vector<T> &A, int p, int q, int r)
 }
 
 template<typename T>
-inline void merge_sort(std::vector<T> &A, int p, int r)
+inline void merge_sort(std::vector<T> &A, const int p, const int r)
 {
     if (p >= r) return;
-    int q = (p + r) / 2; // middle_index (round down implicitly)
-    merge_sort(A, p, q);
-    merge_sort(A, q + 1, r);
+    const int q{ (p + r) / 2 }; // middle_index (round down implicitly)
+    srt::merge_sort(A, p, q);
+    srt::merge_sort(A, q + 1, r);
     srt::merge(A, p, q, r);
 }
 
