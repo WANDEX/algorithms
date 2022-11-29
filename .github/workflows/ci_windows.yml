@@ -12,7 +12,7 @@ on:
 
 env:
   BUILD_TYPE: Debug
-  BBDIR: ${{github.workspace}}/build/windows-msvc
+  BBDIR: build/windows-msvc
 
 jobs:
   build-and-tests:

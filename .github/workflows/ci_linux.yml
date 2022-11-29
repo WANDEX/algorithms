@@ -36,12 +36,12 @@ jobs:
           - toolchain: clang
             cc : clang
             cxx: clang++
-            bdir: ${{github.workspace}}/build/linux-clang
+            bdir: build/linux-clang
 
           - toolchain: gcc
             cc : gcc
             cxx: g++
-            bdir: ${{github.workspace}}/build/linux-gcc
+            bdir: build/linux-gcc
 
     name: ${{matrix.toolchain}}
 
