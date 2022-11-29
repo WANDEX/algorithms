@@ -20,7 +20,8 @@ inline void swap(auto* p, auto* q)
 }
 #endif // SRT_SWAP_P_Q
 
-inline void bubble_sort(auto a[], const std::size_t n)
+template<typename T>
+inline void bubble_sort(T a[], const std::size_t n)
 {
     bool sorted { false };
     while (!sorted) {

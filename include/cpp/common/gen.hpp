@@ -57,7 +57,8 @@ inline std::unordered_set<T> random_uset(const std::size_t n, const double fr, c
  * @param  to - range to the number (upper bound of the distribution).
  * @param  n  - size.
  */
-inline void random(auto out[], const std::size_t n, const double fr, const double to)
+template<typename T>
+inline void random(T out[], const std::size_t n, const double fr, const double to)
 {
     if (n < 1) return;
     for (std::size_t i = 0; i < n; i++)

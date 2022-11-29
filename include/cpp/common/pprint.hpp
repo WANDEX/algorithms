@@ -12,7 +12,8 @@ namespace pp { // pretty print
 /**
  * print C array
  */
-inline void print(const auto a[], const std::size_t n, const std::string prefix="")
+template <typename T>
+inline void print(const T a[], const std::size_t n, const std::string prefix="")
 {
     if (n < 1) {
         std::cout << prefix << "{}" << std::endl;
