@@ -19,7 +19,6 @@ on:
 # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
 env:
   BUILD_TYPE: Debug
-  BBDIR: ${{github.workspace}}/build
 
 jobs:
   build-and-tests:
@@ -37,10 +36,12 @@ jobs:
           - toolchain: clang
             cc : clang
             cxx: clang++
+            bdir: ${{github.workspace}}/build/linux-clang
 
           - toolchain: gcc
             cc : gcc
             cxx: g++
+            bdir: ${{github.workspace}}/build/linux-gcc
 
     name: ${{matrix.toolchain}}
 
@@ -53,16 +54,16 @@ jobs:
 
       - name: CMake Configure
         run : >
-          cmake -S . -B ${{env.BBDIR}} -D CMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+          cmake -S . -B ${{matrix.bdir}} -D CMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
           -D CMAKE_C_COMPILER=${{matrix.cc}} -D CMAKE_CXX_COMPILER=${{matrix.cxx}}
 
       - name: Build
-        run : cmake --build ${{env.BBDIR}} --config ${{env.BUILD_TYPE}} -j$(nproc)
+        run : cmake --build ${{matrix.bdir}} --config ${{env.BUILD_TYPE}} -j $(nproc)
 
       - name: Tests
-        run : ctest --test-dir ${{env.BBDIR}} -C ${{env.BUILD_TYPE}}
+        run : ctest --test-dir ${{matrix.bdir}} -C ${{env.BUILD_TYPE}}
 
       - name: Runner info lines
         run : |
-          ls -la "${{env.BBDIR}}/_deps"
+          ls -la "${{matrix.bdir}}/_deps"
 
