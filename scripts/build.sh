@@ -1,5 +1,10 @@
 #!/bin/sh
-# build & optionally run tests
+## build & optionally run tests.
+## NOTE: manually export following environment variables
+## to build/test under multiple compilers before submitting code!
+#
+# export CC=gcc   CXX=g++
+# export CC=clang CXX=clang++
 #
 ## build:
 # ./scripts/build.sh
@@ -13,7 +18,8 @@
 # ./scripts/build.sh gtest *wildcard*
 
 bt="Debug"
-bdir="build/dev-${bt}"
+compiler="${CC:-_}"
+bdir="build/dev-$bt-($compiler)"
 
 set -e
 
