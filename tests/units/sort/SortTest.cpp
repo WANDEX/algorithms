@@ -9,11 +9,11 @@
 
 #include <gtest/gtest.h>
 
-#include <algorithm>  // std::sort, std::copy_n
+#include <algorithm>            // std::sort, std::copy_n
 #include <array>
-#include <cstddef>    // std::size_t
-#include <cstdint>    // other types, *_MIN, etc
-#include <cstring>    // std::memcmp
+#include <cstddef>              // std::size_t
+#include <cstdint>              // other types, *_MIN, etc
+#include <cstring>              // std::memcmp
 #include <vector>
 
 using namespace wndx;
