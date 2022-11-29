@@ -1,4 +1,5 @@
 [![CI Linux][ci_linux_bdg]]([ci_linux])
+[![windows (msvc)][ci_windows_bdg]]([ci_windows])
 
 # Algorithms
 
@@ -79,5 +80,7 @@ for the gratuitous dissemination of knowledge. :godmode:
 ## License
 [0BSD](https://choosealicense.com/licenses/0bsd/)
 
-[ci_linux]:     https://github.com/WANDEX/algorithms/actions/workflows/ci_linux.yml
-[ci_linux_bdg]: https://github.com/WANDEX/algorithms/actions/workflows/ci_linux.yml/badge.svg
+[ci_linux       ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_linux.yml
+[ci_linux_bdg   ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_linux.yml/badge.svg
+[ci_windows     ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_windows.yml
+[ci_windows_bdg ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_windows.yml/badge.svg]
