@@ -333,7 +333,7 @@ private:
         std::set<std::size_t> set;
         try {
             set = umap.at(val);
-        } catch(std::out_of_range) {
+        } catch(std::out_of_range const&) {
             return size();
         }
         if (set.empty())
