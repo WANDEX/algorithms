@@ -1,0 +1,38 @@
+name: windows (msvc)
+
+defaults:
+  run:
+    shell: sh
+
+# workflow will run after & only if Linux CI is successfully passed.
+on:
+  workflow_run:
+    workflows: [CI Linux]
+    types: [completed]
+
+env:
+  BUILD_TYPE: Debug
+  BBDIR: ${{github.workspace}}/build/windows-msvc
+
+jobs:
+  build-and-tests:
+    runs-on: windows-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    name: msvc
+
+    steps:
+      - name: ENV All
+        run : env
+
+      - uses: actions/checkout@v3
+
+      - name: CMake Configure
+        run : cmake -S . -B ${{env.BBDIR}} -D CMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+      - name: Build
+        run : cmake --build ${{env.BBDIR}} --config ${{env.BUILD_TYPE}} -j $(nproc)
+
+      - name: Tests
+        run : ctest --test-dir ${{env.BBDIR}} -C ${{env.BUILD_TYPE}}
+
