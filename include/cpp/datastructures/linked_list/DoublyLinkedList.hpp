@@ -127,7 +127,7 @@ public:
      */
     void addAt(const std::size_t index, const T &elem)
     {
-        if (index < 0 || index > m_size) {
+        if (index > m_size) {
             throw ("Illegal Index");
         }
         if (index == 0) {
@@ -216,7 +216,7 @@ public:
      */
     T removeAt(const std::size_t index)
     {
-        if (index < 0 || index >= m_size)
+        if (index >= m_size)
             throw std::invalid_argument("Invalid Index");
         std::size_t i;
         Node<T> *trav;
