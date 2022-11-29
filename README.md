@@ -1,4 +1,4 @@
-[![CI Linux][ci_linux_bdg]]([ci_linux])
+[![CI linux][ci_linux_bdg]]([ci_linux])
 [![windows (msvc)][ci_windows_bdg]]([ci_windows])
 
 # Algorithms
