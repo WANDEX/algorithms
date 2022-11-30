@@ -2,19 +2,18 @@
 [![windows (msvc)][ci_windows_bdg]]([ci_windows])
 
 # Algorithms
-
 A collection of **0BSD**-licensed algorithms that I wrote for self-education and reuse in my works.
 
 ## Tests
-##### Requires: [GoogleTest (gtest)](https://github.com/google/googletest)
-to make build & run tests:
+**Require:** [GoogleTest (gtest)](https://github.com/google/googletest)
+
+**To make clean build & run tests:**
 ```
-./scripts/build.sh tests
+./scripts/build.sh clean ctest
 ```
-to make clean build & run tests:
-```
-./scripts/build.sh clean tests
-```
+
+[Ninja (build system)](https://github.com/ninja-build/ninja)
+is optional: change Generator **-G Ninja** in the above build script.
 
 ## Tree of Implemented DSA
 include/\
