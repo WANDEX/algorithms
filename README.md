@@ -1,5 +1,6 @@
 [![CI linux][ci_linux_bdg]]([ci_linux])
 [![windows (msvc)][ci_windows_bdg]]([ci_windows])
+![GitHub](https://img.shields.io/github/license/WANDEX/algorithms?color=black)
 
 # Algorithms
 A collection of **0BSD**-licensed algorithms that I wrote for self-education and reuse in my works.
