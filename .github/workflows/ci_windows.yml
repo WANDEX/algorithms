@@ -48,3 +48,6 @@ jobs:
           ctest --test-dir ${{env.BBDIR}} -C ${{env.BUILD_TYPE}} --progress ||
           ctest --test-dir ${{env.BBDIR}} -C ${{env.BUILD_TYPE}} --rerun-failed --output-on-failure
 
+      - name: cat LastTest.log
+        run : cat "D:/a/algorithms/algorithms/build/windows-msvc/Testing/Temporary/LastTest.log"
+
