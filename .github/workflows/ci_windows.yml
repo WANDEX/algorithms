@@ -5,11 +5,13 @@ defaults:
     shell: sh
 
 # workflow will run after & only if linux CI is successfully passed.
+# workflow_dispatch - be able to run manually when parent workflow is disabled.
 on:
+  workflow_dispatch:
+
   workflow_run:
     workflows: [CI linux]
     types: [completed]
-  push # (enable) temporary to run when parent workflow is disabled
 
 env:
   BUILD_TYPE: Debug
