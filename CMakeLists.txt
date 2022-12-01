@@ -25,7 +25,7 @@ if(${Clang_COMP} OR ${GNU_COMP})
   add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 elseif(MSVC OR ${cl_COMP})
   # NOTE: /WX - should be added by developer (all warnings should be fixed!)
-  add_compile_options(/Wall /WL /sdl)
+  # add_compile_options(/Wall /WL /sdl)
 endif()
 
 # so that the project sources can find the necessary project header files
