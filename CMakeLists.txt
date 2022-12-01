@@ -33,9 +33,10 @@ elseif(${Cl_COMP})
 elseif(${CL_COMP})
   message(">CL!")
   add_compile_options(/Wall /WL /sdl)
-elseif(MSVC)
+endif()
+if(MSVC)
   message(">MSVC!")
-  add_compile_options(/Wall /WL /sdl)
+  # add_compile_options(/Wall /WL /sdl)
 endif()
 
 # so that the project sources can find the necessary project header files
