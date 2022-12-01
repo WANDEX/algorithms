@@ -9,6 +9,7 @@ on:
   workflow_run:
     workflows: [CI linux]
     types: [completed]
+  push # (enable) temporary to run when parent workflow is disabled
 
 env:
   BUILD_TYPE: Debug
