@@ -66,9 +66,9 @@ fi
 case "$opt" in
   ctest|ct)
     if [ -n "$test_filter" ]; then # regex
-      ctest --test-dir "$bdir" -R "$test_filter"
+      ctest --test-dir "$bdir" --progress --rerun-failed --output-on-failure -R "$test_filter"
     else
-      ctest --test-dir "$bdir"
+      ctest --test-dir "$bdir" --progress --rerun-failed --output-on-failure
     fi
     ;;
   gtest|gt)
