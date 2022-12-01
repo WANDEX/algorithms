@@ -14,10 +14,10 @@
 #include <cstdint>          // std::uint8_t
 #include <iterator>
 
-#include <initializer_list>
 #include <deque>
 #include <queue>
 #include <stack>
+#include <stdexcept>        // std::invalid_argument
 
 namespace wndx {
 namespace ds {
