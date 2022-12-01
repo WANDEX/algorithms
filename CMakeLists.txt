@@ -23,6 +23,10 @@ if(${Clang_COMP} OR ${GNU_COMP})
   add_compile_options(-g -O0)
   add_compile_options(-ftrapv) # XXX
   add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+
+  # This helps to see/fix errors that MSVC will throw anyway.
+  add_compile_options(-D_GLIBCXX_DEBUG)
+
 elseif(MSVC OR ${cl_COMP})
   # NOTE: /WX - should be added by developer (all warnings should be fixed!)
   # add_compile_options(/Wall /WL /sdl)
