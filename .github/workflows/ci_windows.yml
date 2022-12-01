@@ -19,7 +19,7 @@ env:
 jobs:
   build-and-tests:
     runs-on: windows-latest
-    continue-on-error: true # XXX
+    continue-on-error: false
 
     if: |
       github.event.workflow_run.conclusion == 'success' ||
@@ -39,16 +39,15 @@ jobs:
       - name: Build
         run : cmake --build ${{env.BBDIR}} --config ${{env.BUILD_TYPE}} -j $(nproc)
 
-      - name: Terse Tests with output-on-failure
-        run : ctest --test-dir ${{env.BBDIR}} -C ${{env.BUILD_TYPE}} --progress --output-on-failure
-
-      - name: Tests with output-on-failure
-        run : ctest --test-dir ${{env.BBDIR}} -C ${{env.BUILD_TYPE}} --output-on-failure
+        # XXX
+        continue-on-error: true
 
       - name: Terse Tests with verbose Fail Log (re-run the failed cases verbosely)
         run : >
           ctest --test-dir ${{env.BBDIR}} -C ${{env.BUILD_TYPE}} --progress ||
           ctest --test-dir ${{env.BBDIR}} -C ${{env.BUILD_TYPE}} --rerun-failed --output-on-failure
+
+        continue-on-error: true
 
       - name: cat LastTest.log
         run : cat "D:/a/algorithms/algorithms/build/windows-msvc/Testing/Temporary/LastTest.log"
