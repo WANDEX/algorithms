@@ -30,7 +30,9 @@ endfunction(under_compiler)
 # creation of variables to be able to use them later
 under_compiler(GNU)
 under_compiler(Clang)
-under_compiler(MSVC)
+under_compiler(cl) # MSVC
+under_compiler(Cl) # MSVC
+under_compiler(CL) # MSVC
 
 
 # recursively include all sub-directories of the given dir
