@@ -32,6 +32,8 @@ else
   exit 1
 fi
 
+[ -n "$CTEST_OUTPUT_ON_FAILURE" ] || export CTEST_OUTPUT_ON_FAILURE=1
+
 opt="$1"
 test_filter="$2"
 fresh=""
@@ -62,21 +64,29 @@ if [ ! -x "$gtest_binary" ]; then
   exit 5
 fi
 
+# shellcheck disable=SC2068 # Intentional - to re-split trailing arguments.
+run_ctest() { ctest --test-dir "$bdir" $@ ;} # shortcut
+
 [ -n "$opt" ] && vsep "TESTS" "${RED}"
+[ -n "$test_filter" ] || test_filter='.*'
 case "$opt" in
   ctest|ct)
-    if [ -n "$test_filter" ]; then # regex
-      ctest --test-dir "$bdir" --progress --rerun-failed --output-on-failure -R "$test_filter"
-    else
-      ctest --test-dir "$bdir" --progress --rerun-failed --output-on-failure
-    fi
+    # optionally filter by regex
+    run_ctest -R "$test_filter"
+    ;;
+  ctp)
+    # shortcut for terse progress output
+    run_ctest --progress -R "$test_filter"
+    ;;
+  ctr)
+    # suppress output, errors, always return success (to not immediately exit because of 'set -e')
+    run_ctest -R "$test_filter" >/dev/null 2>&1 || true
+    # rerun previously failed (gives live (filtered) results, with only failed tests)
+    run_ctest --rerun-failed
     ;;
   gtest|gt)
-    if [ -n "$test_filter" ]; then
-      # wildcard ':'-separated patterns '*', '?' ('-' negative)
-      "$gtest_binary" --gtest_filter="$test_filter"
-    else
-      "$gtest_binary"
-    fi
+    # optionally filter by wildcard ':'-separated patterns '*', '?' ('-' negative)
+    [ "$test_filter" = '.*' ] && test_filter='*'
+    "$gtest_binary" --gtest_filter="$test_filter"
     ;;
 esac
