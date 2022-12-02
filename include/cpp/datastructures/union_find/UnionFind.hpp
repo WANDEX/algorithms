@@ -25,14 +25,14 @@ protected:
     std::vector<std::size_t> m_id;
 
 public:
-    UnionFind(const std::size_t size)
+    explicit UnionFind(const std::size_t size)
     {
-        m_sz.reserve(size);
-        m_id.reserve(size);
+        m_sz.resize(size);
+        m_id.resize(size);
         m_size = m_ncomp = size;
         for (std::size_t i = 0; i < size; i++) {
-            m_id[i] = i; // link to itself (self root)
-            m_sz[i] = 1; // each component is originally of size one
+            m_id.at(i) = i; // link to itself (self root)
+            m_sz.at(i) = 1; // each component is originally of size one
         }
     }
 
