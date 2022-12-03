@@ -39,7 +39,7 @@ public:
     // Construct a priority queue with an initial capacity
     BinaryHeapQ(const std::size_t sz)
     {
-        heap.reserve(sz);
+        heap.resize(sz);
     }
 
     /**
@@ -48,12 +48,12 @@ public:
      */
     BinaryHeapQ(const std::vector<T> &v)
     {
-        const std::size_t hsz = v.size();
+        const std::size_t hsz{ v.size() };
         heap.reserve(hsz);
         // place all element in the heap
         for (std::size_t i = 0; i < hsz; i++) {
-            mapAdd(v[i], i);
-            heap.push_back(v[i]);
+            mapAdd(v.at(i), i);
+            heap.push_back(v.at(i));
         }
         // Heapify process, O(n)
         const int calc = (hsz / 2) - 1;
@@ -212,7 +212,7 @@ private:
      */
     bool less(const std::size_t i, const std::size_t j) const
     {
-        return heap[i] <= heap[j];
+        return heap.at(i) <= heap.at(j);
     }
 
     /**
@@ -264,11 +264,11 @@ private:
      */
     void swap(const std::size_t i, const std::size_t j)
     {
-        const T i_elem { heap[i] };
-        const T j_elem { heap[j] };
+        const T i_elem { heap.at(i) };
+        const T j_elem { heap.at(j) };
 
-        heap[i] = j_elem;
-        heap[j] = i_elem;
+        heap.at(i) = j_elem;
+        heap.at(j) = i_elem;
 
         mapSwap(i_elem, j_elem, i, j);
     }
@@ -281,7 +281,7 @@ private:
         if (isEmpty()) throw std::runtime_error("Empty Heap");
 
         const std::size_t index_last_elem { size() - 1 };
-        const T removed_data { heap[i] };
+        const T removed_data { heap.at(i) };
         swap(i, index_last_elem);
 
         heap.erase(heap.begin()+index_last_elem);
@@ -289,13 +289,13 @@ private:
 
         // Removed last element
         if (i == index_last_elem) return removed_data;
-        const T elem { heap[i] };
+        const T elem { heap.at(i) };
 
         // Try sinking element
         sink(i);
 
         // If sinking did not work try swimming
-        if (heap[i] == elem) swim(i);
+        if (heap.at(i) == elem) swim(i);
 
         return removed_data;
     }
@@ -316,10 +316,10 @@ private:
      */
     void mapRemove(const T val, const std::size_t idx)
     {
-        std::set<std::size_t> set { umap[val] };
+        std::set<std::size_t> set { umap.at(val) };
         set.erase(idx);
         if (set.size() == 0) umap.erase(val);
-        else umap[val] = set;
+        else umap.at(val) = set;
     }
 
     /**
@@ -346,8 +346,8 @@ private:
      */
     void mapSwap(const T val1, const T val2, const std::size_t iv1, const std::size_t iv2)
     {
-        std::set<std::size_t> set1 { umap[val1] };
-        std::set<std::size_t> set2 { umap[val2] };
+        std::set<std::size_t> set1 { umap.at(val1) };
+        std::set<std::size_t> set2 { umap.at(val2) };
 
         set1.erase(iv1);
         set2.erase(iv2);
@@ -355,8 +355,8 @@ private:
         set1.insert(iv2);
         set2.insert(iv1);
 
-        umap[val1] = set1;
-        umap[val2] = set2;
+        umap.at(val1) = set1;
+        umap.at(val2) = set2;
     }
 
 };
