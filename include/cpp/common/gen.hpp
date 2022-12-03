@@ -75,7 +75,7 @@ inline std::array<T, n> random(const double fr, const double to)
 {
     std::array<T, n> out;
     for (std::size_t i = 0; i < n; i++)
-        out[i] = gen::srng(fr, to);
+        out.at(i) = gen::srng(fr, to);
     return out;
 }
 
@@ -96,9 +96,9 @@ inline std::vector<T> random(const std::size_t n, const double fr, const double 
     }
 
     std::vector<T> out;
-    out.reserve(n);
+    out.resize(n);
     for (std::size_t i = 0; i < n; i++)
-        out[i] = gen::srng(fr, to);
+        out.at(i) = gen::srng(fr, to);
     return out;
 }
 
