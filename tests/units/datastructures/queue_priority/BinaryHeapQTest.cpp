@@ -70,12 +70,13 @@ TEST_F(BinaryHeapQTest, testHeapProperty)
     ds::BinaryHeapQ q = ds::BinaryHeapQ<int>();
     for (int n : nums) q.add(n);
     for (std::size_t i = 1; i <= nums.size(); i++) ASSERT_EQ(q.poll(), i);
-    q.clear(); ASSERT_EQ(q.size(), 0);
+    ASSERT_EQ(q.size(), 0);
 
     // Try heapify constructor
     q = ds::BinaryHeapQ<int>(nums);
+    ASSERT_EQ(q.size(), nums.size());
     for (std::size_t i = 1; i <= nums.size(); i++) ASSERT_EQ(q.poll(), i);
-    q.clear(); ASSERT_EQ(q.size(), 0);
+    ASSERT_EQ(q.size(), 0);
 }
 
 TEST_F(BinaryHeapQTest, testHeapify)
