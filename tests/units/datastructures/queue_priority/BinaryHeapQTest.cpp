@@ -41,13 +41,13 @@ protected:
 
         std::vector<int>::iterator rmpos;
 
-        for (std::size_t i = 0; i < rmord.size(); i++) {
-            int elem { rmord[i] };
+        for (const int elem : rmord) {
             // first found pos of elem in vector by value (to remove only one element, not duplicates)
             rmpos = std::find(sv.begin(), sv.end(), elem);
 
             ASSERT_EQ(pq.peek(), sv.front());
-            ASSERT_EQ(pq.remove(elem), bool(*sv.erase(rmpos)));
+            ASSERT_TRUE(pq.remove(elem));
+            sv.erase(rmpos);
             ASSERT_EQ(pq.size(), sv.size());
             EXPECT_TRUE(pq.isMinHeap(0));
         }
@@ -88,6 +88,8 @@ TEST_F(BinaryHeapQTest, testHeapify)
         rndm = gen::random<i8f>(i, INT_FAST8_MIN, INT_FAST8_MAX);
         pq   = ds::BinaryHeapQ<i8f>(rndm);
         PQ   = { rndm.begin(), rndm.end() };
+
+        ASSERT_EQ(pq.size(), PQ.size());
 
         EXPECT_TRUE(pq.isMinHeap(0));
         while (!PQ.empty()) {
@@ -136,8 +138,7 @@ TEST_F(BinaryHeapQTest, testContainmentRandomized)
         pq   = ds::BinaryHeapQ<int>(rndm);
         PQ   = { rndm.begin(), rndm.end() };
 
-        for (std::size_t j = 0; j < rndm.size(); j++) {
-            int randVal { rndm[j] };
+        for (const int randVal : rndm) {
             ASSERT_EQ(pq.contains(randVal), true);
             EXPECT_TRUE(pq.remove(randVal));
             PQ.pop();
