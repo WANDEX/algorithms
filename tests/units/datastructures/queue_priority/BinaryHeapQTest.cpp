@@ -19,7 +19,6 @@ class BinaryHeapQTest : public ::testing::Test
 {
 protected:
     static const int LOOPS  = 100;
-    static const int MAX_SZ = 100;
 
     // aliases for shortness
     using i8f = int_fast8_t;
@@ -31,10 +30,9 @@ protected:
     {
         ASSERT_EQ(input.size(), rmord.size());
 
-        ds::BinaryHeapQ pq { ds::BinaryHeapQ<int>(input) };
-
+        ds::BinaryHeapQ<int> pq { input };
         // make copy of input & sort vector
-        std::vector<int> sv { input.begin(), input.end() };
+        std::vector<int>     sv { input };
         std::sort(sv.begin(), sv.end(), std::less<int>());
 
         EXPECT_TRUE(pq.isMinHeap(0));
@@ -101,8 +99,7 @@ TEST_F(BinaryHeapQTest, testHeapify)
 
 TEST_F(BinaryHeapQTest, testClear)
 {
-    const std::vector<std::string> strs {"aa", "bb", "cc", "dd", "ee"};
-    ds::BinaryHeapQ q { ds::BinaryHeapQ<std::string>(strs) };
+    ds::BinaryHeapQ<std::string> q {"aa", "bb", "cc", "dd", "ee"};
     q.clear();
     ASSERT_EQ(q.size(), 0);
     ASSERT_TRUE(q.isEmpty());
@@ -110,8 +107,7 @@ TEST_F(BinaryHeapQTest, testClear)
 
 TEST_F(BinaryHeapQTest, testContainment)
 {
-    const std::vector<std::string> strs {"aa", "bb", "cc", "dd", "ee"};
-    ds::BinaryHeapQ q { ds::BinaryHeapQ<std::string>(strs) };
+    ds::BinaryHeapQ<std::string> q {"aa", "bb", "cc", "dd", "ee"};
     EXPECT_FALSE(q.remove("NOT_EXIST"));
     q.remove("aa");
     EXPECT_FALSE(q.contains("aa"));
@@ -150,8 +146,7 @@ TEST_F(BinaryHeapQTest, testContainmentRandomized)
 
 TEST_F(BinaryHeapQTest, testRemovingDuplicates)
 {
-    const std::vector<int> in {2, 7, 2, 11, 7, 13, 2};
-    ds::BinaryHeapQ pq { ds::BinaryHeapQ<int>(in) };
+    ds::BinaryHeapQ<int> pq {2, 7, 2, 11, 7, 13, 2};
     ASSERT_EQ(2,  pq.peek());
     pq.add(3);
     ASSERT_EQ(2,  pq.poll());
