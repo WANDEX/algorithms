@@ -5,12 +5,12 @@
  * with a hash table for quick removals.
  */
 
-#include <algorithm>    // std::max
-#include <cstddef>      // size_t
+#include <cstddef>              // std::size_t
+#include <initializer_list>
 #include <iostream>
 #include <set>
-#include <sstream>      // ostream
-#include <stdexcept>    // runtime_error, out_of_range
+#include <sstream>              // std::ostream
+#include <stdexcept>            // invalid_argument, runtime_error, out_of_range
 #include <unordered_map>
 #include <vector>
 
@@ -46,20 +46,35 @@ public:
      * Construct a priority queue using heapify in O(n) time, a great explanation can be found at:
      * https://www.cs.umd.edu/~meesh/351/mount/lectures/lect14-heapsort-analysis-part.pdf
      */
-    BinaryHeapQ(const std::vector<T> &v)
+    BinaryHeapQ(const std::initializer_list<T> &il)
     {
-        const std::size_t hsz{ v.size() };
-        heap.reserve(hsz);
+        if (il.size() == 0) throw std::invalid_argument("empty initializer list was provided.");
+        heap.reserve(il.size());
         // place all element in the heap
-        for (std::size_t i = 0; i < hsz; i++) {
-            mapAdd(v.at(i), i);
-            heap.push_back(v.at(i));
+        std::size_t i {0};
+        for (const T &elem : il) {
+            mapAdd(elem, i++);
+            heap.push_back(elem);
         }
         // Heapify process, O(n)
-        const int calc = (hsz / 2) - 1;
-        for (int i = std::max(0, calc); i >= 0; i--) sink(i);
+        std::size_t j { (il.size() / 2) + 1 };
+        do { sink(--j); } while (j > 0);
     }
 
+    BinaryHeapQ(const std::vector<T> &v)
+    {
+        if (v.empty()) throw std::invalid_argument("empty std::vector was provided.");
+        heap.reserve(v.size());
+        // place all element in the heap
+        std::size_t i {0};
+        for (const T &elem : v) {
+            mapAdd(elem, i++);
+            heap.push_back(elem);
+        }
+        // Heapify process, O(n)
+        std::size_t j { (v.size() / 2) + 1 };
+        do { sink(--j); } while (j > 0);
+    }
 
     virtual ~BinaryHeapQ()
     {
