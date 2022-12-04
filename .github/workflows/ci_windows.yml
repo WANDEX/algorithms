@@ -1,4 +1,4 @@
-name: windows (msvc)
+name: windows (MSVC)
 
 defaults:
   run:
@@ -25,7 +25,7 @@ jobs:
       github.event.workflow_run.conclusion == 'success' ||
       github.event_name == 'workflow_dispatch'
 
-    name: msvc
+    name: MSVC
 
     steps:
       - name: ENV All

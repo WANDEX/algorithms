@@ -1,4 +1,4 @@
-name: macos (clang)
+name: macos (AppleClang)
 
 defaults:
   run:
@@ -8,7 +8,7 @@ defaults:
 # workflow_dispatch - to be able to run manually even when parent workflow is disabled.
 on:
   workflow_run:
-    workflows: [windows (msvc)]
+    workflows: [windows (MSVC)]
     types: [completed]
   workflow_dispatch:
 
@@ -25,7 +25,7 @@ jobs:
       github.event.workflow_run.conclusion == 'success' ||
       github.event_name == 'workflow_dispatch'
 
-    name: clang
+    name: AppleClang
 
     steps:
       - name: ENV All

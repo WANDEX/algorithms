@@ -1,5 +1,5 @@
 [![CI linux][ci_linux_bdg]]([ci_linux])
-[![windows (msvc)][ci_windows_bdg]]([ci_windows])
+[![windows (MSVC)][ci_windows_bdg]]([ci_windows])
 [![macos (AppleClang)][ci_macos_bdg]]([ci_macos])
 ![GitHub](https://img.shields.io/github/license/WANDEX/algorithms?color=black)
 
