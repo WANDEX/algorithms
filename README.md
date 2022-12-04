@@ -1,5 +1,6 @@
 [![CI linux][ci_linux_bdg]]([ci_linux])
 [![windows (msvc)][ci_windows_bdg]]([ci_windows])
+[![macos (AppleClang)][ci_macos_bdg]]([ci_macos])
 ![GitHub](https://img.shields.io/github/license/WANDEX/algorithms?color=black)
 
 # Algorithms
@@ -84,3 +85,5 @@ for the gratuitous dissemination of knowledge. :godmode:
 [ci_linux_bdg   ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_linux.yml/badge.svg
 [ci_windows     ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_windows.yml
 [ci_windows_bdg ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_windows.yml/badge.svg
+[ci_macos       ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_macos.yml
+[ci_macos_bdg   ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_macos.yml/badge.svg
