@@ -37,7 +37,7 @@ jobs:
         run : cmake -S . -B ${{env.BBDIR}} -D CMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
       - name: Build
-        run : cmake --build ${{env.BBDIR}} --config ${{env.BUILD_TYPE}} -j $(nproc)
+        run : cmake --build ${{env.BBDIR}} --config ${{env.BUILD_TYPE}} -j $(getconf _NPROCESSORS_ONLN)
 
       - name: Tests
         run : ctest --test-dir ${{env.BBDIR}} -C ${{env.BUILD_TYPE}} --progress --output-on-failure
