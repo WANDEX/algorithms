@@ -39,16 +39,6 @@ jobs:
       - name: Build
         run : cmake --build ${{env.BBDIR}} --config ${{env.BUILD_TYPE}} -j $(nproc)
 
-        # XXX
-        continue-on-error: true
-
-      - name: Terse Tests with verbose Fail Log (re-run the failed cases verbosely)
-        run : >
-          ctest --test-dir ${{env.BBDIR}} -C ${{env.BUILD_TYPE}} --progress ||
-          ctest --test-dir ${{env.BBDIR}} -C ${{env.BUILD_TYPE}} --rerun-failed --output-on-failure
-
-        continue-on-error: true
-
-      - name: cat LastTest.log
-        run : cat "D:/a/algorithms/algorithms/build/windows-msvc/Testing/Temporary/LastTest.log"
+      - name: Tests
+        run : ctest --test-dir ${{env.BBDIR}} -C ${{env.BUILD_TYPE}} --progress --output-on-failure
 
