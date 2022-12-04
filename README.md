@@ -83,4 +83,4 @@ for the gratuitous dissemination of knowledge. :godmode:
 [ci_linux       ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_linux.yml
 [ci_linux_bdg   ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_linux.yml/badge.svg
 [ci_windows     ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_windows.yml
-[ci_windows_bdg ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_windows.yml/badge.svg]
+[ci_windows_bdg ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_windows.yml/badge.svg
