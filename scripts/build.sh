@@ -19,7 +19,9 @@
 
 bt="Debug"
 compiler="${CC:-_}"
-bdir="build/dev-$bt-($compiler)"
+# get compiler basename in case declared via full path
+cmbn=$(basename "$compiler")
+bdir="build/dev-$bt-$cmbn"
 
 set -e
 
