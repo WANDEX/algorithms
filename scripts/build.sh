@@ -47,6 +47,12 @@ case "$opt" in
     fresh="--fresh"
     clean_first="--clean-first"
     ;;
+  cleaner|cc) # for edge cases like corrupted GCDA files etc.
+    opt="$2"
+    test_filter="$3"
+    [ -d "$bdir" ] && rm -rf "$bdir"
+    mkdir -p "$bdir"
+    ;;
 esac
 
 und='=========================='
