@@ -25,9 +25,6 @@ public:
     // peek the element at the front of the queue
     virtual T peek() const = 0;
 
-    // virtual destructor in case we delete an IQueue pointer,
-    // so the proper derived destructor is called
-    virtual ~IQueue() {}
 };
 
 } // namespace ds
