@@ -8,6 +8,7 @@
 #include <algorithm>            // std::for_each
 #include <cstddef>              // size_t
 #include <initializer_list>
+#include <iostream>
 #include <string>
 #include <vector>
 
