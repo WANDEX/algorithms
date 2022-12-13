@@ -20,6 +20,8 @@ include(cmake/funcs.cmake) # useful functions / variables
 include(cmake/gtest.cmake)
 
 if(${Clang_COMP} OR ${GNU_COMP})
+  set(CMAKE_CXX_FLAGS --coverage)
+
   add_compile_options(-g -O0)
   add_compile_options(-ftrapv) # XXX
   add_compile_options(-Wall -Wextra -Wpedantic -Werror)
