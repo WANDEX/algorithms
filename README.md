@@ -1,3 +1,4 @@
+![coverage](https://img.shields.io/badge/coverage-98%25-brightgreen)
 [![CI linux][ci_linux_bdg]]([ci_linux])
 [![windows (MSVC)][ci_windows_bdg]]([ci_windows])
 [![macos (AppleClang)][ci_macos_bdg]]([ci_macos])
