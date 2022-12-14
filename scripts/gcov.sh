@@ -44,5 +44,9 @@ if at_path fd; then
 
 elif at_path find && at_path xargs; then
   find "$bdir" -name '*.gcda' -print0 | xargs -0 gcov -s "$incl_dir" "$flags" $@
+
+else
+  echo "Neither 'fd' nor 'find + xargs' were not found at PATH! Exit."
+  exit 2
 fi
 
