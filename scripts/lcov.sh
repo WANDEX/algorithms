@@ -1,5 +1,5 @@
 #!/bin/sh
-## lcov wrapper - support any lcov argument as script options
+## lcov wrapper - support any lcov arguments as script options
 
 set -e
 

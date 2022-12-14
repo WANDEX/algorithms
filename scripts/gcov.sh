@@ -1,5 +1,5 @@
 #!/bin/sh
-## gcov wrapper - support any gcov argument as script options
+## gcov wrapper - support any gcov arguments as script options
 
 set -e
 

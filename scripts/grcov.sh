@@ -1,5 +1,5 @@
 #!/bin/sh
-## grcov wrapper - support any grcov argument as script options
+## grcov wrapper - support any grcov arguments as script options
 
 set -e
 
