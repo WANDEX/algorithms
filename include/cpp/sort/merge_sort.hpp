@@ -16,11 +16,8 @@ inline void merge(T A[], const int p, const int q, const int r)
     const int lsub{ q - p + 1 };
     const int rsub{ r - q };
 
-    // FIXME: using vector might be ~x5 times slower than using VLA?
-    std::vector<T> la;
-    std::vector<T> ra;
-    la.resize(lsub);
-    ra.resize(rsub);
+    std::vector<T> la(lsub); // LCOV_EXCL_EXCEPTION_BR_LINE
+    std::vector<T> ra(rsub); // LCOV_EXCL_EXCEPTION_BR_LINE
 
     // copy separate fragments of the input array into two temporary arrays
     for (x = 0; x < lsub; x++) la[x] = A[p + x];
@@ -61,10 +58,8 @@ inline void merge(std::array<T, n> &A, const int p, const int q, const int r)
     const int lsub{ q - p + 1 };
     const int rsub{ r - q };
 
-    std::vector<T> la;
-    std::vector<T> ra;
-    la.resize(lsub);
-    ra.resize(rsub);
+    std::vector<T> la(lsub); // LCOV_EXCL_EXCEPTION_BR_LINE
+    std::vector<T> ra(rsub); // LCOV_EXCL_EXCEPTION_BR_LINE
 
     // copy separate fragments of the input array into two temporary arrays
     for (x = 0; x < lsub; x++) la[x] = A[p + x];
@@ -105,10 +100,8 @@ inline void merge(std::vector<T> &A, const int p, const int q, const int r)
     const int lsub{ q - p + 1 };
     const int rsub{ r - q };
 
-    std::vector<T> la;
-    std::vector<T> ra;
-    la.resize(lsub);
-    ra.resize(rsub);
+    std::vector<T> la(lsub); // LCOV_EXCL_EXCEPTION_BR_LINE
+    std::vector<T> ra(rsub); // LCOV_EXCL_EXCEPTION_BR_LINE
 
     // copy separate fragments of the input array into two temporary arrays
     for (x = 0; x < lsub; x++) la[x] = A[p + x];
