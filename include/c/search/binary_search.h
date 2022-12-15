@@ -15,7 +15,7 @@
 size_t binary_search(const int *sorted_array, const size_t n, const int needle)
 {
     // Zero size arrays are an extension (but still, just in case)
-    assert(n != 0); // XXX LCOV_EXCL_LINE (what is & why: hidden 0 branch?)
+    assert(n != 0); // LCOV_EXCL_BR_LINE
     size_t hi = n, lo = 0;
     size_t mid = (lo + hi) / 2;
     while (mid <= n && lo <= hi) {
