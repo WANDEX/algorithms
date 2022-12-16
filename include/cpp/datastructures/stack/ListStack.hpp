@@ -70,7 +70,9 @@ public:
      */
     virtual T pop()
     {
-        if (isEmpty()) throw std::runtime_error("Empty Stack");
+        if (isEmpty()) {
+            throw std::runtime_error("Empty Stack"); // LCOV_EXCL_EXCEPTION_BR_LINE
+        }
         T data { stack.front() }; // tmp store the data
         stack.pop_front();
         --m_size;
@@ -83,7 +85,9 @@ public:
      */
     virtual T peek() const
     {
-        if (isEmpty()) throw std::runtime_error("Empty Stack");
+        if (isEmpty()) {
+            throw std::runtime_error("Empty Stack"); // LCOV_EXCL_EXCEPTION_BR_LINE
+        }
         return stack.front();
     }
 
