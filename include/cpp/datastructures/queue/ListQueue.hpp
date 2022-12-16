@@ -68,7 +68,9 @@ public:
      */
     virtual T dequeue()
     {
-        if (isEmpty()) throw std::runtime_error("Empty Queue");
+        if (isEmpty()) {
+            throw std::runtime_error("Empty Queue"); // LCOV_EXCL_EXCEPTION_BR_LINE
+        }
         T data { queue.front() }; // tmp store the data
         queue.pop_front();
         return data;
@@ -80,7 +82,9 @@ public:
      */
     virtual T peek() const
     {
-        if (isEmpty()) throw std::runtime_error("Empty Queue");
+        if (isEmpty()) {
+            throw std::runtime_error("Empty Queue"); // LCOV_EXCL_EXCEPTION_BR_LINE
+        }
         return queue.front();
     }
 
