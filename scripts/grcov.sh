@@ -1,5 +1,14 @@
 #!/bin/sh
 ## grcov wrapper - support any grcov arguments as script options
+## prefer to use lcov.sh!
+##
+## NOTE DO NOT USE: with --branch option - configured improperly for this!
+## does not override/use:
+## geninfo_external=0 geninfo_no_exception_branch=1
+##
+## We do not want to test standard library, 3rd party libraries (gtest), and care
+## about almost impossible exception branches like std::bad_alloc etc.
+## All those uncovered branches come from this!
 
 set -e
 
@@ -27,7 +36,11 @@ grcov_dir=$(realpath "./.coverage/grcov")
 [ -d "$grcov_dir" ] && rm -rf "$grcov_dir"
 
 # shellcheck disable=SC2068 # Intentional - to re-split trailing arguments.
-grcov "$bdir" -s "$incl_dir" -t html -o "$grcov_dir" --branch \
---excl-line    LCOV_EXCL_LINE --excl-start    LCOV_EXCL_START --excl-stop    LCOV_EXCL_STOP \
---excl-br-line LCOV_EXCL_LINE --excl-br-start LCOV_EXCL_START --excl-br-stop LCOV_EXCL_STOP $@
+grcov "$bdir" -s "$incl_dir" -t html -o "$grcov_dir" \
+--excl-line     LCOV_EXCL_LINE \
+--excl-start    LCOV_EXCL_START \
+--excl-stop     LCOV_EXCL_STOP \
+--excl-br-line  LCOV_EXCL_BR_LINE \
+--excl-br-start LCOV_EXCL_BR_START \
+--excl-br-stop  LCOV_EXCL_BR_STOP $@
 
