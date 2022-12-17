@@ -25,10 +25,7 @@ public:
         enqueue(elem);
     }
 
-    virtual ~ListQueue()
-    {
-        clear();
-    }
+    virtual ~ListQueue() = default;
 
     /**
      * Empty this queue, O(n)
@@ -69,7 +66,7 @@ public:
     virtual T dequeue()
     {
         if (isEmpty()) {
-            throw std::runtime_error("Empty Queue"); // LCOV_EXCL_EXCEPTION_BR_LINE
+            throw std::runtime_error("Empty Queue");
         }
         T data { queue.front() }; // tmp store the data
         queue.pop_front();
@@ -83,7 +80,7 @@ public:
     virtual T peek() const
     {
         if (isEmpty()) {
-            throw std::runtime_error("Empty Queue"); // LCOV_EXCL_EXCEPTION_BR_LINE
+            throw std::runtime_error("Empty Queue");
         }
         return queue.front();
     }
