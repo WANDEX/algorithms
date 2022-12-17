@@ -9,6 +9,9 @@
 ## We do not want to test standard library, 3rd party libraries (gtest), and care
 ## about almost impossible exception branches like std::bad_alloc etc.
 ## All those uncovered branches come from this!
+##
+## It also does not show exactly which functions not covered... (dunno why)
+## So for me - this tool is practically useless.
 
 set -e
 
