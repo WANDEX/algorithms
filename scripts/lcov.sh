@@ -30,8 +30,9 @@ lcov_info="${lcov_dir}/lcov.info"
 mkdir -p "$lcov_dir"
 
 # shellcheck disable=SC2068 # Intentional - to re-split trailing arguments.
-lcov --directory "$bdir" --capture --output-file "$lcov_info" --no-external \
+lcov --directory "$bdir" --capture --output-file "$lcov_info" \
 -rc lcov_branch_coverage=1 -rc lcov_function_coverage=1 \
+-rc geninfo_external=0 -rc geninfo_no_exception_branch=1 \
 -rc geninfo_auto_base=1 --base-directory "$incl_dir" $@
 
 genhtml "$lcov_info" --output-directory "$lcov_dir" --branch-coverage --legend --dark-mode
