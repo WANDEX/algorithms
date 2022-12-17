@@ -26,10 +26,7 @@ public:
         push(elem);
     }
 
-    virtual ~ListStack()
-    {
-        clear();
-    }
+    virtual ~ListStack() = default;
 
     /**
      * Empty this stack, O(n)
@@ -71,7 +68,7 @@ public:
     virtual T pop()
     {
         if (isEmpty()) {
-            throw std::runtime_error("Empty Stack"); // LCOV_EXCL_EXCEPTION_BR_LINE
+            throw std::runtime_error("Empty Stack");
         }
         T data { stack.front() }; // tmp store the data
         stack.pop_front();
@@ -86,7 +83,7 @@ public:
     virtual T peek() const
     {
         if (isEmpty()) {
-            throw std::runtime_error("Empty Stack"); // LCOV_EXCL_EXCEPTION_BR_LINE
+            throw std::runtime_error("Empty Stack");
         }
         return stack.front();
     }
