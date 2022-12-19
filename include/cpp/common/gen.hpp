@@ -1,8 +1,10 @@
 #pragma once
 
 #include <array>
+#include <cmath>            // std::abs
 #include <cstddef>          // std::size_t
 #include <random>
+#include <stdexcept>        // std::invalid_argument
 #include <unordered_set>
 #include <vector>
 
@@ -34,12 +36,14 @@ inline double srng(const double fr, const double to)
 template<typename T>
 inline std::unordered_set<T> random_uset(const std::size_t n, const double fr, const double to)
 {
-    std::unordered_set<T> uset;
-    uset.reserve(n);
-
-    // TODO: if n > fr..to possible unique elements
-    // => throw error ("impossible to generate enough unique elements for the given span fr..to")
-    T rn {}; // randomly generated value
+    std::unordered_set<T> uset(n);
+    // TODO: different check/formula (for double/float T the real range is bigger)
+    const std::size_t nums_in_range{ static_cast<size_t>(std::abs(to) + std::abs(fr)) };
+    // if n > fr..to range of possible unique elements => impossible (insufficient_range)
+    // => Not enough unique elements in range fr..to
+    if (n > nums_in_range)
+        throw std::invalid_argument("Insufficient range");
+    T rn {};
     for (std::size_t i = 0; i < n; i++) {
         do {
             rn = gen::srng(fr, to);
