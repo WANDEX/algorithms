@@ -4,12 +4,12 @@
 
 #include <gtest/gtest.h>
 
-#include <algorithm>        // sort, find
-#include <cstddef>          // std::size_t
-#include <cstdint>          // other types, *_MIN, etc
-#include <functional>       // std::greater
-#include <queue>            // priority_queue
-#include <stdexcept>        // runtime_error
+#include <algorithm>            // std::sort, std::find
+#include <cstddef>              // std::size_t
+#include <cstdint>              // other types, *_MIN, etc
+#include <functional>           // std::greater
+#include <queue>                // std::priority_queue
+#include <stdexcept>            // invalid_argument, runtime_error, out_of_range
 #include <string>
 #include <vector>
 
