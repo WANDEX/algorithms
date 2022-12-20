@@ -3,7 +3,7 @@
  * UnionFind/Disjoint Set data structure implementation.
  */
 
-#include <cstddef>          // size_t
+#include <cstddef>              // std::size_t
 #include <vector>
 
 namespace wndx {
@@ -25,22 +25,24 @@ protected:
     std::vector<std::size_t> m_id;
 
 public:
-    explicit UnionFind(const std::size_t size)
+    UnionFind() = delete;
+
+    UnionFind(const std::size_t size)
+        : m_size{ size }, m_ncomp{ size }
     {
-        m_sz.resize(size);
         m_id.resize(size);
-        m_size = m_ncomp = size;
+        m_sz.resize(size);
         for (std::size_t i = 0; i < size; i++) {
             m_id.at(i) = i; // link to itself (self root)
             m_sz.at(i) = 1; // each component is originally of size one
         }
     }
 
-    virtual ~UnionFind()
-    {
-        m_sz.clear();
-        m_id.clear();
-    }
+    UnionFind(UnionFind &&) = default;
+    UnionFind(const UnionFind &) = default;
+    UnionFind &operator=(UnionFind &&) = default;
+    UnionFind &operator=(const UnionFind &) = default;
+    virtual ~UnionFind() = default;
 
     /**
      * find which component/set 'p' belongs to, takes amortized constant time.
@@ -81,7 +83,7 @@ public:
     /**
      * return the number of elements in this UnionFind/Disjoint set
      */
-    std::size_t size() const
+    std::size_t size() const noexcept
     {
         return m_size;
     }
@@ -89,7 +91,7 @@ public:
     /**
      * return the number of remaining components/sets
      */
-    std::size_t components() const
+    std::size_t components() const noexcept
     {
         return m_ncomp;
     }
