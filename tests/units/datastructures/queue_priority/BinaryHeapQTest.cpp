@@ -55,9 +55,67 @@ protected:
 
 TEST_F(BinaryHeapQTest, testEmpty)
 {
-    ds::BinaryHeapQ q = ds::BinaryHeapQ<int>();
-    EXPECT_TRUE(q.isEmpty());
-    EXPECT_EQ(q.size(), 0);
+    ds::BinaryHeapQ<int> q;
+    ASSERT_TRUE(q.isEmpty());
+    ASSERT_EQ(q.size(), 0);
+}
+
+TEST_F(BinaryHeapQTest, EmptyIL)
+{
+    const std::string exp_err{ "Empty initializer list was provided." };
+    try {
+        ds::BinaryHeapQ<int> q({});
+    } catch(std::invalid_argument const &err) {
+        ASSERT_EQ(err.what(), std::string(exp_err));
+    } catch(...) {
+        FAIL() << "Expected std::invalid_argument " + exp_err ;
+    }
+}
+
+TEST_F(BinaryHeapQTest, EmptyVector)
+{
+    const std::string exp_err{ "Empty std::vector was provided." };
+    const std::vector<int> v;
+    ASSERT_TRUE(v.empty());
+    try {
+        ds::BinaryHeapQ<int> q(v);
+    } catch(std::invalid_argument const &err) {
+        ASSERT_EQ(err.what(), std::string(exp_err));
+    } catch(...) {
+        FAIL() << "Expected std::invalid_argument " + exp_err ;
+    }
+}
+
+TEST_F(BinaryHeapQTest, EmptyHeap)
+{
+    const std::string exp_err{ "Empty Heap." };
+    ds::BinaryHeapQ<int> q;
+    ASSERT_TRUE(q.isEmpty());
+
+    try {
+        q.peek();
+    } catch(std::runtime_error const &err) {
+        ASSERT_EQ(err.what(), std::string(exp_err));
+    } catch(...) {
+        FAIL() << "Expected std::runtime_error " + exp_err ;
+    }
+
+    try {
+        q.poll();
+    } catch(std::runtime_error const &err) {
+        ASSERT_EQ(err.what(), std::string(exp_err));
+    } catch(...) {
+        FAIL() << "Expected std::runtime_error " + exp_err ;
+    }
+
+    // try {
+    //     q.remove(0);
+    // } catch(std::runtime_error const &err) {
+    //     ASSERT_EQ(err.what(), std::string(exp_err));
+    // } catch(...) {
+    //     FAIL() << "Expected std::runtime_error " + exp_err ;
+    // }
+
 }
 
 TEST_F(BinaryHeapQTest, testHeapProperty)
@@ -65,7 +123,7 @@ TEST_F(BinaryHeapQTest, testHeapProperty)
     const std::vector<int> nums {3, 2, 5, 6, 7, 9, 4, 8, 1};
 
     // Try manually creating heap
-    ds::BinaryHeapQ q = ds::BinaryHeapQ<int>();
+    ds::BinaryHeapQ<int> q;
     for (int n : nums) q.add(n);
     for (std::size_t i = 1; i <= nums.size(); i++) ASSERT_EQ(q.poll(), i);
     ASSERT_EQ(q.size(), 0);
