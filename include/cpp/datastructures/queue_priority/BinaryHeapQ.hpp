@@ -33,7 +33,7 @@ protected:
     std::unordered_map<T, std::set<std::size_t>> umap;
 
 public:
-    // Construct and initially empty priority queue
+    // Construct an initially empty priority queue
     BinaryHeapQ()
     {}
     // Construct a priority queue with an initial capacity
@@ -48,7 +48,8 @@ public:
      */
     BinaryHeapQ(const std::initializer_list<T> &il)
     {
-        if (il.size() == 0) throw std::invalid_argument("empty initializer list was provided.");
+        if (il.size() == 0)
+            throw std::invalid_argument("Empty initializer list was provided.");
         heap.reserve(il.size());
         // place all element in the heap
         std::size_t i {0};
@@ -63,7 +64,8 @@ public:
 
     BinaryHeapQ(const std::vector<T> &v)
     {
-        if (v.empty()) throw std::invalid_argument("empty std::vector was provided.");
+        if (v.empty())
+            throw std::invalid_argument("Empty std::vector was provided.");
         heap.reserve(v.size());
         // place all element in the heap
         std::size_t i {0};
@@ -76,10 +78,7 @@ public:
         do { sink(--j); } while (j > 0);
     }
 
-    virtual ~BinaryHeapQ()
-    {
-        clear();
-    }
+    virtual ~BinaryHeapQ() = default;
 
     void print_set(const std::set<std::size_t> &s)
     {
@@ -132,7 +131,7 @@ public:
     /**
      * return the size of the heap, O(1)
      */
-    virtual std::size_t size() const
+    virtual std::size_t size() const noexcept
     {
         return heap.size();
     }
@@ -140,7 +139,7 @@ public:
     /**
      * check that priority queue is empty, O(1)
      */
-    virtual bool isEmpty() const
+    virtual bool isEmpty() const noexcept
     {
         return size() == 0;
     }
@@ -152,7 +151,8 @@ public:
      */
     virtual T peek() const
     {
-        if (isEmpty()) throw std::runtime_error("Empty Heap");
+        if (isEmpty())
+            throw std::runtime_error("Empty Heap.");
         return heap.front();
     }
 
@@ -293,7 +293,8 @@ private:
      */
     T removeAt(const std::size_t i)
     {
-        if (isEmpty()) throw std::runtime_error("Empty Heap");
+        if (isEmpty())
+            throw std::runtime_error("Empty Heap.");
 
         const std::size_t index_last_elem { size() - 1 };
         const T removed_data { heap.at(i) };
