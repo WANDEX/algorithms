@@ -35,5 +35,6 @@ lcov -c --directory "$bdir" --output-file "$lcov_info" \
 -rc geninfo_external=0 -rc geninfo_no_exception_branch=1 \
 -rc geninfo_auto_base=1 --base-directory "$incl_dir" $@
 
-genhtml "$lcov_info" --output-directory "$lcov_dir" --branch-coverage --legend --dark-mode
+genhtml "$lcov_info" --output-directory "$lcov_dir" \
+--branch-coverage --demangle-cpp --legend --dark-mode
 
