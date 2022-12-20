@@ -8,9 +8,17 @@ class UnionFindTest : public ::testing::Test
 {
 };
 
+TEST_F(UnionFindTest, covVirtDtor)
+{
+    ASSERT_NO_THROW({
+        ds::UnionFind  *ptr{ new ds::UnionFind(1) };
+        if (ptr) delete ptr;
+    });
+}
+
 TEST_F(UnionFindTest, testNumComponents)
 {
-    ds::UnionFind unf = ds::UnionFind(5);
+    ds::UnionFind unf(5);
     ASSERT_EQ(5, unf.components());
 
     unf.unify(0, 1);
@@ -43,7 +51,7 @@ TEST_F(UnionFindTest, testNumComponents)
 
 TEST_F(UnionFindTest, testComponentSize)
 {
-    ds::UnionFind unf = ds::UnionFind(5);
+    ds::UnionFind unf(5);
     ASSERT_EQ(1, unf.componentSize(0));
     ASSERT_EQ(1, unf.componentSize(1));
     ASSERT_EQ(1, unf.componentSize(2));
@@ -117,7 +125,7 @@ TEST_F(UnionFindTest, testComponentSize)
 TEST_F(UnionFindTest, testConnectivity)
 {
     const int sz = 7;
-    ds::UnionFind unf = ds::UnionFind(sz);
+    ds::UnionFind unf(sz);
 
     for (int i = 0; i < sz; i++) ASSERT_TRUE(unf.connected(i, i));
     unf.unify(0, 2);
@@ -184,7 +192,7 @@ TEST_F(UnionFindTest, testConnectivity)
 
 TEST_F(UnionFindTest, testSize)
 {
-    ds::UnionFind unf = ds::UnionFind(5);
+    ds::UnionFind unf(5);
     ASSERT_EQ(unf.size(), 5);
     unf.unify(0, 1);
     unf.find(3);
