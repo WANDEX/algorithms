@@ -1,8 +1,11 @@
-![coverage](https://img.shields.io/badge/coverage-98%25-brightgreen)
+![coverage ](https://img.shields.io/badge/coverage:-gray)
+![lines    ](https://img.shields.io/badge/L-99%25-brightgreen)
+![functions](https://img.shields.io/badge/F-96%25-brightgreen)
+![branches ](https://img.shields.io/badge/B-95%25-brightgreen)
+![license..](https://img.shields.io/github/license/WANDEX/algorithms?color=black)\
 [![CI linux][ci_linux_bdg]]([ci_linux])
 [![windows (MSVC)][ci_windows_bdg]]([ci_windows])
 [![macos (AppleClang)][ci_macos_bdg]]([ci_macos])
-![GitHub](https://img.shields.io/github/license/WANDEX/algorithms?color=black)
 
 # Algorithms
 A collection of **0BSD**-licensed algorithms that I wrote for self-education and reuse in my works.
