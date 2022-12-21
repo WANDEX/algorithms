@@ -60,11 +60,33 @@ TEST_F(BinaryHeapQTest, testEmpty)
     ASSERT_EQ(q.size(), 0);
 }
 
+TEST_F(BinaryHeapQTest, testClear)
+{
+    ds::BinaryHeapQ<int> q {0, 1, 2};
+    ASSERT_FALSE(q.isEmpty());
+    q.clear();
+    ASSERT_EQ(q.size(), 0);
+    ASSERT_TRUE(q.isEmpty());
+}
+
 TEST_F(BinaryHeapQTest, testMapGetNoThrow)
 {
     ds::BinaryHeapQ<int> q;
     ASSERT_TRUE(q.isEmpty());
     ASSERT_NO_THROW(q.remove(1));
+}
+
+TEST_F(BinaryHeapQTest, covVirtDtor)
+{
+    ASSERT_NO_THROW({
+        ds::BinaryHeapQ<int> *ptr { new ds::BinaryHeapQ<int>(32) };
+        if (ptr) delete ptr;
+    });
+
+    ASSERT_NO_THROW({
+        ds::BinaryHeapQ<std::string> *ptr { new ds::BinaryHeapQ<std::string>(255) };
+        if (ptr) delete ptr;
+    });
 }
 
 TEST_F(BinaryHeapQTest, EmptyIL)
@@ -153,15 +175,20 @@ TEST_F(BinaryHeapQTest, testHeapify)
     }
 }
 
-TEST_F(BinaryHeapQTest, testClear)
+TEST_F(BinaryHeapQTest, testBasicsStr)
 {
     ds::BinaryHeapQ<std::string> q {"aa", "bb", "cc", "dd", "ee"};
     q.clear();
     ASSERT_EQ(q.size(), 0);
+    q.add("ff");
+    ASSERT_EQ(q.size(), 1);
+    ASSERT_EQ(q.peek(), "ff");
+    ASSERT_EQ(q.poll(), "ff");
+    ASSERT_EQ(q.size(), 0);
     ASSERT_TRUE(q.isEmpty());
 }
 
-TEST_F(BinaryHeapQTest, testContainment)
+TEST_F(BinaryHeapQTest, testContainmentStr)
 {
     ds::BinaryHeapQ<std::string> q {"aa", "bb", "cc", "dd", "ee"};
     EXPECT_FALSE(q.remove("NOT_EXIST"));
