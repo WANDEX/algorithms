@@ -36,6 +36,7 @@ public:
     // Construct an initially empty priority queue
     BinaryHeapQ()
     {}
+
     // Construct a priority queue with an initial capacity
     BinaryHeapQ(const std::size_t sz)
     {
@@ -80,6 +81,7 @@ public:
 
     virtual ~BinaryHeapQ() = default;
 
+#if 0
     void print_set(const std::set<std::size_t> &s)
     {
         std::set<std::size_t>::iterator it { s.begin() };
@@ -118,6 +120,7 @@ public:
             std::cout << '\n';
         }
     }
+#endif
 
     /**
      * clears everything inside the heap, O(n)
@@ -342,18 +345,17 @@ private:
      * Extract an index position for the given value.
      * if not found => returns heap size (one past the last).
      * NOTE: If a value exists multiple times in the heap
-     * the highest index is returned (this has arbitrarily been chosen)
+     * the highest index is returned (this was chosen arbitrarily)
      */
-    std::size_t mapGet(const T val)
+    std::size_t mapGet(const T val) const
     {
         std::set<std::size_t> set;
         try {
             set = umap.at(val);
+        // FIXME: what is the 0 branch here?
         } catch(std::out_of_range const&) {
             return size();
         }
-        if (set.empty())
-            return size();
         return *set.rbegin();
     }
 
