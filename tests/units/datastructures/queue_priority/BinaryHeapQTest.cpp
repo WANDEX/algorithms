@@ -18,10 +18,7 @@ using namespace wndx;
 class BinaryHeapQTest : public ::testing::Test
 {
 protected:
-    static const int LOOPS  = 100;
-
-    // aliases for shortness
-    using i8f = int_fast8_t;
+    static const int LOOPS = 50;
 
     virtual void SetUp()
     {}
@@ -157,12 +154,12 @@ TEST_F(BinaryHeapQTest, testHeapProperty)
 
 TEST_F(BinaryHeapQTest, testHeapify)
 {
-    std::priority_queue<i8f, std::vector<i8f>, std::greater<i8f>> PQ;
-    ds::BinaryHeapQ<i8f> pq;
-    std::vector<i8f> rndm;
+    std::priority_queue<int, std::vector<int>, std::greater<int>> PQ;
+    ds::BinaryHeapQ<int> pq;
+    std::vector<int> rndm;
     for (int i = 1; i < LOOPS; i++) {
-        rndm = gen::random<i8f>(i, INT_FAST8_MIN, INT_FAST8_MAX);
-        pq   = ds::BinaryHeapQ<i8f>(rndm);
+        rndm = gen::random<int>(i, INT_MIN, INT_MAX);
+        pq   = ds::BinaryHeapQ<int>(rndm);
         PQ   = { rndm.begin(), rndm.end() };
 
         ASSERT_EQ(pq.size(), PQ.size());
