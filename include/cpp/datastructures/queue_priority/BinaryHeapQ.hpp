@@ -216,11 +216,20 @@ public:
         /* Make sure that the current node k is less than
          * both of its children left, and right if they exist
          * return false otherwise to indicate an invalid heap */
-        if (l < hsz && !less(k, l)) return false;
-        if (r < hsz && !less(k, r)) return false;
+
+        // LCOV_EXCL_BR_START
+        if (l < hsz) {
+            if (!less(k, l))
+                return false; // LCOV_EXCL_LINE (0 hit = OK)
+        }
+        if (r < hsz) {
+            if (!less(k, r))
+                return false; // LCOV_EXCL_LINE (0 hit = OK)
+        }
 
         // Recurse on both children to make sure they're also valid heaps
         return isMinHeap(l) && isMinHeap(r);
+        // LCOV_EXCL_BR_STOP
     }
 
 private:
