@@ -60,6 +60,13 @@ TEST_F(BinaryHeapQTest, testEmpty)
     ASSERT_EQ(q.size(), 0);
 }
 
+TEST_F(BinaryHeapQTest, testMapGetNoThrow)
+{
+    ds::BinaryHeapQ<int> q;
+    ASSERT_TRUE(q.isEmpty());
+    ASSERT_NO_THROW(q.remove(1));
+}
+
 TEST_F(BinaryHeapQTest, EmptyIL)
 {
     const std::string exp_err{ "Empty initializer list was provided." };
@@ -107,15 +114,6 @@ TEST_F(BinaryHeapQTest, EmptyHeap)
     } catch(...) {
         FAIL() << "Expected std::runtime_error " + exp_err ;
     }
-
-    // try {
-    //     q.remove(0);
-    // } catch(std::runtime_error const &err) {
-    //     ASSERT_EQ(err.what(), std::string(exp_err));
-    // } catch(...) {
-    //     FAIL() << "Expected std::runtime_error " + exp_err ;
-    // }
-
 }
 
 TEST_F(BinaryHeapQTest, testHeapProperty)
