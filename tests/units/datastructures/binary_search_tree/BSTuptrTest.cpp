@@ -213,19 +213,80 @@ TEST_F(BSTuptrTest, iterator)
 TEST_F(BSTuptrTest, iteratorTraversalOrderIn)
 {
     testTraversalOrder({3, 2, 4, 1}, {1, 2, 3, 4}, ds::TreeTravOrder::IN_ORDER);
+    testTraversalOrder({3, 4, 2, 1}, {1, 2, 3, 4}, ds::TreeTravOrder::IN_ORDER);
+    testTraversalOrder({2, 1, 4, 3}, {1, 2, 3, 4}, ds::TreeTravOrder::IN_ORDER);
+    testTraversalOrder({4, 3, 2, 1}, {1, 2, 3, 4}, ds::TreeTravOrder::IN_ORDER);
+
+    testTraversalOrder({1, 2, 3, 4}, {1, 2, 3, 4}, ds::TreeTravOrder::IN_ORDER);
+    testTraversalOrder({1, 2, 4, 3}, {1, 2, 3, 4}, ds::TreeTravOrder::IN_ORDER);
+    testTraversalOrder({1, 4, 3, 2}, {1, 2, 3, 4}, ds::TreeTravOrder::IN_ORDER);
+    testTraversalOrder({3, 1, 2, 4}, {1, 2, 3, 4}, ds::TreeTravOrder::IN_ORDER);
+    testTraversalOrder({3, 2, 1, 4}, {1, 2, 3, 4}, ds::TreeTravOrder::IN_ORDER);
 }
 
 TEST_F(BSTuptrTest, iteratorTraversalOrderPre)
 {
+    // the same result
+    testTraversalOrder({3, 4, 2, 1}, {3, 2, 1, 4}, ds::TreeTravOrder::PRE_ORDER);
     testTraversalOrder({3, 2, 4, 1}, {3, 2, 1, 4}, ds::TreeTravOrder::PRE_ORDER);
+
+    // #1 => then input == output
+    testTraversalOrder({3, 4, 1, 2}, {3, 1, 2, 4}, ds::TreeTravOrder::PRE_ORDER);
+    testTraversalOrder({3, 1, 2, 4}, {3, 1, 2, 4}, ds::TreeTravOrder::PRE_ORDER);
+
+    // #2 => then input == output
+    testTraversalOrder({2, 4, 3, 1}, {2, 1, 4, 3}, ds::TreeTravOrder::PRE_ORDER);
+    testTraversalOrder({2, 1, 4, 3}, {2, 1, 4, 3}, ds::TreeTravOrder::PRE_ORDER);
+
+    // #3 => then input == output
+    testTraversalOrder({1, 3, 4, 2}, {1, 3, 2, 4}, ds::TreeTravOrder::PRE_ORDER);
+    testTraversalOrder({1, 3, 2, 4}, {1, 3, 2, 4}, ds::TreeTravOrder::PRE_ORDER);
+
+    // #4 => then input == output
+    testTraversalOrder({2, 3, 4, 1}, {2, 1, 3, 4}, ds::TreeTravOrder::PRE_ORDER);
+    testTraversalOrder({2, 1, 3, 4}, {2, 1, 3, 4}, ds::TreeTravOrder::PRE_ORDER);
+
+    // input == output
+    testTraversalOrder({1, 2, 3, 4}, {1, 2, 3, 4}, ds::TreeTravOrder::PRE_ORDER);
+    testTraversalOrder({1, 2, 4, 3}, {1, 2, 4, 3}, ds::TreeTravOrder::PRE_ORDER);
+    testTraversalOrder({1, 4, 3, 2}, {1, 4, 3, 2}, ds::TreeTravOrder::PRE_ORDER);
+    testTraversalOrder({3, 1, 2, 4}, {3, 1, 2, 4}, ds::TreeTravOrder::PRE_ORDER);
+    testTraversalOrder({3, 2, 1, 4}, {3, 2, 1, 4}, ds::TreeTravOrder::PRE_ORDER);
+
 }
 
 TEST_F(BSTuptrTest, iteratorTraversalOrderPost)
 {
+    // #1
     testTraversalOrder({3, 2, 4, 1}, {1, 2, 4, 3}, ds::TreeTravOrder::POST_ORDER);
+    // => then reverses the order back and forth
+    testTraversalOrder({1, 2, 4, 3}, {3, 4, 2, 1}, ds::TreeTravOrder::POST_ORDER);
+    testTraversalOrder({3, 4, 2, 1}, {1, 2, 4, 3}, ds::TreeTravOrder::POST_ORDER);
+
+    // #2
+    testTraversalOrder({1, 3, 2, 4}, {2, 4, 3, 1}, ds::TreeTravOrder::POST_ORDER);
+    // => then reverses the order back and forth
+    testTraversalOrder({2, 4, 3, 1}, {1, 3, 4, 2}, ds::TreeTravOrder::POST_ORDER);
+    testTraversalOrder({1, 3, 4, 2}, {2, 4, 3, 1}, ds::TreeTravOrder::POST_ORDER);
+
+    // #3
+    testTraversalOrder({2, 1, 3, 4}, {1, 4, 3, 2}, ds::TreeTravOrder::POST_ORDER);
+    // => then reverses the order back and forth
+    testTraversalOrder({1, 4, 3, 2}, {2, 3, 4, 1}, ds::TreeTravOrder::POST_ORDER);
+    testTraversalOrder({2, 3, 4, 1}, {1, 4, 3, 2}, ds::TreeTravOrder::POST_ORDER);
+
+    // #4 - just reverses the order back and forth
+    testTraversalOrder({1, 2, 3, 4}, {4, 3, 2, 1}, ds::TreeTravOrder::POST_ORDER);
+    testTraversalOrder({4, 3, 2, 1}, {1, 2, 3, 4}, ds::TreeTravOrder::POST_ORDER);
 }
 
 TEST_F(BSTuptrTest, iteratorTraversalOrderLevel)
 {
-    testTraversalOrder({2, 1, 4, 3}, {3, 2, 4, 1}, ds::TreeTravOrder::LEVEL_ORDER);
+    // the same result
+    testTraversalOrder({3, 4, 1, 2}, {3, 1, 4, 2}, ds::TreeTravOrder::LEVEL_ORDER);
+    testTraversalOrder({3, 1, 2, 4}, {3, 1, 4, 2}, ds::TreeTravOrder::LEVEL_ORDER);
+
+    // input == output
+    testTraversalOrder({1, 2, 3, 4}, {1, 2, 3, 4}, ds::TreeTravOrder::LEVEL_ORDER);
+    testTraversalOrder({4, 3, 2, 1}, {4, 3, 2, 1}, ds::TreeTravOrder::LEVEL_ORDER);
 }
