@@ -13,15 +13,15 @@
 #include "BSTuptrNode.hpp"
 #include "BSTuptrIterator.hpp"
 
-#include <algorithm>        // std::max
-#include <cstddef>          // std::size_t
-#include <cstdint>          // std::uint8_t
+#include <algorithm>            // std::max
+#include <cstddef>              // std::size_t
+#include <cstdint>              // std::uint8_t
 #include <initializer_list>
 #include <iostream>
-#include <memory>           // std::unique_ptr
+#include <memory>               // std::unique_ptr
 #include <sstream>
-#include <stdexcept>        // std::invalid_argument
-#include <utility>          // std::move
+#include <stdexcept>            // std::invalid_argument
+#include <utility>              // std::move
 
 namespace wndx {
 namespace ds {

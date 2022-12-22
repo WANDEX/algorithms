@@ -1,6 +1,6 @@
 #pragma once
 
-#include <memory>           // std::unique_ptr
+#include <memory>               // std::unique_ptr
 
 namespace wndx {
 namespace ds {

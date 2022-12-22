@@ -10,14 +10,14 @@
 
 #include "BSTuptrNode.hpp"
 
-#include <cstddef>          // std::ptrdiff_t
-#include <cstdint>          // std::uint8_t
+#include <cstddef>              // std::ptrdiff_t
+#include <cstdint>              // std::uint8_t
 #include <iterator>
 
 #include <deque>
 #include <queue>
 #include <stack>
-#include <stdexcept>        // std::invalid_argument
+#include <stdexcept>            // std::invalid_argument
 
 namespace wndx {
 namespace ds {
