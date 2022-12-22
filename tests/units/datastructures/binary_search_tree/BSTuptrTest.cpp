@@ -183,7 +183,7 @@ TEST_F(BSTuptrTest, testRemoveRandom)
 TEST_F(BSTuptrTest, iterator)
 {
     using Ty = int;
-    ds::BSTuptr<Ty> tree({ 3, 2, 4, 1}, ds::TreeTravOrder::IN_ORDER);
+    ds::BSTuptr<Ty> tree({3, 2, 1, 4}, ds::TreeTravOrder::IN_ORDER);
     auto it = tree.begin();
 
     // equality / inequality
@@ -227,5 +227,5 @@ TEST_F(BSTuptrTest, iteratorTraversalOrderPost)
 
 TEST_F(BSTuptrTest, iteratorTraversalOrderLevel)
 {
-    testTraversalOrder({3, 2, 4, 1}, {3, 2, 4, 1}, ds::TreeTravOrder::LEVEL_ORDER);
+    testTraversalOrder({2, 1, 4, 3}, {3, 2, 4, 1}, ds::TreeTravOrder::LEVEL_ORDER);
 }
