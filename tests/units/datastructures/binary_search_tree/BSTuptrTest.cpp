@@ -22,7 +22,7 @@ protected:
     virtual void SetUp()
     {}
 
-    template<typename T> // this is just a print degug info
+    template<typename T> // this is just a print debug info
     void print_initial(ds::BSTuptr<T> &tree, const std::vector<T> &rndm)
     {
         std::cout << '\n';
@@ -282,11 +282,23 @@ TEST_F(BSTuptrTest, iteratorTraversalOrderPost)
 
 TEST_F(BSTuptrTest, iteratorTraversalOrderLevel)
 {
+    // #1
+    testTraversalOrder({2, 4, 3, 1}, {2, 1, 4, 3}, ds::TreeTravOrder::LEVEL_ORDER);
+    // => then input == output
+    testTraversalOrder({2, 1, 4, 3}, {2, 1, 4, 3}, ds::TreeTravOrder::LEVEL_ORDER);
+
+    // #2
+    testTraversalOrder({2, 3, 4, 1}, {2, 1, 3, 4}, ds::TreeTravOrder::LEVEL_ORDER);
+    // => then input == output
+    testTraversalOrder({2, 1, 3, 4}, {2, 1, 3, 4}, ds::TreeTravOrder::LEVEL_ORDER);
+
     // the same result
     testTraversalOrder({3, 4, 1, 2}, {3, 1, 4, 2}, ds::TreeTravOrder::LEVEL_ORDER);
     testTraversalOrder({3, 1, 2, 4}, {3, 1, 4, 2}, ds::TreeTravOrder::LEVEL_ORDER);
 
     // input == output
     testTraversalOrder({1, 2, 3, 4}, {1, 2, 3, 4}, ds::TreeTravOrder::LEVEL_ORDER);
+    testTraversalOrder({1, 3, 2, 4}, {1, 3, 2, 4}, ds::TreeTravOrder::LEVEL_ORDER);
+    testTraversalOrder({3, 2, 4, 1}, {3, 2, 4, 1}, ds::TreeTravOrder::LEVEL_ORDER);
     testTraversalOrder({4, 3, 2, 1}, {4, 3, 2, 1}, ds::TreeTravOrder::LEVEL_ORDER);
 }
