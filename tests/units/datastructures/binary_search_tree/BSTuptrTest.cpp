@@ -210,6 +210,14 @@ TEST_F(BSTuptrTest, iterator)
     });
 }
 
+TEST_F(BSTuptrTest, iteratorVirtDtor)
+{
+    ASSERT_NO_THROW({
+        ds::BSTuptrIterator<int> *ptr{ new ds::BSTuptrIterator<int> };
+        if (ptr) delete ptr;
+    });
+}
+
 TEST_F(BSTuptrTest, iteratorTraversalOrderIn)
 {
     testTraversalOrder({3, 2, 4, 1}, {1, 2, 3, 4}, ds::TreeTravOrder::IN_ORDER);
