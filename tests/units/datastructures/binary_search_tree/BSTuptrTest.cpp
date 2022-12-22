@@ -43,7 +43,7 @@ protected:
             const ds::TreeTravOrder order
         )
     {
-        ds::BSTuptr tree = ds::BSTuptr<T>(l_i, order);
+        ds::BSTuptr<T> tree(l_i, order);
         const T* it{ l_o.begin() };
         // check size
         ASSERT_EQ(tree.size(), l_o.size());
@@ -55,7 +55,7 @@ protected:
 
 TEST_F(BSTuptrTest, testEmpty)
 {
-    ds::BSTuptr tree = ds::BSTuptr<std::string>();
+    ds::BSTuptr<std::string> tree;
     ASSERT_TRUE(tree.isEmpty());
     tree.add("Hello World!");
     ASSERT_FALSE(tree.isEmpty());
@@ -63,7 +63,7 @@ TEST_F(BSTuptrTest, testEmpty)
 
 TEST_F(BSTuptrTest, testSize)
 {
-    ds::BSTuptr tree = ds::BSTuptr<std::string>();
+    ds::BSTuptr<std::string> tree;
     ASSERT_EQ(tree.size(), 0);
     tree.add("Hello World!");
     ASSERT_EQ(tree.size(), 1);
@@ -71,7 +71,7 @@ TEST_F(BSTuptrTest, testSize)
 
 TEST_F(BSTuptrTest, testAdd)
 {
-    ds::BSTuptr tree = ds::BSTuptr<char>();
+    ds::BSTuptr<char> tree;
     // Add element which does not yet exist
     ASSERT_TRUE(tree.add('A'));
     // Try to add duplicate element
@@ -82,7 +82,7 @@ TEST_F(BSTuptrTest, testAdd)
 
 TEST_F(BSTuptrTest, testContains)
 {
-    ds::BSTuptr tree = ds::BSTuptr<char>();
+    ds::BSTuptr<char> tree;
     tree.add('B');
     tree.add('A');
     tree.add('C');
@@ -98,7 +98,7 @@ TEST_F(BSTuptrTest, testContains)
 
 TEST_F(BSTuptrTest, testHeight)
 {
-    ds::BSTuptr tree = ds::BSTuptr<char>();
+    ds::BSTuptr<char> tree;
     /* Tree should look like:
      *        M
      *      J  S
@@ -129,7 +129,7 @@ TEST_F(BSTuptrTest, testHeight)
 
 TEST_F(BSTuptrTest, testRemove)
 {
-    ds::BSTuptr tree = ds::BSTuptr<char>();
+    ds::BSTuptr<char> tree;
     // Try removing an element which does not exist
     ASSERT_TRUE(tree.add('A'));
     ASSERT_TRUE(tree.contains('A'));
@@ -183,7 +183,7 @@ TEST_F(BSTuptrTest, testRemoveRandom)
 TEST_F(BSTuptrTest, iterator)
 {
     using Ty = int;
-    ds::BSTuptr tree = ds::BSTuptr<Ty>({ 3, 2, 4, 1}, ds::TreeTravOrder::IN_ORDER);
+    ds::BSTuptr<Ty> tree({ 3, 2, 4, 1}, ds::TreeTravOrder::IN_ORDER);
     auto it = tree.begin();
 
     // equality / inequality
