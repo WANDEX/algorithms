@@ -53,6 +53,27 @@ protected:
 
 };
 
+TEST_F(BSTuptrTest, covVirtDtor)
+{
+    ASSERT_NO_THROW({
+        ds::BSTuptr<int> *ptr{ new ds::BSTuptr<int> };
+        if (ptr) delete ptr;
+    });
+
+    ASSERT_NO_THROW({
+        ds::BSTuptr<char> *ptr{ new ds::BSTuptr<char> };
+        if (ptr) delete ptr;
+    });
+}
+
+TEST_F(BSTuptrTest, iteratorVirtDtor)
+{
+    ASSERT_NO_THROW({
+        ds::BSTuptrIterator<int> *ptr{ new ds::BSTuptrIterator<int> };
+        if (ptr) delete ptr;
+    });
+}
+
 TEST_F(BSTuptrTest, testEmpty)
 {
     ds::BSTuptr<std::string> tree;
@@ -207,14 +228,6 @@ TEST_F(BSTuptrTest, iterator)
     i = 0; // standard library algorithm
     std::for_each(tree.begin(), tree.end(), [&](const Ty& n) {
         ASSERT_EQ(n, ++i);
-    });
-}
-
-TEST_F(BSTuptrTest, iteratorVirtDtor)
-{
-    ASSERT_NO_THROW({
-        ds::BSTuptrIterator<int> *ptr{ new ds::BSTuptrIterator<int> };
-        if (ptr) delete ptr;
     });
 }
 
