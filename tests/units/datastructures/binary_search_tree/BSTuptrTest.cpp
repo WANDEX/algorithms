@@ -206,7 +206,27 @@ TEST_F(BSTuptrTest, testRemoveRandom)
     }
 }
 
-TEST_F(BSTuptrTest, iterator)
+TEST_F(BSTuptrTest, iteratorRootNodeNull)
+{
+    // validate iterator behavior when tree is empty
+    // empty tree => root node is nullptr => do not die (do nothing)
+    ds::BSTuptr<int> tree;
+    ds::BSTuptrIterator<int> it(tree.cbegin());
+
+    ASSERT_NO_THROW({
+        it.inorder();
+    });
+    ASSERT_NO_THROW({
+        it.preorder();
+    });
+    ASSERT_NO_THROW({
+        it.postorder();
+    });
+    ASSERT_NO_THROW({
+        it.levelorder();
+    });
+}
+
 TEST_F(BSTuptrTest, iteratorBasics)
 {
     using Ty = int;
