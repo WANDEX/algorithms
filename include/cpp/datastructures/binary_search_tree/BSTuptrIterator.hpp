@@ -100,18 +100,14 @@ public:
         if (!m_root) return;
         std::stack<node_ptr> s;
         node_ptr p{ m_root };
+        s.push(p);
 
-        while (p || !s.empty()) {
-            while (p) {
-                ins_back(p);
-                s.push(p);
-                p = p->l.get();
-            }
-            if (!s.empty()) {
-                p = s.top();
-                s.pop();
-                p = p->r.get();
-            }
+        while (!s.empty()) {
+            p = s.top();
+            s.pop();
+            ins_back(p);
+            if(p->r) s.push(p->r.get());
+            if(p->l) s.push(p->l.get());
         }
     }
 
@@ -126,12 +122,10 @@ public:
                 s.push(p);
                 p = p->l.get();
             }
-            if (!s.empty()) {
-                p = s.top();
-                ins_back(p);
-                s.pop();
-                p = p->r.get();
-            }
+            p = s.top();
+            s.pop();
+            ins_back(p);
+            p = p->r.get();
         }
     }
 
