@@ -97,6 +97,7 @@ protected:
 public:
     void preorder()
     {
+        if (!m_root) return;
         std::stack<node_ptr> s;
         node_ptr p{ m_root };
 
@@ -116,6 +117,7 @@ public:
 
     void inorder()
     {
+        if (!m_root) return;
         std::stack<node_ptr> s;
         node_ptr p{ m_root };
 
