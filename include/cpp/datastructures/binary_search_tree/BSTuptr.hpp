@@ -4,8 +4,8 @@
  * Any comparable data is allowed within this tree.
  * Supported operations include adding, removing, height, and containment checks.
  * Multiple tree traversal orders are provided including non-recursive traversal via iterator:
- * 1) Preorder
- * 2) Inorder
+ * 1) Inorder
+ * 2) Preorder
  * 3) Postorder
  * 4) Levelorder
  */

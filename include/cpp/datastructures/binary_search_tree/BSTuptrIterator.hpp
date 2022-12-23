@@ -2,8 +2,8 @@
 /**
  * const iterator for Binary Search Tree (BST) specific for std::unique_ptr nodes.
  * Multiple non-recursive tree traversal orders are provided including:
- * 1) Preorder
- * 2) Inorder
+ * 1) Inorder
+ * 2) Preorder
  * 3) Postorder
  * 4) Levelorder
  */
@@ -24,8 +24,8 @@ namespace ds {
 
 enum class TreeTravOrder : std::uint8_t
 {
-    PRE_ORDER,
     IN_ORDER,
+    PRE_ORDER,
     POST_ORDER,
     LEVEL_ORDER,
 };
