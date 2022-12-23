@@ -320,17 +320,6 @@ protected:
     }
 
     /**
-     * @brief recursive method to print tree in preorder.
-     */
-    void print_preorder(const node_ptr& node, std::ostream& oss = std::cout) const
-    {
-        if (!node) return;
-        oss << node->m_data << ", ";
-        print_preorder(node->l, oss);
-        print_preorder(node->r, oss);
-    }
-
-    /**
      * @brief recursive method to print tree in inorder.
      */
     void print_inorder(const node_ptr& node, std::ostream& oss = std::cout) const
@@ -339,6 +328,17 @@ protected:
         print_inorder(node->l, oss);
         oss << node->m_data << ", ";
         print_inorder(node->r, oss);
+    }
+
+    /**
+     * @brief recursive method to print tree in preorder.
+     */
+    void print_preorder(const node_ptr& node, std::ostream& oss = std::cout) const
+    {
+        if (!node) return;
+        oss << node->m_data << ", ";
+        print_preorder(node->l, oss);
+        print_preorder(node->r, oss);
     }
 
     /**
@@ -382,11 +382,11 @@ public:
     {
         std::ostringstream oss;
         switch (order) {
-            case PRE_ORDER:
-                print_preorder(m_root, oss);
-                break;
             case IN_ORDER:
                 print_inorder(m_root, oss);
+                break;
+            case PRE_ORDER:
+                print_preorder(m_root, oss);
                 break;
             case POST_ORDER:
                 print_postorder(m_root, oss);
