@@ -95,22 +95,6 @@ protected:
     }
 
 public:
-    void preorder()
-    {
-        if (!m_root) return;
-        std::stack<node_ptr> s;
-        node_ptr p{ m_root };
-        s.push(p);
-
-        while (!s.empty()) {
-            p = s.top();
-            s.pop();
-            ins_back(p);
-            if(p->r) s.push(p->r.get());
-            if(p->l) s.push(p->l.get());
-        }
-    }
-
     void inorder()
     {
         if (!m_root) return;
@@ -126,6 +110,22 @@ public:
             s.pop();
             ins_back(p);
             p = p->r.get();
+        }
+    }
+
+    void preorder()
+    {
+        if (!m_root) return;
+        std::stack<node_ptr> s;
+        node_ptr p{ m_root };
+        s.push(p);
+
+        while (!s.empty()) {
+            p = s.top();
+            s.pop();
+            ins_back(p);
+            if(p->r) s.push(p->r.get());
+            if(p->l) s.push(p->l.get());
         }
     }
 
@@ -164,11 +164,11 @@ public:
     void traverse()
     {
         switch (trav_order) {
-            case PRE_ORDER:
-                preorder();
-                break;
             case IN_ORDER:
                 inorder();
+                break;
+            case PRE_ORDER:
+                preorder();
                 break;
             case POST_ORDER:
                 postorder();
