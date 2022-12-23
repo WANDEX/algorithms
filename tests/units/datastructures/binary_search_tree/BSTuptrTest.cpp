@@ -202,6 +202,7 @@ TEST_F(BSTuptrTest, testRemoveRandom)
 }
 
 TEST_F(BSTuptrTest, iterator)
+TEST_F(BSTuptrTest, iteratorBasics)
 {
     using Ty = int;
     ds::BSTuptr<Ty> tree({3, 2, 1, 4}, ds::TreeTravOrder::IN_ORDER);
@@ -219,6 +220,8 @@ TEST_F(BSTuptrTest, iterator)
     ASSERT_EQ(*(it++), 2);
     ASSERT_EQ(*it,     3);
     ASSERT_EQ(*(++it), 4);
+    ASSERT_EQ(*(it--), 4);
+    ASSERT_EQ(*it,     3);
 
     Ty i {0}; // range for loop
     for (const Ty& n : tree) {
@@ -226,7 +229,7 @@ TEST_F(BSTuptrTest, iterator)
     }
 
     i = 0; // standard library algorithm
-    std::for_each(tree.begin(), tree.end(), [&](const Ty& n) {
+    std::for_each(tree.cbegin(), tree.cend(), [&](const Ty& n) {
         ASSERT_EQ(n, ++i);
     });
 }
