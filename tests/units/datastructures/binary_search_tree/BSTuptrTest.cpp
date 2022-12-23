@@ -64,6 +64,11 @@ TEST_F(BSTuptrTest, covVirtDtor)
         ds::BSTuptr<char> *ptr{ new ds::BSTuptr<char> };
         if (ptr) delete ptr;
     });
+
+    ASSERT_NO_THROW({
+        ds::BSTuptr<std::string> *ptr{ new ds::BSTuptr<std::string> };
+        if (ptr) delete ptr;
+    });
 }
 
 TEST_F(BSTuptrTest, iteratorVirtDtor)
