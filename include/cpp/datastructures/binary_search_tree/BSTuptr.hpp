@@ -394,8 +394,10 @@ public:
             case LEVEL_ORDER:
                 print_levelorder(m_root, oss);
                 break;
+            // LCOV_EXCL_START - is it even possible to properly cover this case?
             default:
-                throw std::invalid_argument("No such Tree Traversal Order.");
+                throw std::invalid_argument("No Such Tree Traversal Order.");
+            // LCOV_EXCL_STOP
         }
         cout_tree_info(oss, prefix);
     }

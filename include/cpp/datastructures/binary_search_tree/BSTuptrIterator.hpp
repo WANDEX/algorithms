@@ -180,8 +180,10 @@ public:
             case LEVEL_ORDER:
                 levelorder();
                 break;
+            // LCOV_EXCL_START - is it even possible to properly cover this case?
             default:
-                throw std::invalid_argument("No such Tree Traversal Order.");
+                throw std::invalid_argument("No Such Tree Traversal Order.");
+            // LCOV_EXCL_STOP
         }
     }
 
