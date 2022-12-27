@@ -48,7 +48,7 @@ public:
     BITreeRangeQueryPointUpdate(const std::initializer_list<Ti> &il)
         : m_sz{ il.size() }, m_tree{ il }
     {
-        if (m_sz < 1) throw std::invalid_argument("size() < 1");
+        if (m_sz < 1) throw std::invalid_argument("Empty initializer.");
         m_tree.resize(m_sz);
         m_tree.at(0) = {};
         for (std::size_t i = 1; i < m_sz; i++) {
@@ -60,7 +60,7 @@ public:
     BITreeRangeQueryPointUpdate(const std::vector<Ti> &v)
         : m_sz{ v.size() }, m_tree{ v }
     {
-        if (m_sz < 1) throw std::invalid_argument("size() < 1");
+        if (m_sz < 1) throw std::invalid_argument("Empty initializer.");
         m_tree.resize(m_sz);
         m_tree.at(0) = {};
         for (std::size_t i = 1; i < m_sz; i++) {
