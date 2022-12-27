@@ -6,6 +6,7 @@
 
 #include <cstddef>              // std::size_t
 #include <initializer_list>
+#include <stdexcept>            // std::invalid_argument
 #include <vector>
 
 using namespace wndx;
@@ -60,6 +61,29 @@ TEST_F(BITreeRangeQueryPointUpdateTest, covVirtDtor)
         ds::BITreeRangeQueryPointUpdate *ptr{ new ds::BITreeRangeQueryPointUpdate() };
         if (ptr) delete ptr;
     });
+}
+
+TEST_F(BITreeRangeQueryPointUpdateTest, testEmptyInitializer)
+{
+    const std::string exp_err{ "Empty initializer." };
+
+    try {
+        ds::BITreeRangeQueryPointUpdate tree({});
+    } catch(std::invalid_argument const &err) {
+        ASSERT_EQ(err.what(), std::string(exp_err));
+    } catch(...) {
+        FAIL() << "Expected std::invalid_argument " + exp_err ;
+    }
+
+    try {
+        std::vector<int> v;
+        ds::BITreeRangeQueryPointUpdate tree(v);
+    } catch(std::invalid_argument const &err) {
+        ASSERT_EQ(err.what(), std::string(exp_err));
+    } catch(...) {
+        FAIL() << "Expected std::invalid_argument " + exp_err ;
+    }
+
 }
 
 TEST_F(BITreeRangeQueryPointUpdateTest, testIntervalSumPositiveValues)
