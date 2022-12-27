@@ -54,6 +54,14 @@ protected:
 
 };
 
+TEST_F(BITreeRangeQueryPointUpdateTest, covVirtDtor)
+{
+    ASSERT_NO_THROW({
+        ds::BITreeRangeQueryPointUpdate *ptr{ new ds::BITreeRangeQueryPointUpdate() };
+        if (ptr) delete ptr;
+    });
+}
+
 TEST_F(BITreeRangeQueryPointUpdateTest, testIntervalSumPositiveValues)
 {
     std::initializer_list<int> il {UNUSED_VAL, 1, 2, 3, 4, 5, 6};
