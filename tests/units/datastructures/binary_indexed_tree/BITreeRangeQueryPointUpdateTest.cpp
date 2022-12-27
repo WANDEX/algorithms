@@ -39,7 +39,7 @@ protected:
         return gen::srng(low, N);
     }
 
-    void doRandomRangeQuery(std::vector<int> v, ds::BITreeRangeQueryPointUpdate tree) const
+    void doRandomRangeQuery(std::vector<int> &v, ds::BITreeRangeQueryPointUpdate &tree) const
     {
         int sum {0};
         int N = v.size() - 1;
@@ -57,7 +57,7 @@ protected:
 TEST_F(BITreeRangeQueryPointUpdateTest, testIntervalSumPositiveValues)
 {
     std::initializer_list<int> il {UNUSED_VAL, 1, 2, 3, 4, 5, 6};
-    ds::BITreeRangeQueryPointUpdate tree = ds::BITreeRangeQueryPointUpdate(il);
+    ds::BITreeRangeQueryPointUpdate tree(il);
 
     ASSERT_EQ(tree.sum(1, 6), 21);
     ASSERT_EQ(tree.sum(1, 5), 15);
@@ -80,7 +80,7 @@ TEST_F(BITreeRangeQueryPointUpdateTest, testIntervalSumPositiveValues)
 TEST_F(BITreeRangeQueryPointUpdateTest, testIntervalSumNegativeValues)
 {
     std::initializer_list<int> il {UNUSED_VAL, -1, -2, -3, -4, -5, -6};
-    ds::BITreeRangeQueryPointUpdate tree = ds::BITreeRangeQueryPointUpdate(il);
+    ds::BITreeRangeQueryPointUpdate tree(il);
 
     ASSERT_EQ(tree.sum(1, 6), -21);
     ASSERT_EQ(tree.sum(1, 5), -15);
@@ -100,7 +100,7 @@ TEST_F(BITreeRangeQueryPointUpdateTest, testIntervalSumNegativeValues)
 TEST_F(BITreeRangeQueryPointUpdateTest, testIntervalSumNegativeValues2)
 {
     std::initializer_list<int> il {UNUSED_VAL, -76871, -164790};
-    ds::BITreeRangeQueryPointUpdate tree = ds::BITreeRangeQueryPointUpdate(il);
+    ds::BITreeRangeQueryPointUpdate tree(il);
 
     for (std::size_t i = 0; i < LOOPS; i++) {
         ASSERT_EQ(tree.sum(1, 1), -76871);
@@ -155,7 +155,7 @@ TEST_F(BITreeRangeQueryPointUpdateTest, testReusability)
     const std::size_t size {1000};
     std::vector<int> v;
     v.resize(size); // it is essential to populate vector with default values!
-    ds::BITreeRangeQueryPointUpdate tree = ds::BITreeRangeQueryPointUpdate(size);
+    ds::BITreeRangeQueryPointUpdate tree(size);
 
     for (std::size_t loop = 0; loop < LOOPS; loop++) {
         v.at(0) = UNUSED_VAL;
