@@ -83,7 +83,21 @@ TEST_F(BITreeRangeQueryPointUpdateTest, testEmptyInitializer)
     } catch(...) {
         FAIL() << "Expected std::invalid_argument " + exp_err ;
     }
+}
 
+TEST_F(BITreeRangeQueryPointUpdateTest, testSumException)
+{
+    const std::string exp_err{ "Make sure right >= left" };
+
+    ds::BITreeRangeQueryPointUpdate tree({UNUSED_VAL, 1, 2, 3, 4, 5, 6});
+
+    try {
+        tree.sum(2, 1);
+    } catch(std::invalid_argument const &err) {
+        ASSERT_EQ(err.what(), std::string(exp_err));
+    } catch(...) {
+        FAIL() << "Expected std::invalid_argument " + exp_err ;
+    }
 }
 
 TEST_F(BITreeRangeQueryPointUpdateTest, testIntervalSumPositiveValues)
