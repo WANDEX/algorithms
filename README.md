@@ -1,7 +1,7 @@
 ![coverage ](https://img.shields.io/badge/coverage:-gray)
 ![lines    ](https://img.shields.io/badge/L-99%25-brightgreen)
 ![functions](https://img.shields.io/badge/F-98%25-brightgreen)
-![branches ](https://img.shields.io/badge/B-96%25-brightgreen)
+![branches ](https://img.shields.io/badge/B-97%25-brightgreen)
 ![license..](https://img.shields.io/github/license/WANDEX/algorithms?color=black)\
 [![CI linux][ci_linux_bdg]]([ci_linux])
 [![windows (MSVC)][ci_windows_bdg]]([ci_windows])
