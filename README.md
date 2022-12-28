@@ -26,7 +26,7 @@ include/\
 └── cpp/\
     ├── datastructures/\
     │   ├── binary_indexed_tree/\
-    │   │   └── [BITreeRangeQueryPointUpdate.hpp] ( *[BITreeRangeQueryPointUpdateTest.cpp]* )\
+    │   │   └── [BITreeRQPU.hpp] ( *[BITreeRQPUTest.cpp]* )\
     │   ├── binary_search_tree/\
     │   │   ├── [BSTuptr.hpp] ( *[BSTuptrTest.cpp]* )\
     │   │   ├── [BSTuptrIterator.hpp]\
@@ -50,8 +50,8 @@ include/\
         ├── [quick_sort.hpp] ( *[SortTest.cpp]* )\
         └── [selection_sort.hpp] ( *[SortTest.cpp]* )
 
-[BITreeRangeQueryPointUpdate.hpp]: ./include/cpp/datastructures/binary_indexed_tree/BITreeRangeQueryPointUpdate.hpp
-[BITreeRangeQueryPointUpdateTest.cpp]: ./tests/units/datastructures/binary_indexed_tree/BITreeRangeQueryPointUpdateTest.cpp
+[BITreeRQPU.hpp              ]: ./include/cpp/datastructures/binary_indexed_tree/BITreeRQPU.hpp
+[BITreeRQPUTest.cpp          ]: ./tests/units/datastructures/binary_indexed_tree/BITreeRQPUTest.cpp
 [BSTuptr.hpp                 ]: ./include/cpp/datastructures/binary_search_tree/BSTuptr.hpp
 [BSTuptrIterator.hpp         ]: ./include/cpp/datastructures/binary_search_tree/BSTuptrIterator.hpp
 [BSTuptrNode.hpp             ]: ./include/cpp/datastructures/binary_search_tree/BSTuptrNode.hpp
