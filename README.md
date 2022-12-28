@@ -32,7 +32,7 @@ include/\
     │   │   ├── [BSTuptrIterator.hpp]\
     │   │   └── [BSTuptrNode.hpp]\
     │   ├── linked_list/\
-    │   │   └── [DoublyLinkedList.hpp] ( *[DoublyLinkedListTest.cpp]* )\
+    │   │   └── [DLLraw.hpp] ( *[DLLrawTest.cpp]* )\
     │   ├── queue/\
     │   │   ├── [IQueue.hpp]\
     │   │   └── [ListQueue.hpp] ( *[ListQueueTest.cpp]* )\
@@ -58,8 +58,8 @@ include/\
 [BSTuptrTest.cpp             ]: ./tests/units/datastructures/binary_search_tree/BSTuptrTest.cpp
 [BinaryHeapQ.hpp             ]: ./include/cpp/datastructures/queue_priority/BinaryHeapQ.hpp
 [BinaryHeapQTest.cpp         ]: ./tests/units/datastructures/queue_priority/BinaryHeapQTest.cpp
-[DoublyLinkedList.hpp        ]: ./include/cpp/datastructures/linked_list/DoublyLinkedList.hpp
-[DoublyLinkedListTest.cpp    ]: ./tests/units/datastructures/linked_list/DoublyLinkedListTest.cpp
+[DLLraw.hpp                  ]: ./include/cpp/datastructures/linked_list/DLLraw.hpp
+[DLLrawTest.cpp              ]: ./tests/units/datastructures/linked_list/DLLrawTest.cpp
 [IQueue.hpp                  ]: ./include/cpp/datastructures/queue/IQueue.hpp
 [IStack.hpp                  ]: ./include/cpp/datastructures/stack/IStack.hpp
 [ListQueue.hpp               ]: ./include/cpp/datastructures/queue/ListQueue.hpp
