@@ -17,7 +17,7 @@
 namespace wndx {
 namespace ds {
 
-class BITreeRangeQueryPointUpdate
+class BITreeRQPU
 {
 protected:
     using Ti = int; // alias just in case default int is not enough!
@@ -31,7 +31,7 @@ public:
     /**
      * @brief Create an empty Binary Indexed Tree with 'sz' parameter zero based.
      */
-    BITreeRangeQueryPointUpdate(const std::size_t sz)
+    BITreeRQPU(const std::size_t sz)
         : m_sz{ sz + 1 }
     {
         m_tree.resize(m_sz);
@@ -45,7 +45,7 @@ public:
      * The 'values' array MUST BE ONE BASED meaning values[0]
      * does not get used, O(n) construction.
      */
-    BITreeRangeQueryPointUpdate(const std::initializer_list<Ti> &il)
+    BITreeRQPU(const std::initializer_list<Ti> &il)
         : m_sz{ il.size() }, m_tree{ il }
     {
         if (m_sz < 1) throw std::invalid_argument("Empty initializer.");
@@ -57,7 +57,7 @@ public:
         }
     }
 
-    BITreeRangeQueryPointUpdate(const std::vector<Ti> &v)
+    BITreeRQPU(const std::vector<Ti> &v)
         : m_sz{ v.size() }, m_tree{ v }
     {
         if (m_sz < 1) throw std::invalid_argument("Empty initializer.");
@@ -69,12 +69,12 @@ public:
         }
     }
 
-    BITreeRangeQueryPointUpdate() = default;
-    BITreeRangeQueryPointUpdate(BITreeRangeQueryPointUpdate &&) = default;
-    BITreeRangeQueryPointUpdate(const BITreeRangeQueryPointUpdate &) = default;
-    BITreeRangeQueryPointUpdate &operator=(BITreeRangeQueryPointUpdate &&) = default;
-    BITreeRangeQueryPointUpdate &operator=(const BITreeRangeQueryPointUpdate &) = default;
-    virtual ~BITreeRangeQueryPointUpdate() = default;
+    BITreeRQPU() = default;
+    BITreeRQPU(BITreeRQPU &&) = default;
+    BITreeRQPU(const BITreeRQPU &) = default;
+    BITreeRQPU &operator=(BITreeRQPU &&) = default;
+    BITreeRQPU &operator=(const BITreeRQPU &) = default;
+    virtual ~BITreeRQPU() = default;
 
 public:
     auto cbegin() const noexcept { return m_tree.cbegin(); }

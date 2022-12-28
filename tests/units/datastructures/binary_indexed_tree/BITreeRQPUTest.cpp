@@ -1,4 +1,4 @@
-#include "BITreeRangeQueryPointUpdate.hpp"
+#include "BITreeRQPU.hpp"
 
 #include "gen.hpp"
 
@@ -12,7 +12,7 @@
 
 using namespace wndx;
 
-class BITreeRangeQueryPointUpdateTest : public ::testing::Test
+class BITreeRQPUTest : public ::testing::Test
 {
 protected:
     const int MIN_RAND_NUM = -1000;
@@ -41,7 +41,7 @@ protected:
         return gen::srng(low, N);
     }
 
-    void doRandomRangeQuery(std::vector<int> &v, ds::BITreeRangeQueryPointUpdate &tree) const
+    void doRandomRangeQuery(std::vector<int> &v, ds::BITreeRQPU &tree) const
     {
         int sum {0};
         int N = v.size() - 1;
@@ -56,20 +56,20 @@ protected:
 
 };
 
-TEST_F(BITreeRangeQueryPointUpdateTest, covVirtDtor)
+TEST_F(BITreeRQPUTest, covVirtDtor)
 {
     ASSERT_NO_THROW({
-        ds::BITreeRangeQueryPointUpdate *ptr{ new ds::BITreeRangeQueryPointUpdate() };
+        ds::BITreeRQPU *ptr{ new ds::BITreeRQPU() };
         if (ptr) delete ptr;
     });
 }
 
-TEST_F(BITreeRangeQueryPointUpdateTest, testEmptyInitializer)
+TEST_F(BITreeRQPUTest, testEmptyInitializer)
 {
     const std::string exp_err{ "Empty initializer." };
 
     try {
-        ds::BITreeRangeQueryPointUpdate tree({});
+        ds::BITreeRQPU tree({});
     } catch(std::invalid_argument const &err) {
         ASSERT_EQ(err.what(), std::string(exp_err));
     } catch(...) {
@@ -78,7 +78,7 @@ TEST_F(BITreeRangeQueryPointUpdateTest, testEmptyInitializer)
 
     try {
         std::vector<int> v;
-        ds::BITreeRangeQueryPointUpdate tree(v);
+        ds::BITreeRQPU tree(v);
     } catch(std::invalid_argument const &err) {
         ASSERT_EQ(err.what(), std::string(exp_err));
     } catch(...) {
@@ -86,11 +86,11 @@ TEST_F(BITreeRangeQueryPointUpdateTest, testEmptyInitializer)
     }
 }
 
-TEST_F(BITreeRangeQueryPointUpdateTest, testSumException)
+TEST_F(BITreeRQPUTest, testSumException)
 {
     const std::string exp_err{ "Make sure right >= left" };
 
-    ds::BITreeRangeQueryPointUpdate tree({UNUSED_VAL, 1, 2, 3, 4, 5, 6});
+    ds::BITreeRQPU tree({UNUSED_VAL, 1, 2, 3, 4, 5, 6});
 
     try {
         tree.sum(2, 1);
@@ -101,12 +101,12 @@ TEST_F(BITreeRangeQueryPointUpdateTest, testSumException)
     }
 }
 
-TEST_F(BITreeRangeQueryPointUpdateTest, testGetVal)
+TEST_F(BITreeRQPUTest, testGetVal)
 {
     std::initializer_list<int> il {UNUSED_VAL, 1, 2, 3, 4, 5, 6};
     std::vector<int> expget {il};
     std::vector<int> expval {0, 1, 3, 3, 10, 5, 11};
-    ds::BITreeRangeQueryPointUpdate tree(il);
+    ds::BITreeRQPU tree(il);
 
     for (std::size_t i = 1; i < il.size(); i++) {
         ASSERT_EQ(tree.get(i), expget.at(i));
@@ -123,10 +123,10 @@ TEST_F(BITreeRangeQueryPointUpdateTest, testGetVal)
     });
 }
 
-TEST_F(BITreeRangeQueryPointUpdateTest, testIntervalSumPositiveValues)
+TEST_F(BITreeRQPUTest, testIntervalSumPositiveValues)
 {
     std::initializer_list<int> il {UNUSED_VAL, 1, 2, 3, 4, 5, 6};
-    ds::BITreeRangeQueryPointUpdate tree(il);
+    ds::BITreeRQPU tree(il);
 
     ASSERT_EQ(tree.sum(1, 6), 21);
     ASSERT_EQ(tree.sum(1, 5), 15);
@@ -146,10 +146,10 @@ TEST_F(BITreeRangeQueryPointUpdateTest, testIntervalSumPositiveValues)
     ASSERT_EQ(tree.sum(1, 1), 1);
 }
 
-TEST_F(BITreeRangeQueryPointUpdateTest, testIntervalSumNegativeValues)
+TEST_F(BITreeRQPUTest, testIntervalSumNegativeValues)
 {
     std::initializer_list<int> il {UNUSED_VAL, -1, -2, -3, -4, -5, -6};
-    ds::BITreeRangeQueryPointUpdate tree(il);
+    ds::BITreeRQPU tree(il);
 
     ASSERT_EQ(tree.sum(1, 6), -21);
     ASSERT_EQ(tree.sum(1, 5), -15);
@@ -166,10 +166,10 @@ TEST_F(BITreeRangeQueryPointUpdateTest, testIntervalSumNegativeValues)
     ASSERT_EQ(tree.sum(1, 1), -1);
 }
 
-TEST_F(BITreeRangeQueryPointUpdateTest, testIntervalSumNegativeValues2)
+TEST_F(BITreeRQPUTest, testIntervalSumNegativeValues2)
 {
     std::initializer_list<int> il {UNUSED_VAL, -76871, -164790};
-    ds::BITreeRangeQueryPointUpdate tree(il);
+    ds::BITreeRQPU tree(il);
 
     for (std::size_t i = 0; i < LOOPS; i++) {
         ASSERT_EQ(tree.sum(1, 1), -76871);
@@ -183,14 +183,14 @@ TEST_F(BITreeRangeQueryPointUpdateTest, testIntervalSumNegativeValues2)
     }
 }
 
-TEST_F(BITreeRangeQueryPointUpdateTest, testRandomizedStaticSumQueries)
+TEST_F(BITreeRQPUTest, testRandomizedStaticSumQueries)
 {
     std::vector<int> rndm;
-    ds::BITreeRangeQueryPointUpdate tree;
+    ds::BITreeRQPU tree;
 
     for (std::size_t sz = 2; sz <= LOOPS; sz++) {
         rndm = gen::random<int>(sz, 0, LOOPS, true);
-        tree = ds::BITreeRangeQueryPointUpdate(rndm);
+        tree = ds::BITreeRQPU(rndm);
 
         for (std::size_t j = 0; j < LOOPS / 10; j++) {
             doRandomRangeQuery(rndm, tree);
@@ -198,14 +198,14 @@ TEST_F(BITreeRangeQueryPointUpdateTest, testRandomizedStaticSumQueries)
     }
 }
 
-TEST_F(BITreeRangeQueryPointUpdateTest, testRandomizedSetSumQueries)
+TEST_F(BITreeRQPUTest, testRandomizedSetSumQueries)
 {
     std::vector<int> rndm;
-    ds::BITreeRangeQueryPointUpdate tree;
+    ds::BITreeRQPU tree;
 
     for (std::size_t sz = 2; sz <= LOOPS; sz++) {
         rndm = gen::random<int>(sz, 0, LOOPS, true);
-        tree = ds::BITreeRangeQueryPointUpdate(rndm);
+        tree = ds::BITreeRQPU(rndm);
 
         for (std::size_t j = 0; j < LOOPS / 10; j++) {
             const int index = gen::srng(1, sz);
@@ -219,12 +219,12 @@ TEST_F(BITreeRangeQueryPointUpdateTest, testRandomizedSetSumQueries)
     }
 }
 
-TEST_F(BITreeRangeQueryPointUpdateTest, testReusability)
+TEST_F(BITreeRQPUTest, testReusability)
 {
     const std::size_t size {1000};
     std::vector<int> v;
     v.resize(size); // it is essential to populate vector with default values!
-    ds::BITreeRangeQueryPointUpdate tree(size);
+    ds::BITreeRQPU tree(size);
 
     for (std::size_t loop = 0; loop < LOOPS; loop++) {
         v.at(0) = UNUSED_VAL;
