@@ -4,6 +4,7 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>            // std::for_each
 #include <cstddef>              // std::size_t
 #include <initializer_list>
 #include <stdexcept>            // std::invalid_argument
@@ -98,6 +99,28 @@ TEST_F(BITreeRangeQueryPointUpdateTest, testSumException)
     } catch(...) {
         FAIL() << "Expected std::invalid_argument " + exp_err ;
     }
+}
+
+TEST_F(BITreeRangeQueryPointUpdateTest, testGetVal)
+{
+    std::initializer_list<int> il {UNUSED_VAL, 1, 2, 3, 4, 5, 6};
+    std::vector<int> expget {il};
+    std::vector<int> expval {0, 1, 3, 3, 10, 5, 11};
+    ds::BITreeRangeQueryPointUpdate tree(il);
+
+    for (std::size_t i = 1; i < il.size(); i++) {
+        ASSERT_EQ(tree.get(i), expget.at(i));
+    }
+
+    std::size_t i {0};
+    for (const int e : tree) {
+        ASSERT_EQ(e, expval.at(i++));
+    }
+
+    i = 0; // standard library algorithm
+    std::for_each(tree.cbegin(), tree.cend(), [&](const int& e) {
+        ASSERT_EQ(e, expval.at(i++));
+    });
 }
 
 TEST_F(BITreeRangeQueryPointUpdateTest, testIntervalSumPositiveValues)
