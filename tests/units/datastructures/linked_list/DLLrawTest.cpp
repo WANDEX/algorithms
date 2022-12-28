@@ -1,4 +1,4 @@
-#include "DoublyLinkedList.hpp"
+#include "DLLraw.hpp"
 
 #include <gtest/gtest.h>
 
@@ -7,17 +7,17 @@
 
 using namespace wndx;
 
-class DoublyLinkedListTest : public ::testing::Test
+class DLLrawTest : public ::testing::Test
 {
 protected:
-    ds::DoublyLinkedList<int> *list;
+    ds::DLLraw<int> *list;
 
-    DoublyLinkedListTest()
+    DLLrawTest()
     {
-        list = new ds::DoublyLinkedList<int>();
+        list = new ds::DLLraw<int>();
     }
 
-    virtual ~DoublyLinkedListTest()
+    virtual ~DLLrawTest()
     {
         if (list) delete list;
     }
@@ -32,13 +32,13 @@ protected:
 
 };
 
-TEST_F(DoublyLinkedListTest, testEmptyList)
+TEST_F(DLLrawTest, testEmptyList)
 {
     EXPECT_TRUE(list->isEmpty());
     EXPECT_EQ(list->size(), 0);
 }
 
-TEST_F(DoublyLinkedListTest, testRemoveFirstOfEmpty)
+TEST_F(DLLrawTest, testRemoveFirstOfEmpty)
 {
     try {
         list->removeFirst();
@@ -49,7 +49,7 @@ TEST_F(DoublyLinkedListTest, testRemoveFirstOfEmpty)
     }
 }
 
-TEST_F(DoublyLinkedListTest, testRemoveLastOfEmpty)
+TEST_F(DLLrawTest, testRemoveLastOfEmpty)
 {
     try {
         list->removeLast();
@@ -60,7 +60,7 @@ TEST_F(DoublyLinkedListTest, testRemoveLastOfEmpty)
     }
 }
 
-TEST_F(DoublyLinkedListTest, testPeekFirstOfEmpty)
+TEST_F(DLLrawTest, testPeekFirstOfEmpty)
 {
     try {
         list->peekFirst();
@@ -71,7 +71,7 @@ TEST_F(DoublyLinkedListTest, testPeekFirstOfEmpty)
     }
 }
 
-TEST_F(DoublyLinkedListTest, testPeekLastOfEmpty)
+TEST_F(DLLrawTest, testPeekLastOfEmpty)
 {
     try {
         list->peekLast();
@@ -82,7 +82,7 @@ TEST_F(DoublyLinkedListTest, testPeekLastOfEmpty)
     }
 }
 
-TEST_F(DoublyLinkedListTest, testAddFirst)
+TEST_F(DLLrawTest, testAddFirst)
 {
     list->addFirst(3);
     ASSERT_EQ(list->size(), 1);
@@ -90,7 +90,7 @@ TEST_F(DoublyLinkedListTest, testAddFirst)
     ASSERT_EQ(list->size(), 2);
 }
 
-TEST_F(DoublyLinkedListTest, testAddLast)
+TEST_F(DLLrawTest, testAddLast)
 {
     list->addLast(3);
     ASSERT_EQ(list->size(), 1);
@@ -98,7 +98,7 @@ TEST_F(DoublyLinkedListTest, testAddLast)
     ASSERT_EQ(list->size(), 2);
 }
 
-TEST_F(DoublyLinkedListTest, testAddAt)
+TEST_F(DLLrawTest, testAddAt)
 {
     list->addAt(0, 1);
     ASSERT_EQ(list->size(), 1);
@@ -112,35 +112,35 @@ TEST_F(DoublyLinkedListTest, testAddAt)
     ASSERT_EQ(list->size(), 5);
 }
 
-TEST_F(DoublyLinkedListTest, testRemoveFirst)
+TEST_F(DLLrawTest, testRemoveFirst)
 {
     list->addFirst(3);
     ASSERT_TRUE(list->removeFirst() == 3);
     ASSERT_TRUE(list->isEmpty());
 }
 
-TEST_F(DoublyLinkedListTest, testRemoveLast)
+TEST_F(DLLrawTest, testRemoveLast)
 {
     list->addLast(4);
     ASSERT_TRUE(list->removeLast() == 4);
     ASSERT_TRUE(list->isEmpty());
 }
 
-TEST_F(DoublyLinkedListTest, testPeekFirst)
+TEST_F(DLLrawTest, testPeekFirst)
 {
     list->addFirst(4);
     ASSERT_TRUE(list->peekFirst() == 4);
     ASSERT_EQ(list->size(), 1);
 }
 
-TEST_F(DoublyLinkedListTest, testPeekLast)
+TEST_F(DLLrawTest, testPeekLast)
 {
     list->addLast(4);
     ASSERT_TRUE(list->peekLast() == 4);
     ASSERT_EQ(list->size(), 1);
 }
 
-TEST_F(DoublyLinkedListTest, testPeeking)
+TEST_F(DLLrawTest, testPeeking)
 {
     // 5
     list->addFirst(5);
@@ -172,9 +172,9 @@ TEST_F(DoublyLinkedListTest, testPeeking)
     ASSERT_TRUE(list->peekLast()  == 6);
 }
 
-TEST_F(DoublyLinkedListTest, testRemoving)
+TEST_F(DLLrawTest, testRemoving)
 {
-    ds::DoublyLinkedList<std::string> strs = ds::DoublyLinkedList<std::string>();
+    ds::DLLraw<std::string> strs = ds::DLLraw<std::string>();
     strs.add("a");
     strs.add("b");
     strs.add("c");
@@ -190,7 +190,7 @@ TEST_F(DoublyLinkedListTest, testRemoving)
     ASSERT_EQ(0, strs.size());
 }
 
-TEST_F(DoublyLinkedListTest, testRemoveAt)
+TEST_F(DLLrawTest, testRemoveAt)
 {
     list->add(1);
     list->add(2);
@@ -205,7 +205,7 @@ TEST_F(DoublyLinkedListTest, testRemoveAt)
     ASSERT_EQ(list->size(), 0);
 }
 
-TEST_F(DoublyLinkedListTest, testClear)
+TEST_F(DLLrawTest, testClear)
 {
     list->add(22);
     list->add(33);
@@ -221,9 +221,9 @@ TEST_F(DoublyLinkedListTest, testClear)
     ASSERT_EQ(list->size(), 0);
 }
 
-TEST_F(DoublyLinkedListTest, testToString)
+TEST_F(DLLrawTest, testToString)
 {
-    ds::DoublyLinkedList<std::string> strs = ds::DoublyLinkedList<std::string>();
+    ds::DLLraw<std::string> strs = ds::DLLraw<std::string>();
     ASSERT_EQ(strs.toString(), "{  }");
     strs.add("a");
     ASSERT_EQ(strs.toString(), "{ a }");

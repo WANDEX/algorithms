@@ -1,16 +1,18 @@
 #pragma once
+/**
+ * Doubly Linked List implementation written using the raw pointers.
+ */
 
-#include <cstddef>      // size_t
-#include <sstream>      // ostream
-#include <stdexcept>    // runtime_error
+#include <cstddef>              // std::size_t
+#include <sstream>              // std::ostream
+#include <stdexcept>            // std::runtime_error
 #include <string>
 
 namespace wndx {
 namespace ds {
 
 template<typename T>
-class DoublyLinkedList
-{
+class DLLraw {
 private: /* nested/internal Node class to represent data
 'https://en.cppreference.com/w/cpp/language/template_specialization' */
     template <typename U> // Unused (required ^)
@@ -19,9 +21,8 @@ private: /* nested/internal Node class to represent data
     private:
         T m_data {};
         Node<T> *m_prev{ nullptr }, *m_next{ nullptr };
-        // DoublyLinkedList need an access to the Node information
-        friend class DoublyLinkedList<T>;
-
+        // DLLraw need an access to the Node information
+        friend class DLLraw<T>;
     public:
         Node(const T &data, Node<T> *prev, Node<T> *next)
             : m_data{ data }, m_prev{ prev }, m_next{ next }
@@ -46,11 +47,10 @@ private:
     Node<T> *tail { nullptr };
 
 public:
-    DoublyLinkedList()
+    DLLraw()
     {}
 
-    virtual ~DoublyLinkedList()
-    {
+    virtual ~DLLraw() {
         clear();
     }
 
@@ -236,7 +236,6 @@ public:
     bool remove(const T &obj)
     {
         Node<T> *trav = head;
-        // TODO: support searching for nullptr obj
         for (; trav != nullptr; trav = trav->m_next) {
             if (obj == trav->m_data) {
                 remove(trav);
@@ -253,7 +252,6 @@ public:
     {
         std::size_t index {0};
         Node<T> *trav = head;
-        // TODO: support searching for nullptr obj
         for (; trav != nullptr; trav = trav->m_next, index++) {
             if (obj == trav->m_data) {
                 return index;
@@ -284,8 +282,7 @@ public:
         return oss.str();
     }
 
-    friend std::ostream& operator<<(std::ostream &strm, const DoublyLinkedList<T> &a)
-    {
+    friend std::ostream& operator<<(std::ostream &strm, const DLLraw<T> &a) {
         return strm << a.toString();
     }
 };
