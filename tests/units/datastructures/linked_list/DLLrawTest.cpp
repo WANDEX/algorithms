@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-#include <stdexcept>        // runtime_error
+#include <stdexcept>            // std::runtime_error
 #include <string>
 
 using namespace wndx;

@@ -1,10 +1,10 @@
 #pragma once
 
 #include <array>
-#include <cmath>            // std::abs
-#include <cstddef>          // std::size_t
+#include <cmath>                // std::abs
+#include <cstddef>              // std::size_t
 #include <random>
-#include <stdexcept>        // std::invalid_argument
+#include <stdexcept>            // std::invalid_argument
 #include <unordered_set>
 #include <vector>
 

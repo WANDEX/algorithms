@@ -2,7 +2,7 @@
 // merge sort algorithm without VLA (Variable Length Arrays).
 // VLA are a C99 feature and not supported by msvc.
 
-#include <cstddef>  // std::size_t
+#include <cstddef>              // std::size_t
 #include <array>
 #include <vector>
 

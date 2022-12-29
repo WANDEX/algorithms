@@ -1,7 +1,7 @@
 #pragma once
 
 #include <array>
-#include <cstddef>  // std::size_t
+#include <cstddef>              // std::size_t
 #include <iostream>
 #include <string>
 #include <vector>

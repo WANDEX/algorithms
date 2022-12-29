@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstddef>      // size_t
+#include <cstddef>              // std::size_t
 
 namespace wndx {
 namespace ds {

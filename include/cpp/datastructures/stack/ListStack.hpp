@@ -2,9 +2,9 @@
 
 #include "IStack.hpp"
 
-#include <cstddef>      // size_t
+#include <cstddef>              // std::size_t
 #include <forward_list>
-#include <stdexcept>    // runtime_error
+#include <stdexcept>            // std::runtime_error
 
 namespace wndx {
 namespace ds {

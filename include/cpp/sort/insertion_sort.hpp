@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstddef>  // std::size_t
+#include <cstddef>              // std::size_t
 #include <array>
 #include <vector>
 

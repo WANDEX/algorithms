@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stddef.h>  // size_t
+#include <stddef.h>             // size_t
 
 #ifndef QPTR_SWAP_P_Q
 #define QPTR_SWAP_P_Q
