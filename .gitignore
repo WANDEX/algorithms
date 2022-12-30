@@ -5,3 +5,4 @@ __pycache__/
 .vs/
 *.out
 compile_commands.json
+macro.hpp
