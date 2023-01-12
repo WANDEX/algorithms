@@ -25,7 +25,7 @@ inline void swap(auto* p, auto* q)
  * Concept: if array is sorted from [0, i] => insert at i+1.
  */
 template<typename T>
-inline void insertion_sort(T a[], const std::size_t n)
+inline void insertion_sort(T *a, const std::size_t n)
 {
     for (std::size_t i = 1; i < n; i++) {
         for (std::size_t j = i; j > 0 && a[j] < a[j - 1]; j--)

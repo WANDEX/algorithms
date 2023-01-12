@@ -10,7 +10,7 @@ namespace wndx {
 namespace srt {
 
 template<typename T>
-inline void merge(T A[], const int p, const int q, const int r)
+inline void merge(T *A, const int p, const int q, const int r)
 {
     int x{0}, y{0}, z{0};
     const int lsub{ q - p + 1 };
@@ -36,7 +36,7 @@ inline void merge(T A[], const int p, const int q, const int r)
 }
 
 template<typename T>
-inline void merge_sort(T A[], const int p, const int r)
+inline void merge_sort(T *A, const int p, const int r)
 {
     if (p >= r) return;
     const int q{ (p + r) / 2 }; // middle_index (round down implicitly)

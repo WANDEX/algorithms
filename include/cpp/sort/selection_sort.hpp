@@ -21,7 +21,7 @@ inline void swap(auto* p, auto* q)
 #endif // SRT_SWAP_P_Q
 
 template<typename T>
-inline void selection_sort(T a[], const std::size_t n)
+inline void selection_sort(T *a, const std::size_t n)
 {
     for (std::size_t i = 0; i < n; i++) {
         std::size_t x = i; // find the index beyond i with a lower value than i
