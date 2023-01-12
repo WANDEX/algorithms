@@ -13,7 +13,7 @@ namespace pp { // pretty print
  * print C array
  */
 template <typename T>
-inline void print(const T a[], const std::size_t n, const std::string prefix="")
+inline void print(const T *a, const std::size_t n, const std::string prefix="")
 {
     if (n < 1) {
         std::cout << prefix << "{}" << std::endl;
