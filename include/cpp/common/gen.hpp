@@ -61,7 +61,7 @@ inline std::unordered_set<T> random_uset(const std::size_t n, const double fr, c
  * @param  n  - size.
  */
 template<typename T>
-inline void random(T out[], const std::size_t n, const double fr, const double to)
+inline void random(T *out, const std::size_t n, const double fr, const double to)
 {
     for (std::size_t i = 0; i < n; i++)
         out[i] = gen::srng(fr, to);
