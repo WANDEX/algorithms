@@ -15,7 +15,7 @@ inline void qptr_swap(int *p, int *q)
 }
 #endif // QPTR_SWAP_P_Q
 
-inline void bubble_sort(int a[], const size_t n)
+inline void bubble_sort(int *a, const size_t n)
 {
     int sorted = 0;
     while (!sorted) {

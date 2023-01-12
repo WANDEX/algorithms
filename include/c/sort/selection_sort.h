@@ -15,7 +15,7 @@ inline void qptr_swap(int *p, int *q)
 }
 #endif // QPTR_SWAP_P_Q
 
-inline void selection_sort(int a[], const size_t n)
+inline void selection_sort(int *a, const size_t n)
 {
     for (size_t i = 0; i < n; i++) {
         int x = i; // find the index beyond i with a lower value than i

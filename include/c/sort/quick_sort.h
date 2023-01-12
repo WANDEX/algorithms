@@ -16,7 +16,7 @@ inline void qptr_swap(int *p, int *q)
 /**
  * performs Hoare partition algorithm for quick sort
  */
-inline int hoare_partition(int a[], int lo, int hi)
+inline int hoare_partition(int *a, int lo, int hi)
 {
     int pivot = a[lo];
     int i = lo - 1, j = hi + 1;
@@ -32,7 +32,7 @@ inline int hoare_partition(int a[], int lo, int hi)
  * sort interval [lo, hi] in-place recursively.
  * initially: lo = 0, hi = size of array - 1
  */
-inline void quick_sort(int a[], int lo, int hi)
+inline void quick_sort(int *a, int lo, int hi)
 {
     if (lo < hi) {
         int split = hoare_partition(a, lo, hi);
