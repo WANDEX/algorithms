@@ -74,7 +74,7 @@ inline void random(T *out, const std::size_t n, const double fr, const double to
  * @param  to - range to the number (upper bound of the distribution).
  * @param  n  - size.
  */
-template<typename T, const std::size_t n>
+template<typename T, std::size_t n>
 inline std::array<T, n> random(const double fr, const double to)
 {
     std::array<T, n> out;

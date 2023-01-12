@@ -49,7 +49,7 @@ inline void quick_sort(int *a, int lo, int hi)
 }
 
 
-template<typename T, const std::size_t n>
+template<typename T, std::size_t n>
 inline int hoare_partition(std::array<T, n> &a, int lo, int hi)
 {
     T pivot = a[lo];
@@ -62,7 +62,7 @@ inline int hoare_partition(std::array<T, n> &a, int lo, int hi)
     }
 }
 
-template<typename T, const std::size_t n>
+template<typename T, std::size_t n>
 inline void quick_sort(std::array<T, n> &a, int lo, int hi)
 {
     if (lo < hi) {

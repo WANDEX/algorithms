@@ -51,7 +51,7 @@ inline void merge_sort(T *A, const int p, const int r)
  * (abbreviated as it is a well-known algorithm)
  * @p left_index, @q middle_index, @r right_index
  */
-template<typename T, const std::size_t n>
+template<typename T, std::size_t n>
 inline void merge(std::array<T, n> &A, const int p, const int q, const int r)
 {
     int x{0}, y{0}, z{0};
@@ -83,7 +83,7 @@ inline void merge(std::array<T, n> &A, const int p, const int q, const int r)
  * then merges the sorted sub-arrays.
  * @p left_index, @r right_index
  */
-template<typename T, const std::size_t n>
+template<typename T, std::size_t n>
 inline void merge_sort(std::array<T, n> &A, const int p, const int r)
 {
     if (p >= r) return;

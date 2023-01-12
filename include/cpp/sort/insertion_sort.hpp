@@ -33,7 +33,7 @@ inline void insertion_sort(T *a, const std::size_t n)
     }
 }
 
-template<typename T, const std::size_t n>
+template<typename T, std::size_t n>
 inline void insertion_sort(std::array<T, n> &a)
 {
     for (std::size_t i = 1; i < n; i++) {

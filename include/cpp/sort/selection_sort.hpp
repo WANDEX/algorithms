@@ -31,7 +31,7 @@ inline void selection_sort(T *a, const std::size_t n)
     }
 }
 
-template<typename T, const std::size_t n>
+template<typename T, std::size_t n>
 inline void selection_sort(std::array<T, n> &a)
 {
     for (std::size_t i = 0; i < n; i++) {

@@ -35,7 +35,7 @@ inline void bubble_sort(T *a, const std::size_t n)
     }
 }
 
-template<typename T, const std::size_t n>
+template<typename T, std::size_t n>
 inline void bubble_sort(std::array<T, n> &a)
 {
     bool sorted { false };

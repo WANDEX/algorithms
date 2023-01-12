@@ -28,7 +28,7 @@ inline void print(const T *a, const std::size_t n, const std::string prefix="")
 /**
  * print std::array
  */
-template <typename T, const std::size_t n>
+template <typename T, std::size_t n>
 inline void print(const std::array<T, n> &a, const std::string prefix="")
 {
     if (n < 1) {
