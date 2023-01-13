@@ -12,6 +12,8 @@
 # ./scripts/build.sh ctest
 ## make clean build & run tests:
 # ./scripts/build.sh clean ctest
+## make cleaner build (for edge cases) & run tests:
+# ./scripts/build.sh cleaner ctest
 ## build & run filtered tests:
 # ./scripts/build.sh ctest .*regex.*
 ## or
