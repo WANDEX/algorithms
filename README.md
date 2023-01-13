@@ -18,6 +18,11 @@ A collection of **0BSD**-licensed algorithms that I wrote for self-education and
 ./scripts/build.sh clean ctest
 ```
 
+**To make cleaner build (for edge cases) & run tests:**
+```
+./scripts/build.sh cleaner ctest
+```
+
 [Ninja (build system)](https://github.com/ninja-build/ninja)
 is optional: change Generator **-G Ninja** in the above build script.
 
