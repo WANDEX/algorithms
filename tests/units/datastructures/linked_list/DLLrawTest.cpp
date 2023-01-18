@@ -224,12 +224,13 @@ TEST_F(DLLrawTest, testRemoving)
     strs.add("d");
     strs.add("e");
     strs.add("f");
+    // cover removeLast() for std::string case
+    ASSERT_EQ("f", strs.removeLast());
     strs.remove("b");
     strs.remove("a");
     strs.remove("d");
     strs.remove("e");
     strs.remove("c");
-    strs.remove("f");
     ASSERT_EQ(0, strs.size());
 }
 
