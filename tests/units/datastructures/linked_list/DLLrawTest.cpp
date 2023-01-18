@@ -224,8 +224,12 @@ TEST_F(DLLrawTest, testRemoving)
     strs.add("d");
     strs.add("e");
     strs.add("f");
+
     // cover removeLast() for std::string case
     ASSERT_EQ("f", strs.removeLast());
+    // cover false branch - was not found
+    ASSERT_FALSE(strs.remove("f"));
+
     strs.remove("b");
     strs.remove("a");
     strs.remove("d");
