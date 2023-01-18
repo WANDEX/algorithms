@@ -153,7 +153,7 @@ public:
      */
     T peekFirst() const
     {
-        if (isEmpty()) throw std::runtime_error("Empty list");
+        if (isEmpty()) throw std::runtime_error("Empty list.");
         return head->m_data;
     }
 
@@ -162,7 +162,7 @@ public:
      */
     T peekLast() const
     {
-        if (isEmpty()) throw std::runtime_error("Empty list");
+        if (isEmpty()) throw std::runtime_error("Empty list.");
         return tail->m_data;
     }
 
@@ -171,7 +171,7 @@ public:
      */
     T removeFirst()
     {
-        if (isEmpty()) throw std::runtime_error("Empty list");
+        if (isEmpty()) throw std::runtime_error("Empty list.");
         T data = head->m_data; // Extract the data at the head
         head = head->m_next;   // move the head pointer forwards one node
         --m_size;
@@ -185,7 +185,7 @@ public:
      */
     T removeLast()
     {
-        if (isEmpty()) throw std::runtime_error("Empty list");
+        if (isEmpty()) throw std::runtime_error("Empty list.");
         T data = tail->m_data; // Extract the data at the tail
         tail = tail->m_prev;   // move the tail pointer backwards one node
         --m_size;

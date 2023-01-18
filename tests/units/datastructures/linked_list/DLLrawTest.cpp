@@ -11,6 +11,9 @@ using namespace wndx;
 class DLLrawTest : public ::testing::Test
 {
 protected:
+    const std::string err_empty_list { "Empty list." };
+    const std::string err_empty_list_desc { "Expected std::runtime_error " + err_empty_list };
+
     ds::DLLraw<int> *list;
 
     DLLrawTest()
@@ -70,9 +73,9 @@ TEST_F(DLLrawTest, testRemoveFirstOfEmpty)
     try {
         list->removeFirst();
     } catch(std::runtime_error const &err) {
-        EXPECT_EQ(err.what(), std::string("Empty list"));
+        EXPECT_EQ(err.what(), std::string(err_empty_list));
     } catch(...) {
-        FAIL() << "Expected std::runtime_error Empty list";
+        FAIL() << err_empty_list_desc;
     }
 }
 
@@ -81,9 +84,9 @@ TEST_F(DLLrawTest, testRemoveLastOfEmpty)
     try {
         list->removeLast();
     } catch(std::runtime_error const &err) {
-        EXPECT_EQ(err.what(), std::string("Empty list"));
+        EXPECT_EQ(err.what(), std::string(err_empty_list));
     } catch(...) {
-        FAIL() << "Expected std::runtime_error Empty list";
+        FAIL() << err_empty_list_desc;
     }
 }
 
@@ -92,9 +95,9 @@ TEST_F(DLLrawTest, testPeekFirstOfEmpty)
     try {
         list->peekFirst();
     } catch(std::runtime_error const &err) {
-        EXPECT_EQ(err.what(), std::string("Empty list"));
+        EXPECT_EQ(err.what(), std::string(err_empty_list));
     } catch(...) {
-        FAIL() << "Expected std::runtime_error Empty list";
+        FAIL() << err_empty_list_desc;
     }
 }
 
@@ -103,9 +106,9 @@ TEST_F(DLLrawTest, testPeekLastOfEmpty)
     try {
         list->peekLast();
     } catch(std::runtime_error const &err) {
-        EXPECT_EQ(err.what(), std::string("Empty list"));
+        EXPECT_EQ(err.what(), std::string(err_empty_list));
     } catch(...) {
-        FAIL() << "Expected std::runtime_error Empty list";
+        FAIL() << err_empty_list_desc;
     }
 }
 
