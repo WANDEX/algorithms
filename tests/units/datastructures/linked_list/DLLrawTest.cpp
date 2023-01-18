@@ -42,6 +42,19 @@ TEST_F(DLLrawTest, testEmptyList)
     EXPECT_EQ(list->size(), 0);
 }
 
+TEST_F(DLLrawTest, covVirtDtor)
+{
+    ASSERT_NO_THROW({
+        ds::DLLraw<int> *ptr { new ds::DLLraw<int> };
+        if (ptr) delete ptr;
+    });
+
+    ASSERT_NO_THROW({
+        ds::DLLraw<std::string> *ptr { new ds::DLLraw<std::string> };
+        if (ptr) delete ptr;
+    });
+}
+
 TEST_F(DLLrawTest, testAddAtOutOfRange)
 {
     const std::string exp_err{ "Index > size." };
