@@ -5,7 +5,7 @@
 
 #include <cstddef>              // std::size_t
 #include <sstream>              // std::ostream
-#include <stdexcept>            // std::runtime_error
+#include <stdexcept>            // std::runtime_error, std::out_of_range
 #include <string>
 
 namespace wndx {
@@ -128,7 +128,7 @@ public:
     void addAt(const std::size_t index, const T &elem)
     {
         if (index > m_size) {
-            throw ("Illegal Index");
+            throw std::out_of_range("Index > size.");
         }
         if (index == 0) {
             addFirst(elem);
@@ -216,8 +216,9 @@ public:
      */
     T removeAt(const std::size_t index)
     {
-        if (index >= m_size)
-            throw std::invalid_argument("Invalid Index");
+        if (index >= m_size) {
+            throw std::out_of_range("Index >= size.");
+        }
         std::size_t i;
         Node<T> *trav;
         if (index < m_size / 2) { // search from the front

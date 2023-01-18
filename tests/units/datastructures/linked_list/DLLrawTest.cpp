@@ -2,7 +2,8 @@
 
 #include <gtest/gtest.h>
 
-#include <stdexcept>            // std::runtime_error
+#include <cstddef>              // std::size_t
+#include <stdexcept>            // std::runtime_error, std::out_of_range
 #include <string>
 
 using namespace wndx;
@@ -36,6 +37,32 @@ TEST_F(DLLrawTest, testEmptyList)
 {
     EXPECT_TRUE(list->isEmpty());
     EXPECT_EQ(list->size(), 0);
+}
+
+TEST_F(DLLrawTest, testAddAtOutOfRange)
+{
+    const std::string exp_err{ "Index > size." };
+    const std::size_t idx_out_of_range{ list->size() + 1 };
+    try {
+        list->addAt(idx_out_of_range, 1);
+    } catch(std::out_of_range const &err) {
+        EXPECT_EQ(err.what(), std::string(exp_err));
+    } catch(...) {
+        FAIL() << "Expected std::out_of_range " + exp_err;
+    }
+}
+
+TEST_F(DLLrawTest, testRemoveAtOutOfRange)
+{
+    const std::string exp_err{ "Index >= size." };
+    const std::size_t idx_out_of_range{ list->size() };
+    try {
+        list->removeAt(idx_out_of_range);
+    } catch(std::out_of_range const &err) {
+        EXPECT_EQ(err.what(), std::string(exp_err));
+    } catch(...) {
+        FAIL() << "Expected std::out_of_range " + exp_err;
+    }
 }
 
 TEST_F(DLLrawTest, testRemoveFirstOfEmpty)
