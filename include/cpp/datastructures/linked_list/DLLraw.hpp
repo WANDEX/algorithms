@@ -73,7 +73,7 @@ public:
     /**
      * return the size of the linked list
      */
-    std::size_t size() const
+    std::size_t size() const noexcept
     {
         return m_size;
     }
@@ -247,9 +247,10 @@ public:
     }
 
     /**
-     * Find the index of a particular value in the linked list, O(n)
+     * Find the index of a particular value in the linked list, O(n).
+     * if not found => returns size() + 1 (one past the last).
      */
-    std::size_t indexOf(const T &obj) const
+    std::size_t indexOf(const T &obj) const noexcept
     {
         std::size_t index {0};
         Node<T> *trav = head;
@@ -258,15 +259,15 @@ public:
                 return index;
             }
         }
-        return -1;
+        return size() + 1;
     }
 
     /**
-     * Check that value is contained within the linked list, O(n)
+     * Check that value is contained within the linked list, O(n).
      */
-    bool contains(const T &obj) const
+    bool contains(const T &obj) const noexcept
     {
-        return indexOf(obj) != -1;
+        return indexOf(obj) != size() + 1;
     }
 
     std::string toString() const
