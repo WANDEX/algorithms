@@ -24,10 +24,17 @@ private: /* nested/internal Node class to represent data
         // DLLraw need an access to the Node information
         friend class DLLraw<T>;
     public:
-        Node(const T &data, Node<T> *prev, Node<T> *next)
+        Node() = delete;
+        Node(Node &&) = delete;
+        Node(const Node &) = delete;
+        Node &operator=(Node &&) = delete;
+        Node &operator=(const Node &) = delete;
+
+        virtual ~Node() = default;
+
+        Node(const T &data, Node<T> *prev, Node<T> *next) noexcept
             : m_data{ data }, m_prev{ prev }, m_next{ next }
         {}
-        ~Node() = default;
 
         std::string toString() const
         {
@@ -43,14 +50,18 @@ private: /* nested/internal Node class to represent data
     };
 private:
     std::size_t m_size {0};
-    Node<T> *head { nullptr };
-    Node<T> *tail { nullptr };
+    Node<T> *head{ nullptr };
+    Node<T> *tail{ nullptr };
 
 public:
-    DLLraw()
-    {}
+    DLLraw() = default;
+    DLLraw(DLLraw &&) = default;
+    DLLraw(const DLLraw &) = default;
+    DLLraw &operator=(DLLraw &&) = default;
+    DLLraw &operator=(const DLLraw &) = default;
 
-    virtual ~DLLraw() {
+    virtual ~DLLraw() noexcept
+    {
         clear();
     }
 
@@ -63,7 +74,6 @@ public:
         while (trav != nullptr) {
             Node<T> *next = trav->m_next;
             delete trav;
-            trav = nullptr;
             trav = next;
         }
         head = tail = trav = nullptr;
@@ -81,7 +91,7 @@ public:
     /**
      * Is linked list empty?
      */
-    bool isEmpty() const
+    bool isEmpty() const noexcept
     {
         return size() == 0;
     }
@@ -89,7 +99,7 @@ public:
     /**
      * Add an element to the tail of the linked list, O(1)
      */
-    void add(const T &elem)
+    void add(const T &elem) noexcept
     {
         addLast(elem);
     }
@@ -97,10 +107,10 @@ public:
     /**
      * Add an element to the beginning of the linked list, O(1)
      */
-    void addFirst(const T &elem)
+    void addFirst(const T &elem) noexcept
     {
         if (isEmpty()) {
-            head = tail = new Node<T>(elem, nullptr, nullptr);
+            head = tail  = new Node<T>(elem, nullptr, nullptr);
         } else {
             head->m_prev = new Node<T>(elem, nullptr, head);
             head = head->m_prev;
@@ -111,10 +121,10 @@ public:
     /**
      * Add an element to the tail of the linked list, O(1)
      */
-    void addLast(const T &elem)
+    void addLast(const T &elem) noexcept
     {
         if (isEmpty()) {
-            head = tail = new Node<T>(elem, nullptr, nullptr);
+            head = tail  = new Node<T>(elem, nullptr, nullptr);
         } else {
             tail->m_next = new Node<T>(elem, tail, nullptr);
             tail = tail->m_next;
@@ -219,14 +229,21 @@ public:
         if (index >= m_size) {
             throw std::out_of_range("Index >= size.");
         }
-        std::size_t i;
         Node<T> *trav;
-        if (index < m_size / 2) { // search from the front
-            trav = head; i = 0;
-            for (; i != index; i++) trav = trav->m_next;
-        } else { // search from the back
-            trav = tail; i = m_size - 1;
-            for (; i != index; i--) trav = trav->m_prev;
+        if (index < m_size / 2) {
+            // search from the front
+            trav = head;
+            std::size_t i{ 0 };
+            for (; i != index; i++) {
+                trav = trav->m_next;
+            }
+        } else {
+            // search from the back
+            trav = tail;
+            std::size_t i{ m_size - 1 };
+            for (; i != index; i--) {
+                trav = trav->m_prev;
+            }
         }
         return remove(trav);
     }
