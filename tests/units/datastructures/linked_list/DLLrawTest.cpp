@@ -204,7 +204,7 @@ TEST_F(DLLrawTest, testPeeking)
 
 TEST_F(DLLrawTest, testRemoving)
 {
-    ds::DLLraw<std::string> strs = ds::DLLraw<std::string>();
+    ds::DLLraw<std::string> strs;
     strs.add("a");
     strs.add("b");
     strs.add("c");
@@ -253,7 +253,7 @@ TEST_F(DLLrawTest, testClear)
 
 TEST_F(DLLrawTest, testToString)
 {
-    ds::DLLraw<std::string> strs = ds::DLLraw<std::string>();
+    ds::DLLraw<std::string> strs;
     ASSERT_EQ(strs.toString(), "{  }");
     strs.add("a");
     ASSERT_EQ(strs.toString(), "{ a }");
