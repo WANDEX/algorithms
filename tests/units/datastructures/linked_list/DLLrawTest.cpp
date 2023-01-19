@@ -1,5 +1,7 @@
 #include "DLLraw.hpp"
 
+#include "gen.hpp"
+
 #include <gtest/gtest.h>
 
 #include <cstddef>              // std::size_t
@@ -141,6 +143,22 @@ TEST_F(DLLrawTest, testAddLast)
     ASSERT_EQ(list->size(), 2);
 }
 
+TEST_F(DLLrawTest, testClear)
+{
+    list->add(22);
+    list->add(33);
+    list->add(44);
+    ASSERT_EQ(list->size(), 3);
+    list->clear();
+    ASSERT_EQ(list->size(), 0);
+    list->add(22);
+    list->add(33);
+    list->add(44);
+    ASSERT_EQ(list->size(), 3);
+    list->clear();
+    ASSERT_EQ(list->size(), 0);
+}
+
 TEST_F(DLLrawTest, testAddAt)
 {
     list->addAt(0, 1);
@@ -246,29 +264,28 @@ TEST_F(DLLrawTest, testRemoveAt)
     list->add(2);
     list->add(3);
     list->add(4);
+    list->removeAt(3);
     list->removeAt(0);
-    list->removeAt(2);
-    ASSERT_TRUE(list->peekFirst() == 2);
-    ASSERT_TRUE(list->peekLast()  == 3);
+    ASSERT_EQ(list->peekFirst(), 2);
+    ASSERT_EQ(list->peekLast(), 3);
     list->removeAt(1);
     list->removeAt(0);
     ASSERT_EQ(list->size(), 0);
 }
 
-TEST_F(DLLrawTest, testClear)
+// cover all branches of the removeAt()
+TEST_F(DLLrawTest, testRemoveAtBranches)
 {
-    list->add(22);
-    list->add(33);
-    list->add(44);
-    ASSERT_EQ(list->size(), 3);
-    list->clear();
-    ASSERT_EQ(list->size(), 0);
-    list->add(22);
-    list->add(33);
-    list->add(44);
-    ASSERT_EQ(list->size(), 3);
-    list->clear();
-    ASSERT_EQ(list->size(), 0);
+    constexpr std::size_t nloops{ 24 };
+    std::vector<int> rndm(nloops);
+    for (std::size_t sz{ 1 }; sz <= nloops; sz++) {
+        rndm = gen::random<int>(sz, 0, nloops * 4);
+        ds::DLLraw<int> tmp_list{ rndm };
+        ASSERT_EQ(rndm.size(), tmp_list.size());
+        while (!tmp_list.isEmpty()) {
+            tmp_list.removeAt(gen::srng(0, tmp_list.size() - 1));
+        }
+    }
 }
 
 TEST_F(DLLrawTest, testToString)
