@@ -4,9 +4,11 @@
  */
 
 #include <cstddef>              // std::size_t
+#include <initializer_list>
 #include <sstream>              // std::ostream
 #include <stdexcept>            // std::runtime_error, std::out_of_range
 #include <string>
+#include <vector>
 
 namespace wndx {
 namespace ds {
@@ -63,6 +65,26 @@ public:
     virtual ~DLLraw() noexcept
     {
         clear();
+    }
+
+    /**
+     * @brief Construct list with an initial set of values, O(n).
+     */
+    explicit DLLraw(const std::initializer_list<T> &il) noexcept
+    {
+        for (const T &e : il) {
+            add(e);
+        }
+    }
+
+    /**
+     * @brief Construct list with an initial set of values, O(n).
+     */
+    explicit DLLraw(const std::vector<T> &v) noexcept
+    {
+        for (const T &e : v) {
+            add(e);
+        }
     }
 
     /**
