@@ -68,12 +68,14 @@ public:
     /**
      * Empty this linked list, O(n)
      */
-    void clear()
+    void clear() noexcept
     {
         Node<T> *trav = head;
         while (trav != nullptr) {
             Node<T> *next = trav->m_next;
-            delete trav;
+            // XXX: DOUBTS: 'branch 1 of delete operator' in the current context is irrelevant, right?
+            // How to resolve/cover this without ignoring the both branches?
+            delete trav; // LCOV_EXCL_BR_LINE
             trav = next;
         }
         head = tail = trav = nullptr;
