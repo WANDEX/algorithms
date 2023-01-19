@@ -231,19 +231,19 @@ public:
         if (index >= m_size) {
             throw std::out_of_range("Index >= size.");
         }
-        Node<T> *trav;
+        Node<T> *trav{ nullptr };
         if (index < m_size / 2) {
             // search from the front
             trav = head;
             std::size_t i{ 0 };
-            for (; i != index; i++) {
+            for (; i < index; i++) {
                 trav = trav->m_next;
             }
         } else {
             // search from the back
             trav = tail;
             std::size_t i{ m_size - 1 };
-            for (; i != index; i--) {
+            for (; i > index; i--) {
                 trav = trav->m_prev;
             }
         }
