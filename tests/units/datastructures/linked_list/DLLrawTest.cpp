@@ -235,13 +235,8 @@ TEST_F(DLLrawTest, testPeeking)
 
 TEST_F(DLLrawTest, testRemoving)
 {
-    ds::DLLraw<std::string> strs;
-    strs.add("a");
-    strs.add("b");
-    strs.add("c");
-    strs.add("d");
-    strs.add("e");
-    strs.add("f");
+    // also cover list initialization
+    ds::DLLraw<std::string> strs{ "a", "b", "c", "d", "e", "f" };
 
     ASSERT_TRUE(strs.contains("f"));
     // cover removeLast() for std::string case
