@@ -3,8 +3,9 @@
  * Doubly Linked List implementation written using the raw pointers.
  */
 
-#include <cstddef>              // std::size_t
+#include <cstddef>              // std::size_t, std::ptrdiff_t
 #include <initializer_list>
+#include <iterator>
 #include <sstream>              // std::ostream
 #include <stdexcept>            // std::runtime_error, std::out_of_range
 #include <string>
@@ -17,14 +18,15 @@ template<typename T>
 class DLLraw {
 private: /* nested/internal Node class to represent data
 'https://en.cppreference.com/w/cpp/language/template_specialization' */
-    template <typename U> // Unused (required ^)
+    template <typename NT> // (required ^)
     class Node
     {
     private:
-        T m_data {};
-        Node<T> *m_prev{ nullptr }, *m_next{ nullptr };
+        NT m_data {};
+        Node<NT> *m_prev{ nullptr }, *m_next{ nullptr };
         // DLLraw need an access to the Node information
-        friend class DLLraw<T>;
+        friend class DLLraw<NT>;
+
     public:
         Node() = delete;
         Node(Node &&) = delete;
@@ -34,7 +36,7 @@ private: /* nested/internal Node class to represent data
 
         virtual ~Node() = default;
 
-        Node(const T &data, Node<T> *prev, Node<T> *next) noexcept
+        Node(const NT &data, Node<NT> *prev, Node<NT> *next) noexcept
             : m_data{ data }, m_prev{ prev }, m_next{ next }
         {}
 
@@ -45,11 +47,58 @@ private: /* nested/internal Node class to represent data
             return oss.str();
         }
 
-        friend std::ostream& operator<<(std::ostream &strm, const Node<T> &a)
+        // dereference XXX is this right?
+        // NT operator*() const { return m_data; }
+
+        friend std::ostream& operator<<(std::ostream &strm, const Node<NT> &a)
         {
             return strm << a.toString();
         }
     };
+
+protected:
+    template <typename IT>
+    class Iterator
+    {
+    public:
+        using iterator_category = std::bidirectional_iterator_tag;
+        using difference_type   = std::ptrdiff_t;
+        using value_type        = const IT;
+        using reference         = const Node<IT>&;
+        using pointer           = const Node<IT>*;
+
+    protected:
+        pointer m_ptr{ nullptr }; // current node
+
+    public:
+        Iterator() = delete;
+        Iterator(Iterator &&) = delete;
+        Iterator(const Iterator &) = delete;
+        Iterator &operator=(Iterator &&) = delete;
+        Iterator &operator=(const Iterator &) = delete;
+        virtual ~Iterator() = default;
+
+        explicit Iterator(const pointer ptr) noexcept : m_ptr(ptr) {}
+
+        // dereference
+        value_type  operator* () const { return m_ptr->m_data; }
+        pointer     operator->() const { return m_ptr; }
+
+        // pre/post-increment (prefix/postfix)
+        Iterator&   operator++()    { m_ptr = m_ptr->m_next; return *this; }
+        Iterator    operator++(int) { Iterator res(*this); ++(*this); return res; }
+
+        // pre/post-decrement (prefix/postfix)
+        Iterator&   operator--()    { m_ptr = m_ptr->m_prev; return *this; }
+        Iterator    operator--(int) { Iterator res(*this); --(*this); return res; }
+
+        // eq/inequality.
+        constexpr bool operator== (const Iterator& rhs) const = default;
+
+        // comparison operators: <, <=, >, >= .
+        constexpr auto operator<=>(const Iterator& rhs) const = default;
+    };
+
 private:
     std::size_t m_size {0};
     Node<T> *head{ nullptr };
@@ -103,6 +152,12 @@ public:
         head = tail = trav = nullptr;
         m_size = 0;
     }
+
+    constexpr auto cbegin() const noexcept { return Iterator<T>(head);    }
+    constexpr auto cend()   const noexcept { return Iterator<T>(nullptr); }
+
+    constexpr auto begin()  const noexcept { return Iterator<T>(head);    }
+    constexpr auto end()    const noexcept { return Iterator<T>(nullptr); }
 
     /**
      * return the size of the linked list
