@@ -283,6 +283,15 @@ TEST_F(DLLrawTest, testRemoveAtBranches)
     }
 }
 
+TEST_F(DLLrawTest, testRangeBasedLoop)
+{
+    ds::DLLraw<int> tmp_list{ 0, 1, 2, 3, 4 };
+    int i{ 0 };
+    for (const int e : tmp_list) {
+        EXPECT_EQ(i++, e);
+    }
+}
+
 TEST_F(DLLrawTest, testToString)
 {
     ds::DLLraw<std::string> strs;
