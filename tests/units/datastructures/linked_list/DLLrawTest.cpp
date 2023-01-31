@@ -4,6 +4,7 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>            // std::for_each
 #include <cstddef>              // std::size_t
 #include <stdexcept>            // std::runtime_error, std::out_of_range
 #include <string>
@@ -306,3 +307,25 @@ TEST_F(DLLrawTest, testToString)
     strs.add("f");
     ASSERT_EQ(strs.toString(), "{ a, b, c, d, e, f }");
 }
+
+TEST_F(DLLrawTest, testIterator_begin_end_postfix)
+{
+    ds::DLLraw<int> lst{ 0, 1, 2, 3, 4 };
+
+    int i {0};
+    auto it{ lst.begin() };
+    for (; it != lst.end(); it++, ++i) {
+        ASSERT_EQ(i, *it);
+    }
+}
+
+TEST_F(DLLrawTest, testIterator_cbegin_cend)
+{
+    ds::DLLraw<int> lst{ 0, 1, 2, 3, 4 };
+
+    int i {0}; // standard library algorithm
+    std::for_each(lst.cbegin(), lst.cend(), [&](const int e) {
+        ASSERT_EQ(i++, e);
+    });
+}
+
