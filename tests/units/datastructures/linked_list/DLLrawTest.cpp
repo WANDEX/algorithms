@@ -6,6 +6,7 @@
 
 #include <algorithm>            // std::for_each
 #include <cstddef>              // std::size_t
+#include <sstream>              // std::ostringstream
 #include <stdexcept>            // std::runtime_error, std::out_of_range
 #include <string>
 
@@ -327,5 +328,13 @@ TEST_F(DLLrawTest, testIterator_cbegin_cend)
     std::for_each(lst.cbegin(), lst.cend(), [&](const int e) {
         ASSERT_EQ(i++, e);
     });
+}
+
+TEST_F(DLLrawTest, testOstream)
+{
+    ds::DLLraw<int> lst{ 0, 1, 2, 3, 4 };
+    std::ostringstream oss;
+    oss << lst;
+    ASSERT_EQ(lst.toString(), oss.str());
 }
 
