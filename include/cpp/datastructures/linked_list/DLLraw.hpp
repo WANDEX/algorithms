@@ -3,6 +3,7 @@
  * Doubly Linked List implementation written using the raw pointers.
  */
 
+#include <concepts>             // std::convertible_to
 #include <cstddef>              // std::size_t, std::ptrdiff_t
 #include <initializer_list>
 #include <iterator>
@@ -71,14 +72,24 @@ protected:
         pointer m_ptr{ nullptr }; // current node
 
     public:
-        Iterator() = delete;
-        Iterator(Iterator &&) = delete;
-        Iterator(const Iterator &) = delete;
-        Iterator &operator=(Iterator &&) = delete;
-        Iterator &operator=(const Iterator &) = delete;
+        // move/copy ctors
+        Iterator(Iterator &&) = default;
+        Iterator(const Iterator &) = default;
+        // move/copy assignment operators
+        Iterator& operator=(Iterator &&) = default;
+        Iterator& operator=(const Iterator &) = default;
+
         virtual ~Iterator() = default;
 
+        Iterator() = delete;
+
         explicit Iterator(const pointer ptr) noexcept : m_ptr(ptr) {}
+
+        // delete all the conversion operators (forbid implicit convert to bool)
+        template <std::convertible_to<bool> CTB_TYPE>
+        operator CTB_TYPE() = delete;
+
+        explicit operator bool() const { return (!m_ptr) ? false : true; }
 
         // dereference
         value_type  operator* () const { return m_ptr->m_data; }
@@ -93,10 +104,10 @@ protected:
         Iterator    operator--(int) { Iterator res(*this); --(*this); return res; }
 
         // eq/inequality.
-        constexpr bool operator== (const Iterator& rhs) const = default;
+        constexpr bool operator== (const Iterator&) const = default;
 
-        // comparison operators: <, <=, >, >= .
-        constexpr auto operator<=>(const Iterator& rhs) const = default;
+        // comparison operators: { <, <=, >, >= }.
+        constexpr auto operator<=>(const Iterator&) const = default;
     };
 
 private:
@@ -158,6 +169,10 @@ public:
 
     constexpr auto begin()  const noexcept { return Iterator<T>(head);    }
     constexpr auto end()    const noexcept { return Iterator<T>(nullptr); }
+
+    // TODO: figure out how to make this work. (spent too much time on this...)
+    // constexpr auto rbegin()  const { return std::make_reverse_iterator(end());   }
+    // constexpr auto rend()    const { return std::make_reverse_iterator(begin()); }
 
     /**
      * return the size of the linked list
