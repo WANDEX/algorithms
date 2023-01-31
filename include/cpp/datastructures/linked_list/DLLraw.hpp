@@ -86,10 +86,12 @@ protected:
         explicit Iterator(const pointer ptr) noexcept : m_ptr(ptr) {}
 
         // delete all the conversion operators (forbid implicit convert to bool)
-        template <std::convertible_to<bool> CTB_TYPE>
-        operator CTB_TYPE() = delete;
+        // template <std::convertible_to<bool> CTB_TYPE>
+        // operator CTB_TYPE() = delete;
+        // XXX ^ DOUBTS: this not makes sence for this iterator, right?
 
-        explicit operator bool() const { return (!m_ptr) ? false : true; }
+        // allow explicit convert to bool like: static_cast<bool>(iter)
+        constexpr explicit operator bool() const { return (!m_ptr) ? false : true; }
 
         // dereference
         value_type  operator* () const { return m_ptr->m_data; }
