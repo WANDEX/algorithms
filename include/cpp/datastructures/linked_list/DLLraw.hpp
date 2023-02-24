@@ -11,13 +11,14 @@
 #include <stdexcept>            // std::runtime_error, std::out_of_range
 #include <string>
 #include <vector>
+// #include <new>                  // std::nothrow
 
 namespace wndx {
 namespace ds {
 
 template<typename T>
 class DLLraw {
-private: /* nested/internal Node class to represent data
+protected: /* nested/internal Node class to represent data
 'https://en.cppreference.com/w/cpp/language/template_specialization' */
     template <typename NT> // (required ^)
     class Node
@@ -35,7 +36,7 @@ private: /* nested/internal Node class to represent data
         Node &operator=(Node &&) = delete;
         Node &operator=(const Node &) = delete;
 
-        virtual ~Node() = default;
+        ~Node() = default;
 
         Node(const NT &data, Node<NT> *prev, Node<NT> *next) noexcept
             : m_data{ data }, m_prev{ prev }, m_next{ next }
@@ -57,60 +58,114 @@ private: /* nested/internal Node class to represent data
         }
     };
 
-protected:
+public:
     template <typename IT>
-    class Iterator
+    class DLLraw_iterator
     {
     public:
         using iterator_category = std::bidirectional_iterator_tag;
         using difference_type   = std::ptrdiff_t;
-        using value_type        = const IT;
-        using reference         = const Node<IT>&;
-        using pointer           = const Node<IT>*;
+        using value_type        = std::remove_cv_t<IT>;
+        using reference         = Node<IT>&;
+        using pointer           = Node<IT>*;
 
+        using self_t            = DLLraw_iterator;
     protected:
         pointer m_ptr{ nullptr }; // current node
-
     public:
-        // move/copy ctors
-        Iterator(Iterator &&) = default;
-        Iterator(const Iterator &) = default;
-        // move/copy assignment operators
-        Iterator& operator=(Iterator &&) = default;
-        Iterator& operator=(const Iterator &) = default;
 
-        virtual ~Iterator() = default;
+        ~DLLraw_iterator() = default;
+        DLLraw_iterator()  = delete;
 
-        Iterator() = delete;
-
-        explicit Iterator(const pointer ptr) noexcept : m_ptr(ptr) {}
-
-        // delete all the conversion operators (forbid implicit convert to bool)
-        // template <std::convertible_to<bool> CTB_TYPE>
-        // operator CTB_TYPE() = delete;
-        // XXX ^ DOUBTS: this not makes sence for this iterator, right?
+        constexpr explicit DLLraw_iterator(pointer ptr) noexcept : m_ptr(ptr) {}
 
         // allow explicit convert to bool like: static_cast<bool>(iter)
-        constexpr explicit operator bool() const { return (!m_ptr) ? false : true; }
+        // constexpr explicit operator bool() const { return m_ptr != nullptr; }
 
-        // dereference
-        value_type  operator* () const { return m_ptr->m_data; }
-        pointer     operator->() const { return m_ptr; }
+        constexpr value_type operator* () const { return m_ptr->m_data; }
+        constexpr pointer    operator->() const { return m_ptr; }
 
         // pre/post-increment (prefix/postfix)
-        Iterator&   operator++()    { m_ptr = m_ptr->m_next; return *this; }
-        Iterator    operator++(int) { Iterator res(*this); ++(*this); return res; }
+        constexpr self_t&    operator++()    { m_ptr = m_ptr->m_next; return *this; }
+        constexpr self_t     operator++(int) { self_t res{*this}; ++(*this); return res; }
 
         // pre/post-decrement (prefix/postfix)
-        Iterator&   operator--()    { m_ptr = m_ptr->m_prev; return *this; }
-        Iterator    operator--(int) { Iterator res(*this); --(*this); return res; }
+        constexpr self_t&    operator--()    { m_ptr = m_ptr->m_prev; return *this; }
+        constexpr self_t     operator--(int) { self_t res{*this}; --(*this); return res; }
 
         // eq/inequality.
-        constexpr bool operator== (const Iterator&) const = default;
+        constexpr bool operator== (const self_t&) const = default;
 
         // comparison operators: { <, <=, >, >= }.
-        constexpr auto operator<=>(const Iterator&) const = default;
+        constexpr auto operator<=>(const self_t&) const = default;
     };
+
+public:
+    template<typename IT>
+    class DLLraw_reverse_iterator
+    {
+    public:
+        using iterator_category = std::bidirectional_iterator_tag;
+        using difference_type   = std::ptrdiff_t;
+        using value_type        = std::remove_cv_t<IT>;
+        using reference         = Node<IT>&;
+        using pointer           = Node<IT>*;
+
+        using self_t            = DLLraw_reverse_iterator;
+    protected:
+        pointer m_ptr{ nullptr }; // current node
+    public:
+
+        ~DLLraw_reverse_iterator() = default;
+        DLLraw_reverse_iterator()  = delete;
+
+        constexpr explicit DLLraw_reverse_iterator(pointer ptr) noexcept : m_ptr(ptr) {}
+
+        constexpr value_type operator* () const { return m_ptr->m_data; }
+        constexpr pointer    operator->() const { return m_ptr; }
+
+        // pre/post-increment (prefix/postfix)
+        constexpr self_t&    operator++()    { m_ptr = m_ptr->m_prev; return *this; }
+        constexpr self_t     operator++(int) { self_t res{*this}; ++(*this); return res; }
+
+        // pre/post-decrement (prefix/postfix)
+        constexpr self_t&    operator--()    { m_ptr = m_ptr->m_next; return *this; }
+        constexpr self_t     operator--(int) { self_t res{*this}; --(*this); return res; }
+
+        // eq/inequality.
+        constexpr bool operator== (const self_t&) const = default;
+
+        // comparison operators: { <, <=, >, >= }.
+        constexpr auto operator<=>(const self_t&) const = default;
+    };
+
+public:
+    using iterator               = DLLraw_iterator<T>;
+    using reverse_iterator       = DLLraw_reverse_iterator<T>;
+
+    // XXX: broken
+    // using const_iterator         = DLLraw_iterator<std::add_const_t<T>>;
+    // using const_reverse_iterator = DLLraw_reverse_iterator<std::add_const_t<T>>;
+
+    // TODO: figure out how to make this work! (to avoid duplicating code)
+    // 'https://en.cppreference.com/w/cpp/iterator/reverse_iterator'
+    // It should be simple, but for some reason it is not! (spent too much time on this...)
+    // XXX:
+    // using reverse_iterator       = std::reverse_iterator<iterator>;
+    // using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
+public:
+    constexpr iterator               begin()   const noexcept { return iterator(head); }
+    constexpr iterator               end()     const noexcept { return iterator(tail->m_next); }
+
+    constexpr reverse_iterator       rbegin()  const noexcept { return reverse_iterator(tail); }
+    constexpr reverse_iterator       rend()    const noexcept { return reverse_iterator(head->m_prev); }
+
+    // constexpr const_iterator         cbegin()  const noexcept { return const_iterator(head); }
+    // constexpr const_iterator         cend()    const noexcept { return const_iterator(tail->m_next); }
+
+    // constexpr const_reverse_iterator crbegin() const noexcept { return const_reverse_iterator(tail); }
+    // constexpr const_reverse_iterator crend()   const noexcept { return const_reverse_iterator(head->m_prev); }
 
 private:
     std::size_t m_size {0};
@@ -165,16 +220,6 @@ public:
         head = tail = trav = nullptr;
         m_size = 0;
     }
-
-    constexpr auto cbegin() const noexcept { return Iterator<T>(head);    }
-    constexpr auto cend()   const noexcept { return Iterator<T>(nullptr); }
-
-    constexpr auto begin()  const noexcept { return Iterator<T>(head);    }
-    constexpr auto end()    const noexcept { return Iterator<T>(nullptr); }
-
-    // TODO: figure out how to make this work. (spent too much time on this...)
-    // constexpr auto rbegin()  const { return std::make_reverse_iterator(end());   }
-    // constexpr auto rend()    const { return std::make_reverse_iterator(begin()); }
 
     /**
      * return the size of the linked list
