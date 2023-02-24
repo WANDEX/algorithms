@@ -6,9 +6,12 @@
 
 #include <algorithm>            // std::for_each
 #include <cstddef>              // std::size_t
+#include <initializer_list>
+#include <list>
 #include <sstream>              // std::ostringstream
 #include <stdexcept>            // std::runtime_error, std::out_of_range
 #include <string>
+#include <vector>
 
 using namespace wndx;
 
@@ -320,16 +323,6 @@ TEST_F(DLLrawTest, testIterator_begin_end_postfix)
     }
 }
 
-TEST_F(DLLrawTest, testIterator_cbegin_cend)
-{
-    ds::DLLraw<int> lst{ 0, 1, 2, 3, 4 };
-
-    int i {0}; // standard library algorithm
-    std::for_each(lst.cbegin(), lst.cend(), [&](const int e) {
-        ASSERT_EQ(i++, e);
-    });
-}
-
 TEST_F(DLLrawTest, testOstream)
 {
     ds::DLLraw<int> lst{ 0, 1, 2, 3, 4 };
@@ -338,3 +331,42 @@ TEST_F(DLLrawTest, testOstream)
     ASSERT_EQ(lst.toString(), oss.str());
 }
 
+TEST_F(DLLrawTest, iterator)
+{
+    const std::initializer_list<int> il{ 0, 1, 2, 3, 4 };
+    const std::list <int> list{ il };
+    const ds::DLLraw<int> dllr{ il };
+
+    ASSERT_EQ(list.size(), dllr.size());
+
+    auto it_l{ list.begin() };
+    auto it_d{ dllr.begin() };
+    ASSERT_EQ(*it_l, 0);
+    ASSERT_EQ(*it_d, 0);
+
+    // check that container has all of the provided elements,
+    // and traversal order is the same as in std::list
+    for (;it_l != list.end(); ++it_l, ++it_d) {
+        ASSERT_EQ(*it_l, *it_d);
+    }
+}
+
+TEST_F(DLLrawTest, reverse_iterator)
+{
+    const std::initializer_list<int> il{ 0, 1, 2, 3, 4 };
+    const std::list <int> list{ il };
+    const ds::DLLraw<int> dllr{ il };
+
+    ASSERT_EQ(list.size(), dllr.size());
+
+    auto it_l{ list.rbegin() };
+    auto it_d{ dllr.rbegin() };
+    ASSERT_EQ(*it_l, 4);
+    ASSERT_EQ(*it_d, 4);
+
+    // check that container has all of the provided elements,
+    // and traversal order is the same as in std::list
+    for (;it_l != list.rend(); ++it_l, ++it_d) {
+        ASSERT_EQ(*it_l, *it_d);
+    }
+}
