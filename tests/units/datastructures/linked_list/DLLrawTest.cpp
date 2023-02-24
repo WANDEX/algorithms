@@ -370,3 +370,47 @@ TEST_F(DLLrawTest, reverse_iterator)
         ASSERT_EQ(*it_l, *it_d);
     }
 }
+
+/* // XXX uncomment following tests after proper implementation:
+//        const_iterator, const_reverse_iterator
+TEST_F(DLLrawTest, const_iterator)
+{
+    const std::initializer_list<int> il{ 0, 1, 2, 3, 4 };
+    const std::list <int> list{ il };
+    const ds::DLLraw<int> dllr{ il };
+
+    ASSERT_EQ(list.size(), dllr.size());
+
+    auto it_l{ list.cbegin() };
+    auto it_d{ dllr.cbegin() };
+    ASSERT_EQ(*it_l, 0);
+    ASSERT_EQ(*it_d, 0);
+
+    // check that container has all of the provided elements,
+    // and traversal order is the same as in std::list
+    for (;it_l != list.cend(); ++it_l, ++it_d) {
+        ASSERT_EQ(*it_l, *it_d);
+    }
+}
+
+TEST_F(DLLrawTest, const_reverse_iterator)
+{
+    const std::initializer_list<int> il{ 0, 1, 2, 3, 4 };
+    const std::list <int> list{ il };
+    const ds::DLLraw<int> dllr{ il };
+
+    ASSERT_EQ(list.size(), dllr.size());
+
+    auto it_l{ list.crbegin() };
+    auto it_d{ dllr.crbegin() };
+    ASSERT_EQ(*it_l, 4);
+    ASSERT_EQ(*it_d, 4);
+
+    // check that container has all of the provided elements,
+    // and traversal order is the same as in std::list
+    for (;it_l != list.crend(); ++it_l, ++it_d) {
+        ASSERT_EQ(*it_l, *it_d);
+    }
+}
+*/ // XXX
+
