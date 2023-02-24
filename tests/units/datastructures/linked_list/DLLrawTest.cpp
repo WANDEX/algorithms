@@ -45,7 +45,7 @@ protected:
 
 TEST_F(DLLrawTest, testEmptyList)
 {
-    EXPECT_TRUE(list->isEmpty());
+    EXPECT_TRUE(list->empty());
     EXPECT_EQ(list->size(), 0);
 }
 
@@ -182,14 +182,14 @@ TEST_F(DLLrawTest, testRemoveFirst)
 {
     list->addFirst(3);
     ASSERT_TRUE(list->removeFirst() == 3);
-    ASSERT_TRUE(list->isEmpty());
+    ASSERT_TRUE(list->empty());
 }
 
 TEST_F(DLLrawTest, testRemoveLast)
 {
     list->addLast(4);
     ASSERT_TRUE(list->removeLast() == 4);
-    ASSERT_TRUE(list->isEmpty());
+    ASSERT_TRUE(list->empty());
 }
 
 TEST_F(DLLrawTest, testPeekFirst)
@@ -282,7 +282,7 @@ TEST_F(DLLrawTest, testRemoveAtBranches)
         rndm = gen::random<int>(sz, 0, nloops * 4);
         ds::DLLraw<int> tmp_list{ rndm };
         ASSERT_EQ(rndm.size(), tmp_list.size());
-        while (!tmp_list.isEmpty()) {
+        while (!tmp_list.empty()) {
             tmp_list.removeAt(gen::srng(0, tmp_list.size() - 1));
         }
     }

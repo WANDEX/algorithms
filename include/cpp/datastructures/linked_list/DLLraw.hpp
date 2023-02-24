@@ -232,7 +232,7 @@ public:
     /**
      * Is linked list empty?
      */
-    bool isEmpty() const noexcept
+    bool empty() const noexcept
     {
         return size() == 0;
     }
@@ -250,7 +250,7 @@ public:
      */
     void addFirst(const T &elem) noexcept
     {
-        if (isEmpty()) {
+        if (empty()) {
             m_head = m_tail = new Node<T>(elem, nullptr, nullptr);
         } else {
             m_head->m_prev  = new Node<T>(elem, nullptr, m_head);
@@ -264,7 +264,7 @@ public:
      */
     void addLast(const T &elem) noexcept
     {
-        if (isEmpty()) {
+        if (empty()) {
             m_head = m_tail = new Node<T>(elem, nullptr, nullptr);
         } else {
             m_tail->m_next  = new Node<T>(elem, m_tail, nullptr);
@@ -304,7 +304,7 @@ public:
      */
     T peekFirst() const
     {
-        if (isEmpty()) throw std::runtime_error("Empty list.");
+        if (empty()) throw std::runtime_error("Empty list.");
         return m_head->m_data;
     }
 
@@ -313,7 +313,7 @@ public:
      */
     T peekLast() const
     {
-        if (isEmpty()) throw std::runtime_error("Empty list.");
+        if (empty()) throw std::runtime_error("Empty list.");
         return m_tail->m_data;
     }
 
@@ -322,11 +322,11 @@ public:
      */
     T removeFirst()
     {
-        if (isEmpty()) throw std::runtime_error("Empty list.");
+        if (empty()) throw std::runtime_error("Empty list.");
         T data = m_head->m_data; // Extract the data at the m_head
         m_head = m_head->m_next; // move the m_head pointer forwards one node
         --m_size;
-        if (isEmpty()) m_tail = nullptr;
+        if (empty()) m_tail = nullptr;
         else m_head->m_prev   = nullptr; // memory cleanup
         return data; // Return the data of the node we just removed
     }
@@ -336,11 +336,11 @@ public:
      */
     T removeLast()
     {
-        if (isEmpty()) throw std::runtime_error("Empty list.");
+        if (empty()) throw std::runtime_error("Empty list.");
         T data = m_tail->m_data; // Extract the data at the tail
         m_tail = m_tail->m_prev; // move the tail pointer backwards one node
         --m_size;
-        if (isEmpty()) m_head = nullptr;
+        if (empty()) m_head = nullptr;
         else m_tail->m_next   = nullptr; // memory cleanup
         return data;
     }
