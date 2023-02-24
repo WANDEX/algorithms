@@ -155,22 +155,22 @@ public:
     // using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
 public:
-    constexpr iterator               begin()   const noexcept { return iterator(head); }
-    constexpr iterator               end()     const noexcept { return iterator(tail->m_next); }
+    constexpr iterator               begin()   const noexcept { return iterator(m_head); }
+    constexpr iterator               end()     const noexcept { return iterator(m_tail->m_next); }
 
-    constexpr reverse_iterator       rbegin()  const noexcept { return reverse_iterator(tail); }
-    constexpr reverse_iterator       rend()    const noexcept { return reverse_iterator(head->m_prev); }
+    constexpr reverse_iterator       rbegin()  const noexcept { return reverse_iterator(m_tail); }
+    constexpr reverse_iterator       rend()    const noexcept { return reverse_iterator(m_head->m_prev); }
 
-    // constexpr const_iterator         cbegin()  const noexcept { return const_iterator(head); }
-    // constexpr const_iterator         cend()    const noexcept { return const_iterator(tail->m_next); }
+    // constexpr const_iterator         cbegin()  const noexcept { return const_iterator(m_head); }
+    // constexpr const_iterator         cend()    const noexcept { return const_iterator(m_tail->m_next); }
 
-    // constexpr const_reverse_iterator crbegin() const noexcept { return const_reverse_iterator(tail); }
-    // constexpr const_reverse_iterator crend()   const noexcept { return const_reverse_iterator(head->m_prev); }
+    // constexpr const_reverse_iterator crbegin() const noexcept { return const_reverse_iterator(m_tail); }
+    // constexpr const_reverse_iterator crend()   const noexcept { return const_reverse_iterator(m_head->m_prev); }
 
 private:
     std::size_t m_size {0};
-    Node<T> *head{ nullptr };
-    Node<T> *tail{ nullptr };
+    Node<T> *m_head{ nullptr };
+    Node<T> *m_tail{ nullptr };
 
 public:
     DLLraw() = default;
@@ -209,7 +209,7 @@ public:
      */
     void clear() noexcept
     {
-        Node<T> *trav = head;
+        Node<T> *trav = m_head;
         while (trav != nullptr) {
             Node<T> *next = trav->m_next;
             // XXX: DOUBTS: 'branch 1 of delete operator' in the current context is irrelevant, right?
@@ -217,7 +217,7 @@ public:
             delete trav; // LCOV_EXCL_BR_LINE
             trav = next;
         }
-        head = tail = trav = nullptr;
+        m_head = m_tail = trav = nullptr;
         m_size = 0;
     }
 
@@ -251,10 +251,10 @@ public:
     void addFirst(const T &elem) noexcept
     {
         if (isEmpty()) {
-            head = tail  = new Node<T>(elem, nullptr, nullptr);
+            m_head = m_tail = new Node<T>(elem, nullptr, nullptr);
         } else {
-            head->m_prev = new Node<T>(elem, nullptr, head);
-            head = head->m_prev;
+            m_head->m_prev  = new Node<T>(elem, nullptr, m_head);
+            m_head = m_head->m_prev;
         }
         m_size++;
     }
@@ -265,10 +265,10 @@ public:
     void addLast(const T &elem) noexcept
     {
         if (isEmpty()) {
-            head = tail  = new Node<T>(elem, nullptr, nullptr);
+            m_head = m_tail = new Node<T>(elem, nullptr, nullptr);
         } else {
-            tail->m_next = new Node<T>(elem, tail, nullptr);
-            tail = tail->m_next;
+            m_tail->m_next  = new Node<T>(elem, m_tail, nullptr);
+            m_tail = m_tail->m_next;
         }
         m_size++;
     }
@@ -289,7 +289,7 @@ public:
             addLast(elem);
             return;
         }
-        Node<T> *temp = head;
+        Node<T> *temp = m_head;
         for (std::size_t i = 0; i < index - 1; i++) {
             temp = temp->m_next;
         }
@@ -305,7 +305,7 @@ public:
     T peekFirst() const
     {
         if (isEmpty()) throw std::runtime_error("Empty list.");
-        return head->m_data;
+        return m_head->m_data;
     }
 
     /**
@@ -314,20 +314,20 @@ public:
     T peekLast() const
     {
         if (isEmpty()) throw std::runtime_error("Empty list.");
-        return tail->m_data;
+        return m_tail->m_data;
     }
 
     /**
-     * Remove the first value at the head of the linked list, O(1)
+     * Remove the first value at the m_head of the linked list, O(1)
      */
     T removeFirst()
     {
         if (isEmpty()) throw std::runtime_error("Empty list.");
-        T data = head->m_data; // Extract the data at the head
-        head = head->m_next;   // move the head pointer forwards one node
+        T data = m_head->m_data; // Extract the data at the m_head
+        m_head = m_head->m_next; // move the m_head pointer forwards one node
         --m_size;
-        if (isEmpty()) tail = nullptr;
-        else head->m_prev = nullptr; // memory cleanup
+        if (isEmpty()) m_tail = nullptr;
+        else m_head->m_prev   = nullptr; // memory cleanup
         return data; // Return the data of the node we just removed
     }
 
@@ -337,11 +337,11 @@ public:
     T removeLast()
     {
         if (isEmpty()) throw std::runtime_error("Empty list.");
-        T data = tail->m_data; // Extract the data at the tail
-        tail = tail->m_prev;   // move the tail pointer backwards one node
+        T data = m_tail->m_data; // Extract the data at the tail
+        m_tail = m_tail->m_prev; // move the tail pointer backwards one node
         --m_size;
-        if (isEmpty()) head = nullptr;
-        else tail->m_next = nullptr; // memory cleanup
+        if (isEmpty()) m_head = nullptr;
+        else m_tail->m_next   = nullptr; // memory cleanup
         return data;
     }
 
@@ -373,14 +373,14 @@ public:
         Node<T> *trav{ nullptr };
         if (index < m_size / 2) {
             // search from the front
-            trav = head;
+            trav = m_head;
             std::size_t i{ 0 };
             for (; i < index; i++) {
                 trav = trav->m_next;
             }
         } else {
             // search from the back
-            trav = tail;
+            trav = m_tail;
             std::size_t i{ m_size - 1 };
             for (; i > index; i--) {
                 trav = trav->m_prev;
@@ -394,7 +394,7 @@ public:
      */
     bool remove(const T &obj)
     {
-        Node<T> *trav = head;
+        Node<T> *trav = m_head;
         for (; trav != nullptr; trav = trav->m_next) {
             if (obj == trav->m_data) {
                 remove(trav);
@@ -411,7 +411,7 @@ public:
     std::size_t indexOf(const T &obj) const noexcept
     {
         std::size_t index {0};
-        Node<T> *trav = head;
+        Node<T> *trav = m_head;
         for (; trav != nullptr; trav = trav->m_next, index++) {
             if (obj == trav->m_data) {
                 return index;
@@ -432,7 +432,7 @@ public:
     {
         std::ostringstream oss;
         oss << "{ ";
-        Node<T> *trav = head;
+        Node<T> *trav = m_head;
         while (trav != nullptr) {
             oss << trav->m_data;
             trav = trav->m_next;
