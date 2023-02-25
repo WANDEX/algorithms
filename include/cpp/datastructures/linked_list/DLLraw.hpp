@@ -18,44 +18,19 @@ namespace ds {
 
 template<typename T>
 class DLLraw {
-protected: /* nested/internal Node class to represent data
-'https://en.cppreference.com/w/cpp/language/template_specialization' */
-    template <typename NT> // (required ^)
-    class Node
+protected:
+    struct Node;
+
+    using data_t   = T;
+    using node_t   = Node;
+    using node_ptr = node_t *;
+
+    // trivially constructible aggregate type
+    struct Node
     {
-    private:
-        NT m_data {};
-        Node<NT> *m_prev{ nullptr }, *m_next{ nullptr };
-        // DLLraw need an access to the Node information
-        friend class DLLraw<NT>;
-
-    public:
-        Node() = delete;
-        Node(Node &&) = delete;
-        Node(const Node &) = delete;
-        Node &operator=(Node &&) = delete;
-        Node &operator=(const Node &) = delete;
-
-        ~Node() = default;
-
-        Node(const NT &data, Node<NT> *prev, Node<NT> *next) noexcept
-            : m_data{ data }, m_prev{ prev }, m_next{ next }
-        {}
-
-        std::string toString() const
-        {
-            std::ostringstream oss;
-            oss << "Node(" << m_data << ")";
-            return oss.str();
-        }
-
-        // dereference XXX is this right?
-        // NT operator*() const { return m_data; }
-
-        friend std::ostream& operator<<(std::ostream &strm, const Node<NT> &a)
-        {
-            return strm << a.toString();
-        }
+        data_t   m_data{ };
+        node_ptr m_prev{ nullptr };
+        node_ptr m_next{ nullptr };
     };
 
 public:
@@ -66,8 +41,8 @@ public:
         using iterator_category = std::bidirectional_iterator_tag;
         using difference_type   = std::ptrdiff_t;
         using value_type        = std::remove_cv_t<IT>;
-        using reference         = Node<IT>&;
-        using pointer           = Node<IT>*;
+        using reference         = node_t&;
+        using pointer           = node_t*;
 
         using self_t            = DLLraw_iterator;
     protected:
@@ -108,8 +83,8 @@ public:
         using iterator_category = std::bidirectional_iterator_tag;
         using difference_type   = std::ptrdiff_t;
         using value_type        = std::remove_cv_t<IT>;
-        using reference         = Node<IT>&;
-        using pointer           = Node<IT>*;
+        using reference         = node_t&;
+        using pointer           = node_t*;
 
         using self_t            = DLLraw_reverse_iterator;
     protected:
@@ -168,9 +143,9 @@ public:
     // constexpr const_reverse_iterator crend()   const noexcept { return const_reverse_iterator(m_head->m_prev); }
 
 private:
-    std::size_t m_size {0};
-    Node<T> *m_head{ nullptr };
-    Node<T> *m_tail{ nullptr };
+    std::size_t m_size{ 0 };
+    node_ptr    m_head{ nullptr };
+    node_ptr    m_tail{ nullptr };
 
 public:
     DLLraw() = default;
@@ -209,9 +184,9 @@ public:
      */
     void clear() noexcept
     {
-        Node<T> *trav = m_head;
+        node_ptr trav{ m_head };
         while (trav != nullptr) {
-            Node<T> *next = trav->m_next;
+            node_ptr next = trav->m_next;
             // XXX: DOUBTS: 'branch 1 of delete operator' in the current context is irrelevant, right?
             // How to resolve/cover this without ignoring the both branches?
             delete trav; // LCOV_EXCL_BR_LINE
@@ -251,9 +226,9 @@ public:
     void addFirst(const T &elem) noexcept
     {
         if (empty()) {
-            m_head = m_tail = new Node<T>(elem, nullptr, nullptr);
+            m_head = m_tail = new node_t(elem, nullptr, nullptr);
         } else {
-            m_head->m_prev  = new Node<T>(elem, nullptr, m_head);
+            m_head->m_prev  = new node_t(elem, nullptr, m_head);
             m_head = m_head->m_prev;
         }
         m_size++;
@@ -265,9 +240,9 @@ public:
     void addLast(const T &elem) noexcept
     {
         if (empty()) {
-            m_head = m_tail = new Node<T>(elem, nullptr, nullptr);
+            m_head = m_tail = new node_t(elem, nullptr, nullptr);
         } else {
-            m_tail->m_next  = new Node<T>(elem, m_tail, nullptr);
+            m_tail->m_next  = new node_t(elem, m_tail, nullptr);
             m_tail = m_tail->m_next;
         }
         m_size++;
@@ -289,11 +264,11 @@ public:
             addLast(elem);
             return;
         }
-        Node<T> *temp = m_head;
+        node_ptr temp{ m_head };
         for (std::size_t i = 0; i < index - 1; i++) {
             temp = temp->m_next;
         }
-        Node<T> *newNode = new Node<T>(elem, temp, temp->m_next);
+        node_ptr newNode{ new node_t(elem, temp, temp->m_next) };
         temp->m_next->m_prev = newNode;
         temp->m_next = newNode;
         m_size++;
@@ -327,7 +302,7 @@ public:
         m_head = m_head->m_next; // move the m_head pointer forwards one node
         --m_size;
         if (empty()) m_tail = nullptr;
-        else m_head->m_prev   = nullptr; // memory cleanup
+        else m_head->m_prev = nullptr; // memory cleanup
         return data; // Return the data of the node we just removed
     }
 
@@ -341,14 +316,14 @@ public:
         m_tail = m_tail->m_prev; // move the tail pointer backwards one node
         --m_size;
         if (empty()) m_head = nullptr;
-        else m_tail->m_next   = nullptr; // memory cleanup
+        else m_tail->m_next = nullptr; // memory cleanup
         return data;
     }
 
     /**
      * Remove an arbitrary node from the linked list, O(1)
      */
-    T remove(Node<T> *node)
+    T remove(node_ptr node)
     {
         if (node->m_prev == nullptr) return removeFirst();
         if (node->m_next == nullptr) return removeLast();
@@ -370,7 +345,7 @@ public:
         if (index >= m_size) {
             throw std::out_of_range("Index >= size.");
         }
-        Node<T> *trav{ nullptr };
+        node_ptr trav{ nullptr };
         if (index < m_size / 2) {
             // search from the front
             trav = m_head;
@@ -394,7 +369,7 @@ public:
      */
     bool remove(const T &obj)
     {
-        Node<T> *trav = m_head;
+        node_ptr trav{ m_head };
         for (; trav != nullptr; trav = trav->m_next) {
             if (obj == trav->m_data) {
                 remove(trav);
@@ -411,7 +386,7 @@ public:
     std::size_t indexOf(const T &obj) const noexcept
     {
         std::size_t index {0};
-        Node<T> *trav = m_head;
+        node_ptr trav{ m_head };
         for (; trav != nullptr; trav = trav->m_next, index++) {
             if (obj == trav->m_data) {
                 return index;
@@ -432,7 +407,7 @@ public:
     {
         std::ostringstream oss;
         oss << "{ ";
-        Node<T> *trav = m_head;
+        node_ptr trav{ m_head };
         while (trav != nullptr) {
             oss << trav->m_data;
             trav = trav->m_next;
