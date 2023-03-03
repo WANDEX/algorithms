@@ -19,19 +19,18 @@ namespace ds {
 template<typename T>
 class DLLraw {
 protected:
-    struct Node;
-
-    using data_t   = T;
-    using node_t   = Node;
-    using node_ptr = node_t *;
-
     // trivially constructible aggregate type
     struct Node
     {
-        data_t   m_data{ };
-        node_ptr m_prev{ nullptr };
-        node_ptr m_next{ nullptr };
+        T     m_data{};
+        Node* m_prev{ nullptr };
+        Node* m_next{ nullptr };
     };
+
+    // aliases
+    using data_t   = T;
+    using node_t   = Node;
+    using node_ptr = node_t *;
 
 public:
     template <typename IT>
@@ -226,9 +225,9 @@ public:
     void addFirst(const T &elem) noexcept
     {
         if (empty()) {
-            m_head = m_tail = new node_t(elem, nullptr, nullptr);
+            m_head = m_tail = new node_t{elem, nullptr, nullptr};
         } else {
-            m_head->m_prev  = new node_t(elem, nullptr, m_head);
+            m_head->m_prev  = new node_t{elem, nullptr, m_head};
             m_head = m_head->m_prev;
         }
         m_size++;
@@ -240,9 +239,9 @@ public:
     void addLast(const T &elem) noexcept
     {
         if (empty()) {
-            m_head = m_tail = new node_t(elem, nullptr, nullptr);
+            m_head = m_tail = new node_t{elem, nullptr, nullptr};
         } else {
-            m_tail->m_next  = new node_t(elem, m_tail, nullptr);
+            m_tail->m_next  = new node_t{elem, m_tail, nullptr};
             m_tail = m_tail->m_next;
         }
         m_size++;
@@ -268,7 +267,7 @@ public:
         for (std::size_t i = 0; i < index - 1; i++) {
             temp = temp->m_next;
         }
-        node_ptr newNode{ new node_t(elem, temp, temp->m_next) };
+        node_ptr newNode{ new node_t{elem, temp, temp->m_next} };
         temp->m_next->m_prev = newNode;
         temp->m_next = newNode;
         m_size++;
