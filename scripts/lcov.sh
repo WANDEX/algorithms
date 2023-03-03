@@ -38,3 +38,5 @@ lcov -c --directory "$bdir" --output-file "$lcov_info" \
 genhtml "$lcov_info" --output-directory "$lcov_dir" \
 --branch-coverage --demangle-cpp --legend --dark-mode
 
+# path to the index.html to easily copy-paste into the browser (if needed)
+printf "\n%s\n" "${lcov_dir}/index.html"
