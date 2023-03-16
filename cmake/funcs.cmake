@@ -30,7 +30,10 @@ endfunction(under_compiler)
 # creation of variables to be able to use them later
 under_compiler(GNU)
 under_compiler(Clang)
-under_compiler(cl) # MSVC cl compiler (assume it is possible)
+under_compiler(AppleClang)
+under_compiler(MSVC)  # cmake has short MSVC  (so this is added for consistency!)
+under_compiler(cl)    # XXX: MSVC cl compiler (assuming this is somehow possible) =>
+                      # to compile under linux -> (without big hassle with VStudio & wine)
 
 
 # recursively include all sub-directories of the given dir
