@@ -18,9 +18,16 @@ import subprocess
 
 from collections import OrderedDict
 from pathlib import Path
-from pprint import PrettyPrinter
 from shutil import copy2, which
 from sys import argv, stdout
+
+try:
+    from pprint import PrettyPrinter
+except ImportError:
+    has_pprint = False
+else:
+    has_pprint = True
+
 
 TPRINT = False
 
@@ -43,7 +50,9 @@ EXCLUDE_NAMES = ("common", "__pycache__", "wndxc")
 
 
 def ppr(arg):
-    """pprint() - only for more readable visualization during debugging/developing."""
+    """pprint() - use this only for more readable visualization during debugging/development."""
+    if not has_pprint:
+        return
     PrettyPrinter().pprint(arg)
 
 
