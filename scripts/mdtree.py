@@ -3,8 +3,11 @@
 
 __license__ = "0BSD"
 __description__ = "Embed specific fs tree into markdown using relative links."
+# Set to your repo url.
 __url_repository__ = "https://github.com/WANDEX/algorithms"
 __url_project__ = __url_repository__
+# NOTE: Do not modify, thx. So people can find original repo,
+#       and chose from which version to start their own fork.
 __url_repository_original__ = "https://github.com/WANDEX/algorithms"
 __author__ = "WANDEX"
 
@@ -34,6 +37,9 @@ README_MULTILINE_RE = r'\
 ^## Tree of Implemented DSA$\
 (.*)\
 ^## Hall of Fame$'
+
+# tuple of names to ignore in paths during fs traversal
+EXCLUDE_NAMES = ("common", "__pycache__", "wndxc")
 
 
 def ppr(arg):
@@ -146,7 +152,7 @@ def make_md_tree(rws=True) -> OrderedDict:
     def md_criteria(ipath: str):
         if not FSTD.sane_criteria(ipath):
             return False
-        if FSTD.FSTreeDisplay.exclude(ipath, ("common", "__pycache__", "c")):
+        if FSTD.FSTreeDisplay.exclude(ipath, (EXCLUDE_NAMES)):
             return False
         if not FSTD.FSTreeDisplay.under_gvc(ipath):
             return False
