@@ -1,6 +1,0 @@
-clang
--std=c17
--pedantic
--Wall
--Wextra
--Wabi
