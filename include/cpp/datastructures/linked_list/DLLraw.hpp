@@ -53,8 +53,8 @@ public:
 
         constexpr explicit DLLraw_iterator(pointer ptr) noexcept : m_ptr(ptr) {}
 
-        // allow explicit convert to bool like: static_cast<bool>(iter)
-        // constexpr explicit operator bool() const { return m_ptr != nullptr; }
+        // allow convert of iterator to bool
+        constexpr operator bool() const { return m_ptr != nullptr; }
 
         constexpr value_type operator* () const { return m_ptr->m_data; }
         constexpr pointer    operator->() const { return m_ptr; }
@@ -94,6 +94,9 @@ public:
         DLLraw_reverse_iterator()  = delete;
 
         constexpr explicit DLLraw_reverse_iterator(pointer ptr) noexcept : m_ptr(ptr) {}
+
+        // allow convert of iterator to bool
+        constexpr operator bool() const { return m_ptr != nullptr; }
 
         constexpr value_type operator* () const { return m_ptr->m_data; }
         constexpr pointer    operator->() const { return m_ptr; }
