@@ -6,12 +6,29 @@ __description__ = "Embed specific fs tree into markdown using relative links."
 # Set to your repo url.
 __url_repository__ = "https://github.com/WANDEX/algorithms"
 __url_project__ = __url_repository__
-# NOTE: Do not modify, thx. So people can find original repo,
+# NOTE: Do not modify, thanks. So people can find original repo,
 #       and chose from which version to start their own fork.
-__url_repository_original__ = "https://github.com/WANDEX/algorithms"
+__url_repository_origin__ = "https://github.com/WANDEX/algorithms"
 __author__ = "WANDEX"
 
-import FSTreeDisplay
+try:
+    import FSTreeDisplay
+except ImportError as err:
+    print(err.msg)
+    print("^ Missing crucial file for the fs traversal and work of this script!")
+    print("You can find it in at least one of the following sources:")
+    print(f"visit project repo: '{__url_repository__}'")
+    print("OR")
+    print(f"visit  origin repo: '{__url_repository_origin__}'")
+    print("In case you forgot to get it.")
+    exit(42)
+
+try:
+    from pprint import PrettyPrinter
+except ImportError:
+    has_pprint = False
+else:
+    has_pprint = True
 
 import re
 import subprocess
@@ -20,13 +37,6 @@ from collections import OrderedDict
 from pathlib import Path
 from shutil import copy2, which
 from sys import argv, stdout
-
-try:
-    from pprint import PrettyPrinter
-except ImportError:
-    has_pprint = False
-else:
-    has_pprint = True
 
 
 TPRINT = False
