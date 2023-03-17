@@ -28,8 +28,8 @@ is optional: change Generator **-G Ninja** in the above build script.
 
 ## Tree of Implemented DSA
 include/\
-└── cpp/\
-    ├── datastructures/\
+└── wndx/\
+    ├── ds/\
     │   ├── binary_indexed_tree/\
     │   │   └── [BITreeRQPU.hpp] ( *[BITreeRQPUTest.cpp]* )\
     │   ├── binary_search_tree/\
@@ -55,30 +55,30 @@ include/\
         ├── [quick_sort.hpp] ( *[SortTest.cpp]* )\
         └── [selection_sort.hpp] ( *[SortTest.cpp]* )
 
-[BITreeRQPU.hpp              ]: ./include/cpp/datastructures/binary_indexed_tree/BITreeRQPU.hpp
+[BITreeRQPU.hpp              ]: ./include/wndx/ds/binary_indexed_tree/BITreeRQPU.hpp
 [BITreeRQPUTest.cpp          ]: ./tests/units/datastructures/binary_indexed_tree/BITreeRQPUTest.cpp
-[BSTuptr.hpp                 ]: ./include/cpp/datastructures/binary_search_tree/BSTuptr.hpp
-[BSTuptrIterator.hpp         ]: ./include/cpp/datastructures/binary_search_tree/BSTuptrIterator.hpp
-[BSTuptrNode.hpp             ]: ./include/cpp/datastructures/binary_search_tree/BSTuptrNode.hpp
+[BSTuptr.hpp                 ]: ./include/wndx/ds/binary_search_tree/BSTuptr.hpp
+[BSTuptrIterator.hpp         ]: ./include/wndx/ds/binary_search_tree/BSTuptrIterator.hpp
+[BSTuptrNode.hpp             ]: ./include/wndx/ds/binary_search_tree/BSTuptrNode.hpp
 [BSTuptrTest.cpp             ]: ./tests/units/datastructures/binary_search_tree/BSTuptrTest.cpp
-[BinaryHeapQ.hpp             ]: ./include/cpp/datastructures/queue_priority/BinaryHeapQ.hpp
+[BinaryHeapQ.hpp             ]: ./include/wndx/ds/queue_priority/BinaryHeapQ.hpp
 [BinaryHeapQTest.cpp         ]: ./tests/units/datastructures/queue_priority/BinaryHeapQTest.cpp
-[DLLraw.hpp                  ]: ./include/cpp/datastructures/linked_list/DLLraw.hpp
+[DLLraw.hpp                  ]: ./include/wndx/ds/linked_list/DLLraw.hpp
 [DLLrawTest.cpp              ]: ./tests/units/datastructures/linked_list/DLLrawTest.cpp
-[IQueue.hpp                  ]: ./include/cpp/datastructures/queue/IQueue.hpp
-[IStack.hpp                  ]: ./include/cpp/datastructures/stack/IStack.hpp
-[ListQueue.hpp               ]: ./include/cpp/datastructures/queue/ListQueue.hpp
+[IQueue.hpp                  ]: ./include/wndx/ds/queue/IQueue.hpp
+[IStack.hpp                  ]: ./include/wndx/ds/stack/IStack.hpp
+[ListQueue.hpp               ]: ./include/wndx/ds/queue/ListQueue.hpp
 [ListQueueTest.cpp           ]: ./tests/units/datastructures/queue/ListQueueTest.cpp
-[ListStack.hpp               ]: ./include/cpp/datastructures/stack/ListStack.hpp
+[ListStack.hpp               ]: ./include/wndx/ds/stack/ListStack.hpp
 [ListStackTest.cpp           ]: ./tests/units/datastructures/stack/ListStackTest.cpp
 [SortTest.cpp                ]: ./tests/units/sort/SortTest.cpp
-[UnionFind.hpp               ]: ./include/cpp/datastructures/union_find/UnionFind.hpp
+[UnionFind.hpp               ]: ./include/wndx/ds/union_find/UnionFind.hpp
 [UnionFindTest.cpp           ]: ./tests/units/datastructures/union_find/UnionFindTest.cpp
-[bubble_sort.hpp             ]: ./include/cpp/sort/bubble_sort.hpp
-[insertion_sort.hpp          ]: ./include/cpp/sort/insertion_sort.hpp
-[merge_sort.hpp              ]: ./include/cpp/sort/merge_sort.hpp
-[quick_sort.hpp              ]: ./include/cpp/sort/quick_sort.hpp
-[selection_sort.hpp          ]: ./include/cpp/sort/selection_sort.hpp
+[bubble_sort.hpp             ]: ./include/wndx/sort/bubble_sort.hpp
+[insertion_sort.hpp          ]: ./include/wndx/sort/insertion_sort.hpp
+[merge_sort.hpp              ]: ./include/wndx/sort/merge_sort.hpp
+[quick_sort.hpp              ]: ./include/wndx/sort/quick_sort.hpp
+[selection_sort.hpp          ]: ./include/wndx/sort/selection_sort.hpp
 
 ## Hall of Fame
 DSA implemented in [Java](https://github.com/williamfiset/Algorithms),
