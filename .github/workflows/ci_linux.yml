@@ -32,25 +32,26 @@ jobs:
           - clang
           - gcc
 
+        # NOTE: hardcoded -> env.BUILD_TYPE variable cannot be used here! => Sucks!
         include:
           - toolchain: clang
-            cc : clang
-            cxx: clang++
-            bdir: build/linux-clang
+            cc  : clang
+            cxx : clang++
+            bdir: build/lnx-Debug-clang
 
           - toolchain: gcc
-            cc : gcc
-            cxx: g++
-            bdir: build/linux-gcc
+            cc  : gcc
+            cxx : g++
+            bdir: build/lnx-Debug-gcc
 
     name: ${{matrix.toolchain}}
 
     # TODO: cache deps
     steps:
-      - name: ENV All
-        run : env
+      # - uses: actions/checkout@v3
 
-      - uses: actions/checkout@v3
+      - name: ENV List All
+        run : env
 
       - name: CMake Configure
         run : >
@@ -58,7 +59,7 @@ jobs:
           -D CMAKE_C_COMPILER=${{matrix.cc}} -D CMAKE_CXX_COMPILER=${{matrix.cxx}}
 
       - name: Build
-        run : cmake --build ${{matrix.bdir}} --config ${{env.BUILD_TYPE}} -j $(nproc)
+        run : cmake --build ${{matrix.bdir}} --config ${{env.BUILD_TYPE}} -j $(getconf _NPROCESSORS_ONLN)
 
       - name: Tests
         run : ctest --test-dir ${{matrix.bdir}} -C ${{env.BUILD_TYPE}}
