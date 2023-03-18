@@ -7,38 +7,18 @@ defaults:
 # workflow will run after & only if CI:(linux & windows) is successfully passed.
 # workflow_dispatch - to be able to run manually even when parent workflow is disabled.
 on:
+  workflow_dispatch:
   workflow_run:
     workflows: [windows (MSVC)]
-    types: [completed]
-  workflow_dispatch:
-
-env:
-  BUILD_TYPE: Debug
-  BBDIR: build/macos-clang
+    types    : [completed]
 
 jobs:
   build-and-tests:
-    runs-on: macos-latest
-    continue-on-error: false
-
-    if: |
-      github.event.workflow_run.conclusion == 'success' ||
-      github.event_name == 'workflow_dispatch'
-
-    name: AppleClang
-
-    steps:
-      - name: ENV All
-        run : env
-
-      - uses: actions/checkout@v3
-
-      - name: CMake Configure
-        run : cmake -S . -B ${{env.BBDIR}} -D CMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
-      - name: Build
-        run : cmake --build ${{env.BBDIR}} --config ${{env.BUILD_TYPE}} -j $(getconf _NPROCESSORS_ONLN)
-
-      - name: Tests
-        run : ctest --test-dir ${{env.BBDIR}} -C ${{env.BUILD_TYPE}} --output-on-failure
+    # call reusable workflow
+    uses: ./.github/workflows/rsbl_build_ci.yml
+    with:
+      RUNNER    : macos-latest
+      TOOLCHAIN_DISPLAY_NAME: AppleClang
+      BUILD_TYPE: Debug
+      BUILD_DIR : build/mac-Debug-clanga
 
