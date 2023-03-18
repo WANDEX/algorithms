@@ -12,19 +12,20 @@ on:
     workflows: [CI linux]
     types    : [completed]
 
-env:
-  RUNNER    : windows-latest
-  TDNAME    : MSVC
-  BUILD_TYPE: Debug
-  BUILD_DIR : build/win-Debug-msvc
+# XXX: unfortunately this will not work! -> that's why all hardcoded.
+# env:
+#   RUNNER    : windows-latest
+#   TDNAME    : MSVC
+#   BUILD_TYPE: Debug
+#   BUILD_DIR : build/win-Debug-msvc
 
 jobs:
   build-and-tests:
     # call reusable workflow
     uses: ./.github/workflows/rsbl_build_ci.yml
     with:
-      RUNNER    : ${{env.RUNNER}}
-      TOOLCHAIN_DISPLAY_NAME: ${{env.TDNAME}}
-      BUILD_TYPE: ${{env.BUILD_TYPE}}
-      BUILD_DIR : ${{env.BUILD_DIR}}
+      RUNNER    : windows-latest
+      TOOLCHAIN_DISPLAY_NAME: MSVC
+      BUILD_TYPE: Debug
+      BUILD_DIR : build/win-Debug-msvc
 
