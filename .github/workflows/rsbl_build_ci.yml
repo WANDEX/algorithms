@@ -31,7 +31,8 @@ jobs:
     name: ${{inputs.TOOLCHAIN_DISPLAY_NAME}}
 
     steps:
-      # - uses: actions/checkout@v3
+      # will not work without checkout.
+      - uses: actions/checkout@v3
 
       - name: ENV List All
         run : env
