@@ -48,7 +48,8 @@ jobs:
 
     # TODO: cache deps
     steps:
-      # - uses: actions/checkout@v3
+      # NOTE: will not work without this.
+      - uses: actions/checkout@v3
 
       - name: ENV List All
         run : env
