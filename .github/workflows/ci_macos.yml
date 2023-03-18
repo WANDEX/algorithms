@@ -14,6 +14,12 @@ on:
 
 jobs:
   build-and-tests:
+    # HACK: to run the job if previous workflow completed with status == success.
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+    # ^ => skip job otherwise.
+
     # call reusable workflow
     uses: ./.github/workflows/rsbl_build_ci.yml
     with:

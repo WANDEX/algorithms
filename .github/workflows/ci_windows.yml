@@ -5,6 +5,7 @@ defaults:
     shell: sh
 
 # workflow will run after & only if linux CI is successfully passed.
+# XXX: impossible without hacks to check (workflow_run status == succes) (only status completed)
 # workflow_dispatch - to be able to run manually even when parent workflow is disabled.
 on:
   workflow_dispatch:
@@ -21,6 +22,12 @@ on:
 
 jobs:
   build-and-tests:
+    # HACK: to run the job if previous workflow completed with status == success.
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+    # ^ => skip job otherwise.
+
     # call reusable workflow
     uses: ./.github/workflows/rsbl_build_ci.yml
     with:
