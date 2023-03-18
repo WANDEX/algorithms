@@ -1,0 +1,47 @@
+name: Reusable Workflow - CI Build
+
+defaults:
+  run:
+    shell: sh
+
+on:
+  workflow_call:
+    inputs:
+      RUNNER:
+        required: true
+        type    : string
+      TOOLCHAIN_DISPLAY_NAME:
+        required: true
+        type    : string
+      BUILD_TYPE:
+        required: true
+        type    : string
+      BUILD_DIR:
+        required: true
+        type    : string
+
+
+jobs:
+  build-and-tests-RSBL:
+    ## runs-on: windows-latest
+    runs-on: ${{inputs.RUNNER}}
+    continue-on-error: false
+
+    ## name: MSVC
+    name: ${{inputs.TOOLCHAIN_DISPLAY_NAME}}
+
+    steps:
+      # - uses: actions/checkout@v3
+
+      - name: ENV List All
+        run : env
+
+      - name: CMake Configure
+        run : cmake -S . -B ${{inputs.BUILD_DIR}} -D CMAKE_BUILD_TYPE=${{inputs.BUILD_TYPE}}
+
+      - name: Build
+        run : cmake --build ${{inputs.BUILD_DIR}} --config ${{inputs.BUILD_TYPE}} -j $(getconf _NPROCESSORS_ONLN)
+
+      - name: Tests
+        run : ctest --test-dir ${{inputs.BUILD_DIR}} -C ${{inputs.BUILD_TYPE}} --output-on-failure
+
