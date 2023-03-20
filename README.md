@@ -31,54 +31,54 @@ include/\
 └── wndx/\
     ├── ds/\
     │   ├── binary_indexed_tree/\
-    │   │   └── [BITreeRQPU.hpp] ( *[BITreeRQPUTest.cpp]* )\
+    │   │   └── [BITreeRQPU.hpp] ( *[BITreeRQPU.t.cpp]* )\
     │   ├── binary_search_tree/\
-    │   │   ├── [BSTuptr.hpp] ( *[BSTuptrTest.cpp]* )\
+    │   │   ├── [BSTuptr.hpp] ( *[BSTuptr.t.cpp]* )\
     │   │   ├── [BSTuptrIterator.hpp]\
     │   │   └── [BSTuptrNode.hpp]\
     │   ├── linked_list/\
-    │   │   └── [DLLraw.hpp] ( *[DLLrawTest.cpp]* )\
+    │   │   └── [DLLraw.hpp] ( *[DLLraw.t.cpp]* )\
     │   ├── queue/\
     │   │   ├── [IQueue.hpp]\
-    │   │   └── [ListQueue.hpp] ( *[ListQueueTest.cpp]* )\
+    │   │   └── [ListQueue.hpp] ( *[ListQueue.t.cpp]* )\
     │   ├── queue_priority/\
-    │   │   └── [BinaryHeapQ.hpp] ( *[BinaryHeapQTest.cpp]* )\
+    │   │   └── [BinaryHeapQ.hpp] ( *[BinaryHeapQ.t.cpp]* )\
     │   ├── stack/\
     │   │   ├── [IStack.hpp]\
-    │   │   └── [ListStack.hpp] ( *[ListStackTest.cpp]* )\
+    │   │   └── [ListStack.hpp] ( *[ListStack.t.cpp]* )\
     │   └── union_find/\
-    │       └── [UnionFind.hpp] ( *[UnionFindTest.cpp]* )\
+    │       └── [UnionFind.hpp] ( *[UnionFind.t.cpp]* )\
     └── sort/\
-        ├── [bubble_sort.hpp] ( *[SortTest.cpp]* )\
-        ├── [insertion_sort.hpp] ( *[SortTest.cpp]* )\
-        ├── [merge_sort.hpp] ( *[SortTest.cpp]* )\
-        ├── [quick_sort.hpp] ( *[SortTest.cpp]* )\
-        └── [selection_sort.hpp] ( *[SortTest.cpp]* )
+        ├── [bubble_sort.hpp] ( *[sort.t.cpp]* )\
+        ├── [insertion_sort.hpp] ( *[sort.t.cpp]* )\
+        ├── [merge_sort.hpp] ( *[sort.t.cpp]* )\
+        ├── [quick_sort.hpp] ( *[sort.t.cpp]* )\
+        └── [selection_sort.hpp] ( *[sort.t.cpp]* )
 
 [BITreeRQPU.hpp              ]: ./include/wndx/ds/binary_indexed_tree/BITreeRQPU.hpp
-[BITreeRQPUTest.cpp          ]: ./tests/units/datastructures/binary_indexed_tree/BITreeRQPUTest.cpp
+[BITreeRQPU.t.cpp            ]: ./tests/units/ds/binary_indexed_tree/BITreeRQPU.t.cpp
 [BSTuptr.hpp                 ]: ./include/wndx/ds/binary_search_tree/BSTuptr.hpp
+[BSTuptr.t.cpp               ]: ./tests/units/ds/binary_search_tree/BSTuptr.t.cpp
 [BSTuptrIterator.hpp         ]: ./include/wndx/ds/binary_search_tree/BSTuptrIterator.hpp
 [BSTuptrNode.hpp             ]: ./include/wndx/ds/binary_search_tree/BSTuptrNode.hpp
-[BSTuptrTest.cpp             ]: ./tests/units/datastructures/binary_search_tree/BSTuptrTest.cpp
 [BinaryHeapQ.hpp             ]: ./include/wndx/ds/queue_priority/BinaryHeapQ.hpp
-[BinaryHeapQTest.cpp         ]: ./tests/units/datastructures/queue_priority/BinaryHeapQTest.cpp
+[BinaryHeapQ.t.cpp           ]: ./tests/units/ds/queue_priority/BinaryHeapQ.t.cpp
 [DLLraw.hpp                  ]: ./include/wndx/ds/linked_list/DLLraw.hpp
-[DLLrawTest.cpp              ]: ./tests/units/datastructures/linked_list/DLLrawTest.cpp
+[DLLraw.t.cpp                ]: ./tests/units/ds/linked_list/DLLraw.t.cpp
 [IQueue.hpp                  ]: ./include/wndx/ds/queue/IQueue.hpp
 [IStack.hpp                  ]: ./include/wndx/ds/stack/IStack.hpp
 [ListQueue.hpp               ]: ./include/wndx/ds/queue/ListQueue.hpp
-[ListQueueTest.cpp           ]: ./tests/units/datastructures/queue/ListQueueTest.cpp
+[ListQueue.t.cpp             ]: ./tests/units/ds/queue/ListQueue.t.cpp
 [ListStack.hpp               ]: ./include/wndx/ds/stack/ListStack.hpp
-[ListStackTest.cpp           ]: ./tests/units/datastructures/stack/ListStackTest.cpp
-[SortTest.cpp                ]: ./tests/units/sort/SortTest.cpp
+[ListStack.t.cpp             ]: ./tests/units/ds/stack/ListStack.t.cpp
 [UnionFind.hpp               ]: ./include/wndx/ds/union_find/UnionFind.hpp
-[UnionFindTest.cpp           ]: ./tests/units/datastructures/union_find/UnionFindTest.cpp
+[UnionFind.t.cpp             ]: ./tests/units/ds/union_find/UnionFind.t.cpp
 [bubble_sort.hpp             ]: ./include/wndx/sort/bubble_sort.hpp
 [insertion_sort.hpp          ]: ./include/wndx/sort/insertion_sort.hpp
 [merge_sort.hpp              ]: ./include/wndx/sort/merge_sort.hpp
 [quick_sort.hpp              ]: ./include/wndx/sort/quick_sort.hpp
 [selection_sort.hpp          ]: ./include/wndx/sort/selection_sort.hpp
+[sort.t.cpp                  ]: ./tests/units/sort/sort.t.cpp
 
 ## Hall of Fame
 DSA implemented in [Java](https://github.com/williamfiset/Algorithms),
