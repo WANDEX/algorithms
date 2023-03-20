@@ -12,7 +12,15 @@ endif()
 if(${GNU_COMP} OR ${Clang_COMP} OR ${AppleClang_COMP})
   # set(CMAKE_CXX_FLAGS --coverage)
 
-  add_compile_options(-g -O0)
+  if(CMAKE_BUILD_TYPE STREQUAL Release)
+    add_compile_options(-O3)
+  else()
+    add_compile_options(-g -Og)
+
+    ## This helps to see/fix errors (which MSVC will throw anyway)
+    ## => they should be fixed. (it is crucial flag, but has its own cost)
+    add_compile_options(-D_GLIBCXX_DEBUG)
+  endif()
 
   add_compile_options(-Wall -Wextra -Wpedantic -pedantic-errors)
 
@@ -28,10 +36,6 @@ if(${GNU_COMP} OR ${Clang_COMP} OR ${AppleClang_COMP})
   ## disallow implicit conversions
   # add_compile_options(-Wconversion) # XXX
   # add_compile_options(-Wconversion -Wsign-conversion -Warith-conversion -Wenum-conversion)
-
-  ## This helps to see/fix errors (which MSVC will throw anyway)
-  ## => they should be fixed. (it is crucial flag, but has its own cost)
-  add_compile_options(-D_GLIBCXX_DEBUG)
 endif()
 
 if(MSVC)
