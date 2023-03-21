@@ -93,7 +93,7 @@ private:
      * lsb(96)  = lsb(0b1100000) =  0b100000 = 32 .
      * lsb(64)  = lsb(0b1000000) = 0b1000000 = 64 .
      */
-    Ti lsb(const std::size_t i) const
+    constexpr std::size_t lsb(const std::size_t i) const
     {
         return i & -i; // isolate the lowest one bit value
     }
@@ -103,7 +103,7 @@ private:
      *
      * @param i index.
      */
-    Ti prefixSum(std::size_t i) const
+    constexpr Ti prefixSum(std::size_t i) const
     {
         Ti sum {0};
         while (i != 0) {
@@ -121,7 +121,7 @@ public:
      * @param  left index.
      * @param right index.
      */
-    Ti sum(const std::size_t left, const std::size_t right) const
+    constexpr Ti sum(const std::size_t left, const std::size_t right) const
     {
         if (right < left) throw std::invalid_argument("Make sure right >= left");
         return prefixSum(right) - prefixSum(left - 1);
@@ -133,7 +133,7 @@ public:
      * @param i index.
      * @param v value.
      */
-    void add(std::size_t i, const Ti v)
+    constexpr void add(std::size_t i, const Ti v)
     {
         while (i < m_sz) {
             m_tree.at(i) += v;
@@ -146,7 +146,7 @@ public:
      *
      * @param i index.
      */
-    Ti get(const std::size_t i) const
+    constexpr Ti get(const std::size_t i) const
     {
         return sum(i, i);
     }
@@ -157,7 +157,7 @@ public:
      * @param i index.
      * @param v value.
      */
-    void set(const std::size_t i, const Ti v)
+    constexpr void set(const std::size_t i, const Ti v)
     {
         add(i, v - sum(i, i));
     }
