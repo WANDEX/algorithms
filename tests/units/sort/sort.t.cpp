@@ -48,19 +48,19 @@ std::vector<void (*)(std::vector<T>&)> srt_func_std_vector {
  */
 
 template<typename T> // C arrays
-std::vector<void (*)(T*, const int a, const int b)> srt_func_c_array_mq {
+std::vector<void (*)(T*, const std::size_t a, const std::size_t b)> srt_func_c_array_mq {
     &srt::merge_sort,
     &srt::quick_sort,
 };
 
 template<typename T, std::size_t n>
-std::vector<void (*)(std::array<T, n>&, const int a, const int b)> srt_func_std_array_mq {
+std::vector<void (*)(std::array<T, n>&, const std::size_t a, const std::size_t b)> srt_func_std_array_mq {
     &srt::merge_sort,
     &srt::quick_sort,
 };
 
 template<typename T>
-std::vector<void (*)(std::vector<T>&, const int a, const int b)> srt_func_std_vector_mq {
+std::vector<void (*)(std::vector<T>&, const std::size_t a, const std::size_t b)> srt_func_std_vector_mq {
     &srt::merge_sort,
     &srt::quick_sort,
 };
