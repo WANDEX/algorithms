@@ -27,6 +27,8 @@ bdir="build/dev-$bt-$cmbn"
 
 set -e
 
+beg_epoch=$(date +%s) # for the first call of the time_spent_on_step
+
 if [ -r ./CMakeLists.txt ]; then
   _="" # just pass
 elif [ -r ../CMakeLists.txt ]; then
@@ -57,9 +59,23 @@ case "$opt" in
     ;;
 esac
 
+time_spent_on_step() {
+  # HACK: because standard utility/command 'time' does not work.
+  end_epoch=$(date +%s)
+  diff_secs=$((end_epoch-beg_epoch))
+  # small insignificant optimization
+  [ "$diff_secs" = 0 ] && beg_epoch="$end_epoch" && return
+  spent_time=$(date -d "@${diff_secs}" "+%Mm %Ss")
+  beg_epoch=$(date +%s)
+  printf "step took:%b %s.%b\n" "${BLD}" "$spent_time" "${END}"
+}
+
 und='=========================='
 sep="${und}${und}${und}"
-vsep() { printf "\n%s[%s]\n%s\n\n" "${2}" "${1}" "${sep}${END}" ;}
+vsep() {
+  time_spent_on_step
+  printf "\n%s[%s]\n%s\n\n" "${2}" "${1}" "${sep}${END}"
+}
 
 vsep "CONFIGURE" "${BLU}"
 cmake -S . -B "$bdir" -G Ninja -D CMAKE_BUILD_TYPE=${bt} -Wdev -Werror=dev ${fresh}
@@ -100,3 +116,5 @@ case "$opt" in
     "$gtest_binary" --gtest_filter="$test_filter"
     ;;
 esac
+[ -n "$opt" ] && vsep "COMPLETED" "${GRN}"
+
