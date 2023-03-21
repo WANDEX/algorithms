@@ -30,12 +30,12 @@ protected:
         return gen::srng(MIN_RAND_NUM, MAX_RAND_NUM);
     }
 
-    int loBound(const int N) const
+    std::size_t loBound(const std::size_t N) const
     {
-        return gen::srng(1, N);
+        return gen::srng(1uz, N);
     }
 
-    int upBound(const int N, const int low) const
+    std::size_t upBound(const std::size_t N, const std::size_t low) const
     {
         return gen::srng(low, N);
     }
@@ -43,12 +43,12 @@ protected:
     void doRandomRangeQuery(std::vector<int> &v, ds::BITreeRQPU &tree) const
     {
         int sum {0};
-        const int N{ static_cast<int>(v.size()) - 1 };
+        std::size_t const N{ v.size() - 1 };
 
-        int lo {loBound(N)};
-        int hi {upBound(N, lo)};
+        std::size_t lo{ loBound(N) };
+        std::size_t hi{ upBound(N, lo) };
 
-        for (int k = lo; k <= hi; k++) sum += v.at(k);
+        for (std::size_t k = lo; k <= hi; k++) sum += v.at(k);
 
         ASSERT_EQ(tree.sum(lo, hi), sum);
     }
