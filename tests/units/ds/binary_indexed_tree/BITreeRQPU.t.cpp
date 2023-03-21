@@ -18,8 +18,7 @@ protected:
     const int MIN_RAND_NUM = -1000;
     const int MAX_RAND_NUM = +2000;
 
-    const std::size_t LOOPS   = 100;
-    const std::size_t TEST_SZ = 1000;
+    const std::size_t LOOPS = 100;
 
     const int UNUSED_VAL = -9999;
 
@@ -44,7 +43,7 @@ protected:
     void doRandomRangeQuery(std::vector<int> &v, ds::BITreeRQPU &tree) const
     {
         int sum {0};
-        int N = v.size() - 1;
+        const int N{ static_cast<int>(v.size()) - 1 };
 
         int lo {loBound(N)};
         int hi {upBound(N, lo)};
@@ -188,8 +187,10 @@ TEST_F(BITreeRQPUTest, testRandomizedStaticSumQueries)
     std::vector<int> rndm;
     ds::BITreeRQPU tree;
 
+    const int max{ static_cast<int>(LOOPS) };
+
     for (std::size_t sz = 2; sz <= LOOPS; sz++) {
-        rndm = gen::random<int>(sz, 0, LOOPS, true);
+        rndm = gen::random<int>(sz, 0, max, true);
         tree = ds::BITreeRQPU(rndm);
 
         for (std::size_t j = 0; j < LOOPS / 10; j++) {
@@ -203,12 +204,14 @@ TEST_F(BITreeRQPUTest, testRandomizedSetSumQueries)
     std::vector<int> rndm;
     ds::BITreeRQPU tree;
 
+    const int max{ static_cast<int>(LOOPS) };
+
     for (std::size_t sz = 2; sz <= LOOPS; sz++) {
-        rndm = gen::random<int>(sz, 0, LOOPS, true);
+        rndm = gen::random<int>(sz, 0, max, true);
         tree = ds::BITreeRQPU(rndm);
 
         for (std::size_t j = 0; j < LOOPS / 10; j++) {
-            const int index = gen::srng(1, sz);
+            const std::size_t index = gen::srng<std::size_t>(1, sz);
             const int randn = randNum();
 
             rndm[index]  += randn;

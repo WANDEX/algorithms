@@ -18,12 +18,13 @@ namespace gen {
  * @param  to - range to the number (upper bound of the distribution).
  * @return random number in range of distribution.
  */
-inline double srng(const double fr, const double to)
+template<typename T>
+inline T srng(const T fr, const T to)
 {
     std::random_device rd;
     std::default_random_engine rng(rd());
-    std::uniform_real_distribution<> dist(fr, to);
-    return dist(rng);
+    std::uniform_real_distribution<double> dist(static_cast<double>(fr), static_cast<double>(to));
+    return static_cast<T>(dist(rng));
 }
 
 /**
@@ -34,7 +35,7 @@ inline double srng(const double fr, const double to)
  * @param  n  - size.
  */
 template<typename T>
-inline std::unordered_set<T> random_uset(const std::size_t n, const double fr, const double to)
+inline std::unordered_set<T> random_uset(const std::size_t n, const T fr, const T to)
 {
     std::unordered_set<T> uset(n);
     // TODO: different check/formula (for double/float T the real range is bigger)
@@ -46,7 +47,7 @@ inline std::unordered_set<T> random_uset(const std::size_t n, const double fr, c
     T rn {};
     for (std::size_t i = 0; i < n; i++) {
         do {
-            rn = gen::srng(fr, to);
+            rn = gen::srng<T>(fr, to);
         } while(!((uset.insert(rn)).second));
         // ^ loop till successful insert of unique value
     }
@@ -61,10 +62,10 @@ inline std::unordered_set<T> random_uset(const std::size_t n, const double fr, c
  * @param  n  - size.
  */
 template<typename T>
-inline void random(T *out, const std::size_t n, const double fr, const double to)
+inline void random(T *out, const std::size_t n, const T fr, const T to)
 {
     for (std::size_t i = 0; i < n; i++)
-        out[i] = gen::srng(fr, to);
+        out[i] = gen::srng<T>(fr, to);
 }
 
 /**
@@ -75,11 +76,11 @@ inline void random(T *out, const std::size_t n, const double fr, const double to
  * @param  n  - size.
  */
 template<typename T, std::size_t n>
-inline std::array<T, n> random(const double fr, const double to)
+inline std::array<T, n> random(const T fr, const T to)
 {
     std::array<T, n> out;
     for (std::size_t i = 0; i < n; i++)
-        out.at(i) = gen::srng(fr, to);
+        out.at(i) = gen::srng<T>(fr, to);
     return out;
 }
 
@@ -92,7 +93,7 @@ inline std::array<T, n> random(const double fr, const double to)
  * @param  n  - size.
  */
 template<typename T>
-inline std::vector<T> random(const std::size_t n, const double fr, const double to, const bool unique=false)
+inline std::vector<T> random(const std::size_t n, const T fr, const T to, const bool unique=false)
 {
     if (unique) {
         std::unordered_set<T> uset{ gen::random_uset<T>(n, fr, to) };
@@ -102,7 +103,7 @@ inline std::vector<T> random(const std::size_t n, const double fr, const double 
     std::vector<T> out;
     out.resize(n);
     for (std::size_t i = 0; i < n; i++)
-        out.at(i) = gen::srng(fr, to);
+        out.at(i) = gen::srng<T>(fr, to);
     return out;
 }
 

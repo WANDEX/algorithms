@@ -95,7 +95,7 @@ TEST(sort_algos_c_array_random, double)
     constexpr std::size_t n{ 10 };
     double a_rnd[n]; double a_exp[n];
     for (const auto &algo : srt_func_c_array<double>) {
-        gen::random(a_rnd, n, 0, 99);
+        gen::random(a_rnd, n, 0., 99.);
         std::copy_n(a_rnd, n, a_exp);
         std::sort(a_exp, a_exp + n);
         algo(a_rnd, n);
@@ -106,9 +106,11 @@ TEST(sort_algos_c_array_random, double)
 TEST(sort_algos_c_array_random, negative_int8_t)
 {
     constexpr std::size_t n{ 11 };
+    constexpr std::int8_t min{ INT8_MIN };
+    constexpr std::int8_t max{ 0 };
     std::int8_t a_rnd[n]; std::int8_t a_exp[n];
     for (const auto &algo : srt_func_c_array<std::int8_t>) {
-        gen::random(a_rnd, n, INT8_MIN, 0);
+        gen::random(a_rnd, n, min, max);
         std::copy_n(a_rnd, n, a_exp);
         std::sort(a_exp, a_exp + n);
         algo(a_rnd, n);
@@ -220,10 +222,10 @@ TEST(sort_algos_std_vector_random, mq__double)
 {
     for (const auto &algo : srt_func_std_vector_mq<double>) {
         for (std::size_t n = 0; n < 33; n+=3) {
-            std::vector<double> a_rnd = gen::random<double>(n, -99, 99);
+            std::vector<double> a_rnd = gen::random<double>(n, -99., 99.);
             std::vector<double> a_exp = a_rnd;
             std::sort(a_exp.begin(), a_exp.end());
-            algo(a_rnd, 0, n - 1);
+            algo(a_rnd, 0, static_cast<int>(n) - 1);
             EXPECT_EQ(a_rnd, a_exp);
         }
     }

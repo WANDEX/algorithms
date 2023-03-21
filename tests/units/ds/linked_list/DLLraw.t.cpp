@@ -283,7 +283,7 @@ TEST_F(DLLrawTest, testRemoveAtBranches)
         ds::DLLraw<int> tmp_list{ rndm };
         ASSERT_EQ(rndm.size(), tmp_list.size());
         while (!tmp_list.empty()) {
-            tmp_list.removeAt(gen::srng(0, tmp_list.size() - 1));
+            tmp_list.removeAt(gen::srng<std::size_t>(0, tmp_list.size() - 1));
         }
     }
 }
