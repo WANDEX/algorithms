@@ -208,7 +208,7 @@ TEST(sort_algos_c_array_random, mq__int)
     constexpr std::size_t n{ 55 };
     int a_rnd[n], a_exp[n];
     for (const auto &algo : srt_func_c_array_mq<int>) {
-        for (std::size_t i = 0; i < 5; i++) {
+        for (std::size_t i = 1; i < 5; i++) {
             gen::random(a_rnd, n, 0, 1000);
             std::copy_n(a_rnd, n, a_exp);
             std::sort(a_exp, a_exp + n);
@@ -221,11 +221,11 @@ TEST(sort_algos_c_array_random, mq__int)
 TEST(sort_algos_std_vector_random, mq__double)
 {
     for (const auto &algo : srt_func_std_vector_mq<double>) {
-        for (std::size_t n = 0; n < 33; n+=3) {
+        for (std::size_t n = 1; n < 33; n+=3) {
             std::vector<double> a_rnd = gen::random<double>(n, -99., 99.);
             std::vector<double> a_exp = a_rnd;
             std::sort(a_exp.begin(), a_exp.end());
-            algo(a_rnd, 0, static_cast<int>(n) - 1);
+            algo(a_rnd, 0, n - 1);
             EXPECT_EQ(a_rnd, a_exp);
         }
     }

@@ -1,99 +1,120 @@
 #pragma once
 
 #include <cstddef>              // std::size_t
+#include <cassert>
 #include <array>
 #include <vector>
 
 namespace wndx {
 namespace srt {
 
-#ifndef SRT_SWAP_P_Q
-#define SRT_SWAP_P_Q
+namespace /* (anonymous) */ {
+
 /**
  * swap pointers
  */
 inline void swap(auto* p, auto* q)
 {
-    auto tp { *p }; // tmp ptr
+    auto tp{ *p }; // tmp ptr
     *p = *q;
     *q = tp;
 }
-#endif // SRT_SWAP_P_Q
 
 /**
- * performs Hoare partition algorithm for quick sort
+ * @brief performs Hoare partition algorithm for quick sort.
  */
-inline int hoare_partition(int *a, int lo, int hi)
+template<typename T>
+inline std::size_t
+hoare_partition(T *a, const std::size_t lo, const std::size_t hi)
 {
-    int pivot = a[lo];
-    int i = lo - 1, j = hi + 1;
+    T pivot{ a[lo] };
+    std::size_t i{ lo - 1 }, j{ hi + 1 };
     while (true) {
         do { i++; } while(a[i] < pivot);
         do { j--; } while(a[j] > pivot);
         if (i >= j) return j;
-        srt::swap(&a[i], &a[j]);
+        swap(&a[i], &a[j]);
     }
 }
 
 /**
- * sort interval [lo, hi] in-place recursively.
- * initially: lo = 0, hi = size of array - 1
+ * @brief performs Hoare partition algorithm for quick sort.
  */
-inline void quick_sort(int *a, int lo, int hi)
-{
-    if (lo < hi) {
-        int split = srt::hoare_partition(a, lo, hi);
-        quick_sort(a, lo, split);
-        quick_sort(a, split + 1, hi);
-    }
-}
-
-
 template<typename T, std::size_t n>
-inline int hoare_partition(std::array<T, n> &a, int lo, int hi)
+inline std::size_t
+hoare_partition(std::array<T, n> &a, const std::size_t lo, const std::size_t hi)
 {
-    T pivot = a[lo];
-    int i = lo - 1, j = hi + 1;
+    T pivot{ a[lo] };
+    std::size_t i{ lo - 1 }, j{ hi + 1 };
     while (true) {
         do { i++; } while(a[i] < pivot);
         do { j--; } while(a[j] > pivot);
         if (i >= j) return j;
-        srt::swap(&a[i], &a[j]);
+        swap(&a[i], &a[j]);
     }
 }
 
-template<typename T, std::size_t n>
-inline void quick_sort(std::array<T, n> &a, int lo, int hi)
-{
-    if (lo < hi) {
-        int split = srt::hoare_partition(a, lo, hi);
-        quick_sort(a, lo, split);
-        quick_sort(a, split + 1, hi);
-    }
-}
-
-
+/**
+ * @brief performs Hoare partition algorithm for quick sort.
+ */
 template<typename T>
-inline int hoare_partition(std::vector<T> &a, int lo, int hi)
+inline std::size_t
+hoare_partition(std::vector<T> &a, const std::size_t lo, const std::size_t hi)
 {
-    T pivot = a[lo];
-    int i = lo - 1, j = hi + 1;
+    T pivot{ a[lo] };
+    std::size_t i{ lo - 1 }, j{ hi + 1 };
     while (true) {
         do { i++; } while(a[i] < pivot);
         do { j--; } while(a[j] > pivot);
         if (i >= j) return j;
-        srt::swap(&a[i], &a[j]);
+        swap(&a[i], &a[j]);
     }
 }
 
+} // (anonymous) [internal_linkage]
+
+/**
+ * @brief quick sort interval [lo, hi] in-place recursively.
+ * initially: lo = 0, hi = size of array - 1.
+ */
 template<typename T>
-inline void quick_sort(std::vector<T> &a, int lo, int hi)
+inline void quick_sort(T *a, const std::size_t lo, const std::size_t hi)
 {
-    if (lo < hi) {
-        int split = srt::hoare_partition(a, lo, hi);
-        quick_sort(a, lo, split);
-        quick_sort(a, split + 1, hi);
-    }
+    if (lo >= hi) return;
+    assert(a); // XXX
+    const std::size_t split{ hoare_partition<T>(a, lo, hi) };
+    quick_sort(a, lo, split);
+    quick_sort(a, split + 1, hi);
+}
+
+
+/**
+ * @brief quick sort interval [lo, hi] in-place recursively.
+ * initially: lo = 0, hi = size of array - 1.
+ */
+template<typename T, std::size_t n>
+inline void quick_sort(std::array<T, n> &a, const std::size_t lo, const std::size_t hi)
+{
+    if (lo >= hi) return;
+    static_assert(n != 0); // XXX
+    const std::size_t split{ hoare_partition<T>(a, lo, hi) };
+    quick_sort(a, lo, split);
+    quick_sort(a, split + 1, hi);
+}
+
+
+/**
+ * @brief quick sort interval [lo, hi] in-place recursively.
+ * initially: lo = 0, hi = size of array - 1.
+ */
+template<typename T>
+inline void quick_sort(std::vector<T> &a, const std::size_t lo, const std::size_t hi)
+{
+    if (lo >= hi) return;
+    assert(!a.empty()); // XXX
+    const std::size_t split{ hoare_partition<T>(a, lo, hi) };
+    quick_sort(a, lo, split);
+    quick_sort(a, split + 1, hi);
 }
 
 } // namespace srt
