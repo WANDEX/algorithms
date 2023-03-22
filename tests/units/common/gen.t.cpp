@@ -21,7 +21,7 @@ protected:
     template<typename T>
     void doRandomUsetOfType(const std::size_t n) const
     {
-        std::unordered_set ruset{ gen::random_uset<T>(n, 0, n) };
+        std::unordered_set<T> ruset{ gen::random_uset<T>(n, static_cast<T>(0), static_cast<T>(n)) };
         ASSERT_EQ(ruset.size(), n);
     }
 
