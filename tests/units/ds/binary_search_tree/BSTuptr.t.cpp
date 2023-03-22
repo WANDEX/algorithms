@@ -17,7 +17,7 @@ using namespace wndx;
 class BSTuptrTest : public ::testing::Test
 {
 protected:
-    const std::size_t LOOPS = 100;
+    static constexpr std::size_t LOOPS{ 100 };
 
     virtual void SetUp()
     {}
@@ -184,21 +184,22 @@ TEST_F(BSTuptrTest, testRemove)
 TEST_F(BSTuptrTest, testRemoveRandom)
 {
     using Ty = int;
+    constexpr Ty max{ static_cast<Ty>(LOOPS) };
     std::vector<Ty> rndm;
     ds::BSTuptr<Ty> tree;
     for (std::size_t i = 0; i < LOOPS; i++) {
         const std::size_t size { i };
         // unique=true -> rndm should contain only unique values!
-        rndm = gen::random<Ty>(size, 0, LOOPS, true);
+        rndm = gen::random<Ty>(size, 0, max, true);
         tree = ds::BSTuptr<Ty>();
 
         // assertion to make sure all values are inserted and unique!
-        for (const std::size_t x : rndm)
+        for (const Ty &x : rndm)
             ASSERT_TRUE(tree.add(x));
 
         // remove all the elements we just placed in the tree
         for (std::size_t j = 0; j < size; j++) {
-            const Ty value { rndm[j] };
+            const Ty value{ rndm.at(j) };
             ASSERT_TRUE(tree.remove(value));
             ASSERT_EQ(tree.size(), size - j - 1);
         }
