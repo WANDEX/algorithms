@@ -34,6 +34,7 @@ template <typename T>
 class BSTuptrIterator
 {
 public:
+    // TODO: rewrite more properly (full class should be rewritten)
     using iterator_category = std::bidirectional_iterator_tag;
     using difference_type   = const std::ptrdiff_t;
     using value_type        = const T;
@@ -49,7 +50,7 @@ public:
 protected:
     std::deque<node_ptr> m_deque;
     node_ptr m_root;
-    int current {0};
+    std::size_t current {0};
 
 public:
     explicit BSTuptrIterator(const node_ptr ptr, const TreeTravOrder order=IN_ORDER)
@@ -60,7 +61,7 @@ public:
     }
 
     BSTuptrIterator() = default;
-    virtual ~BSTuptrIterator() = default;
+    ~BSTuptrIterator() = default;
 
     // dereference
     reference       operator*() const { return m_deque[current]->m_data; }
