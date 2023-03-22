@@ -12,7 +12,7 @@
  * @return n + 1 if not found
  * @return index of needle
  */
-size_t wndxc_binary_search(const int *sorted_array, const size_t n, const int needle)
+inline size_t wndxc_binary_search(const int *sorted_array, const size_t n, const int needle)
 {
     // Zero size arrays are an extension (but still, just in case)
     assert(n != 0); // LCOV_EXCL_BR_LINE
