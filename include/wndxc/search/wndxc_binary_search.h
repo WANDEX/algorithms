@@ -14,6 +14,7 @@
  */
 inline size_t wndxc_binary_search(const int *sorted_array, const size_t n, const int needle)
 {
+    assert(sorted_array); // LCOV_EXCL_BR_LINE
     // Zero size arrays are an extension (but still, just in case)
     assert(n != 0); // LCOV_EXCL_BR_LINE
     size_t hi = n, lo = 0;
