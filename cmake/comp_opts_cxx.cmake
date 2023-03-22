@@ -3,11 +3,6 @@
 ## https://cmake.org/cmake/help/latest/module/CheckCXXCompilerFlag.html
 include(CheckCXXCompilerFlag) # -> check_cxx_compiler_flag
 
-check_cxx_compiler_flag(-Wzero-as-null-pointer-constant HAS_WARN_0_AS_NULLPTR)
-if(HAS_WARN_0_AS_NULLPTR)
-  add_compile_options(-Wzero-as-null-pointer-constant)
-endif()
-
 ## vars defined and come from the funcs.cmake
 if(${GNU_COMP} OR ${Clang_COMP} OR ${AppleClang_COMP})
   # set(CMAKE_CXX_FLAGS --coverage)
@@ -29,7 +24,6 @@ if(${GNU_COMP} OR ${Clang_COMP} OR ${AppleClang_COMP})
   add_compile_options(
     -Wconversion
     -Wsign-conversion
-    -Warith-conversion
     -Wenum-conversion
   )
 
@@ -48,4 +42,21 @@ if(MSVC)
   ## TODO: mimic all other options from other compilers
   ## (to have equal varnings between compilers and all environments/platforms)
   add_compile_options(/W3)
+
+else()
+  ## other flags which may miss in any of the targeted compilers.
+  ## (flag is obviously missing in MSVC if flag has leading - sign)
+
+  ## missing in Clang
+  check_cxx_compiler_flag(-Warith-conversion HAS_-Warith-conversion)
+  if(HAS_-Warith-conversion)
+    add_compile_options(-Warith-conversion)
+  endif()
+
+  check_cxx_compiler_flag(-Wzero-as-null-pointer-constant HAS_-Wzero-as-null-pointer-constant)
+  if(HAS_-Wzero-as-null-pointer-constant)
+    add_compile_options(-Wzero-as-null-pointer-constant)
+  endif()
+
 endif()
+
