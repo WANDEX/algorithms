@@ -95,7 +95,7 @@ private:
      */
     constexpr std::size_t lsb(const std::size_t i) const
     {
-        return i & -i; // isolate the lowest one bit value
+        return i & ~(i-1); // return the lowest set bit value
     }
 
     /**
