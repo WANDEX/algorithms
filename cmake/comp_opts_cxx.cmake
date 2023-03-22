@@ -24,18 +24,24 @@ if(${GNU_COMP} OR ${Clang_COMP} OR ${AppleClang_COMP})
 
   add_compile_options(-Wall -Wextra -Wpedantic -pedantic-errors)
 
+  ## disallow implicit conversions
+  ## NOTE: with -Wconversion Clang also enables -Wsign-conversion (GCC not!)
+  add_compile_options(
+    -Wconversion
+    -Wsign-conversion
+    -Warith-conversion
+    -Wenum-conversion
+  )
+
   add_compile_options(
     -Wundef
     -Wshadow
-    -ftrapv
+    -ftrapv # XXX: sane default or delete for the "better"?
   )
 
   add_compile_options(-fdiagnostics-show-template-tree) # XXX ?
   add_compile_options(-fdiagnostics-color=always)
 
-  ## disallow implicit conversions
-  # add_compile_options(-Wconversion) # XXX
-  # add_compile_options(-Wconversion -Wsign-conversion -Warith-conversion -Wenum-conversion)
 endif()
 
 if(MSVC)
