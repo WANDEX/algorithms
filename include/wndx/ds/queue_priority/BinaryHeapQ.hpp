@@ -248,7 +248,7 @@ private:
     void swim(std::size_t k)
     {
         // grab the index of the next parent node WRT to k
-        int parent = (k - 1) / 2;
+        std::size_t parent{ (k - 1) / 2 };
         // Keep swimming while we have not reached the
         // root and while we are less than our parent.
         while (k > 0 && less(k, parent)) {
@@ -312,7 +312,7 @@ private:
         const T removed_data { heap.at(i) };
         swap(i, index_last_elem);
 
-        heap.erase(heap.begin()+index_last_elem);
+        heap.pop_back();
         mapRemove(removed_data, index_last_elem);
 
         // Removed last element
