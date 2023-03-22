@@ -124,10 +124,10 @@ TEST_F(UnionFindTest, testComponentSize)
 
 TEST_F(UnionFindTest, testConnectivity)
 {
-    const int sz = 7;
+    constexpr std::size_t sz = 7;
     ds::UnionFind unf(sz);
 
-    for (int i = 0; i < sz; i++) ASSERT_TRUE(unf.connected(i, i));
+    for (std::size_t i = 0; i < sz; i++) ASSERT_TRUE(unf.connected(i, i));
     unf.unify(0, 2);
     ASSERT_TRUE(unf.connected(0, 2));
     ASSERT_TRUE(unf.connected(2, 0));
@@ -137,7 +137,7 @@ TEST_F(UnionFindTest, testConnectivity)
     ASSERT_FALSE(unf.connected(6, 4));
     ASSERT_FALSE(unf.connected(5, 0));
 
-    for (int i = 0; i < sz; i++) ASSERT_TRUE(unf.connected(i, i));
+    for (std::size_t i = 0; i < sz; i++) ASSERT_TRUE(unf.connected(i, i));
     unf.unify(3, 1);
     ASSERT_TRUE(unf.connected(0, 2));
     ASSERT_TRUE(unf.connected(2, 0));
@@ -155,7 +155,7 @@ TEST_F(UnionFindTest, testConnectivity)
     ASSERT_FALSE(unf.connected(2, 5));
     ASSERT_FALSE(unf.connected(3, 6));
 
-    for (int i = 0; i < sz; i++) ASSERT_TRUE(unf.connected(i, i));
+    for (std::size_t i = 0; i < sz; i++) ASSERT_TRUE(unf.connected(i, i));
     unf.unify(2, 5);
     ASSERT_TRUE(unf.connected(0, 2));
     ASSERT_TRUE(unf.connected(2, 0));
@@ -177,14 +177,14 @@ TEST_F(UnionFindTest, testConnectivity)
     ASSERT_FALSE(unf.connected(4, 5));
     ASSERT_FALSE(unf.connected(1, 6));
 
-    for (int i = 0; i < sz; i++) ASSERT_TRUE(unf.connected(i, i));
+    for (std::size_t i = 0; i < sz; i++) ASSERT_TRUE(unf.connected(i, i));
     // connect everything
     unf.unify(1, 2);
     unf.unify(3, 4);
     unf.unify(4, 6);
 
-    for (int i = 0; i < sz; i++) {
-        for (int j = 0; j < sz; j++) {
+    for (std::size_t i = 0; i < sz; i++) {
+        for (std::size_t j = 0; j < sz; j++) {
             ASSERT_TRUE(unf.connected(i, j));
         }
     }
