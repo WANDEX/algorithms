@@ -32,7 +32,8 @@ protected:
 
     std::size_t loBound(const std::size_t N) const
     {
-        return gen::srng(1uz, N);
+        return gen::srng(static_cast<std::size_t>(1), N); // XXX
+        // return gen::srng(1uz, N); // C++23 (P0330R8)
     }
 
     std::size_t upBound(const std::size_t N, const std::size_t low) const

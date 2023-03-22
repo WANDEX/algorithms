@@ -12,7 +12,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(wndx LANGUAGES CXX)
 
 ## C++23: uz size_t suffix literal
-set(CMAKE_CXX_STANDARD 23)
+## (P0330R8) but MSVC does not support it yet. :(
+## https://en.cppreference.com/w/cpp/compiler_support#C.2B.2B23_features
+# set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
