@@ -18,7 +18,7 @@ using namespace wndx;
 class BinaryHeapQTest : public ::testing::Test
 {
 protected:
-    static const int LOOPS = 50;
+    static constexpr std::size_t LOOPS{ 50 };
 
     virtual void SetUp()
     {}
@@ -157,7 +157,7 @@ TEST_F(BinaryHeapQTest, testHeapify)
     std::priority_queue<int, std::vector<int>, std::greater<int>> PQ;
     ds::BinaryHeapQ<int> pq;
     std::vector<int> rndm;
-    for (int i = 1; i < LOOPS; i++) {
+    for (std::size_t i = 1; i < LOOPS; i++) {
         rndm = gen::random<int>(i, INT_MIN, INT_MAX);
         pq   = ds::BinaryHeapQ<int>(rndm);
         PQ   = { rndm.begin(), rndm.end() };
@@ -209,12 +209,12 @@ TEST_F(BinaryHeapQTest, testContainmentRandomized)
     std::priority_queue<int, std::vector<int>, std::greater<int>> PQ;
     ds::BinaryHeapQ<int> pq;
     std::vector<int> rndm;
-    for (int i = 1; i < LOOPS; i++) {
+    for (std::size_t i = 1; i < LOOPS; i++) {
         rndm = gen::random<int>(i, INT_MIN, INT_MAX);
         pq   = ds::BinaryHeapQ<int>(rndm);
         PQ   = { rndm.begin(), rndm.end() };
 
-        for (const int randVal : rndm) {
+        for (const int &randVal : rndm) {
             ASSERT_EQ(pq.contains(randVal), true);
             EXPECT_TRUE(pq.remove(randVal));
             PQ.pop();
