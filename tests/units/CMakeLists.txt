@@ -1,12 +1,11 @@
-set(BINARY ${CMAKE_PROJECT_NAME}_units)
+set(binary ${CMAKE_PROJECT_NAME}_units)
 
-file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false *.cc *.cpp)
+file(GLOB_RECURSE test_sources LIST_DIRECTORIES false *.cc *.cpp)
 
-set(SOURCES ${TEST_SOURCES})
+add_executable(${binary} ${test_sources})
 
-add_executable(${BINARY} ${TEST_SOURCES})
-
-target_link_libraries(${BINARY} GTest::gtest_main)
+target_link_libraries(${binary} PRIVATE GTest::gtest_main)
 
 # discover tests included in the gtest binary (for ctest)
-gtest_discover_tests(${BINARY})
+gtest_discover_tests(${binary})
+
