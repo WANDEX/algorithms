@@ -36,6 +36,19 @@ under_compiler(cl)     # XXX: MSVC cl compiler (assuming this is somehow possibl
 under_compiler(cl.exe) # XXX: to compile under linux -> (without big hassle with VStudio & wine)
 
 
+## https://cmake.org/cmake/help/latest/module/CheckCXXCompilerFlag.html
+include(CheckCXXCompilerFlag) # -> check_cxx_compiler_flag()
+
+## NOTE: only one flag is supported as function argument!
+## usage add_check_cxx_compiler_flag( -Wstrict-null-sentinel )
+function(add_check_cxx_compiler_flag flag)
+  check_cxx_compiler_flag(${flag} HAS_${flag})
+  if(HAS_${flag})
+    add_compile_options(${flag})
+  endif()
+endfunction(add_check_cxx_compiler_flag)
+
+
 ## recursively include all sub-directories of the given dir
 function(include_subdirs arg_dir)
   file(GLOB_RECURSE recurse_rpaths LIST_DIRECTORIES true
