@@ -92,13 +92,13 @@ TEST_F(ListQueueTest, testExhaustively)
     ASSERT_FALSE(queue->isEmpty());
     queue->enqueue(2);
     EXPECT_EQ(queue->size(), 2);
-    EXPECT_EQ(1, (int) queue->peek());
+    EXPECT_EQ(1, queue->peek());
     EXPECT_EQ(queue->size(), 2);
-    EXPECT_EQ(1, (int) queue->dequeue());
+    EXPECT_EQ(1, queue->dequeue());
     EXPECT_EQ(queue->size(), 1);
-    EXPECT_EQ(2, (int) queue->peek());
+    EXPECT_EQ(2, queue->peek());
     EXPECT_EQ(queue->size(), 1);
-    EXPECT_EQ(2, (int) queue->dequeue());
+    EXPECT_EQ(2, queue->dequeue());
     EXPECT_EQ(queue->size(), 0);
     ASSERT_TRUE(queue->isEmpty());
 }

@@ -92,13 +92,13 @@ TEST_F(ListStackTest, testExhaustively)
     ASSERT_FALSE(stack->isEmpty());
     stack->push(2);
     EXPECT_EQ(stack->size(), 2);
-    EXPECT_EQ(2, (int) stack->peek());
+    EXPECT_EQ(2, stack->peek());
     EXPECT_EQ(stack->size(), 2);
-    EXPECT_EQ(2, (int) stack->pop());
+    EXPECT_EQ(2, stack->pop());
     EXPECT_EQ(stack->size(), 1);
-    EXPECT_EQ(1, (int) stack->peek());
+    EXPECT_EQ(1, stack->peek());
     EXPECT_EQ(stack->size(), 1);
-    EXPECT_EQ(1, (int) stack->pop());
+    EXPECT_EQ(1, stack->pop());
     EXPECT_EQ(stack->size(), 0);
     ASSERT_TRUE(stack->isEmpty());
 }
