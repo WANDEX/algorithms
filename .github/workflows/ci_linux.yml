@@ -5,6 +5,7 @@ defaults:
     shell: sh
 
 on:
+  workflow_dispatch:
   push:
       paths-ignore:
         - '.*'
