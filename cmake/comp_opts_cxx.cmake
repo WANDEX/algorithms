@@ -1,11 +1,9 @@
 ## file with CXX compiler options.
 ##
-## https://cmake.org/cmake/help/latest/module/CheckCXXCompilerFlag.html
-include(CheckCXXCompilerFlag) # -> check_cxx_compiler_flag
+## vars & funcs defined and come from the funcs.cmake
 
-## vars defined and come from the funcs.cmake
+## here we set flags/options common to our main target compilers
 if(${GNU_COMP} OR ${Clang_COMP} OR ${AppleClang_COMP})
-  # set(CMAKE_CXX_FLAGS --coverage)
 
   if(CMAKE_BUILD_TYPE STREQUAL Release)
     add_compile_options(-O3)
@@ -25,38 +23,49 @@ if(${GNU_COMP} OR ${Clang_COMP} OR ${AppleClang_COMP})
     -Wconversion
     -Wsign-conversion
     -Wenum-conversion
+    -Wfloat-conversion
+
+    -Wsign-promo
+    -Wdouble-promotion
   )
 
   add_compile_options(
+    -Wold-style-cast
     -Wundef
     -Wshadow
     -ftrapv # XXX: sane default or delete for the "better"?
   )
 
-  add_compile_options(-fdiagnostics-show-template-tree) # XXX ?
-  add_compile_options(-fdiagnostics-color=always)
+  add_compile_options(
+    -fdiagnostics-color=always
+    -fdiagnostics-show-template-tree
+  )
 
+  ## enable this flags depending on the situation / debugging approach
+  add_compile_options(
+    # -Wfatal-errors
+  )
 endif()
 
 if(MSVC)
-  ## TODO: mimic all other options from other compilers
-  ## (to have equal varnings between compilers and all environments/platforms)
+  ## TODO: mimic all other flags from the targeted compilers
+  ## (to have equal warnings between compilers and all environments/platforms)
   add_compile_options(/W3)
 
 else()
-  ## other flags which may miss in any of the targeted compilers.
-  ## (flag is obviously missing in MSVC if flag has leading - sign)
+  ## ^ (flag is obviously missing in MSVC if flag has leading - sign)
+  ## Other flags which may miss in any of the targeted compilers.
+  ## Not targeted compilers may have support of the GNU/Clang flags
+  ## -> so we check support of the following flags, applying only supported.
 
-  ## missing in Clang
-  check_cxx_compiler_flag(-Warith-conversion HAS_-Warith-conversion)
-  if(HAS_-Warith-conversion)
-    add_compile_options(-Warith-conversion)
-  endif()
+  ### following flags are missing in Clang
 
-  check_cxx_compiler_flag(-Wzero-as-null-pointer-constant HAS_-Wzero-as-null-pointer-constant)
-  if(HAS_-Wzero-as-null-pointer-constant)
-    add_compile_options(-Wzero-as-null-pointer-constant)
-  endif()
+  add_check_cxx_compiler_flag( -Warith-conversion )
+  add_check_cxx_compiler_flag( -Wstrict-null-sentinel )
+  add_check_cxx_compiler_flag( -Wzero-as-null-pointer-constant ) # has
+
+  ### section for the other flags (may be or may be missing in Clang)
+  ### for brevity - flags for the other compilers should be here
 
 endif()
 
