@@ -2,10 +2,24 @@
 ##
 ## vars & funcs defined and come from the funcs.cmake
 
+if(WNDXLIB_ENABLE_COVERAGE)
+  if(${GNU_COMP})
+    ## concise - other ways of enabling coverage are more complicated. (less convenient)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
+    message(NOTICE ">> Code Coverage will be collected!")
+  else()
+    message(WARNING "Code Coverage analisys enabled only on the GNU/GCC toolchain!")
+  endif()
+endif()
+
 ## here we set flags/options common to our main target compilers
 if(${GNU_COMP} OR ${Clang_COMP} OR ${AppleClang_COMP})
 
-  if(CMAKE_BUILD_TYPE STREQUAL Release)
+  if(WNDXLIB_ENABLE_COVERAGE AND ${GNU_COMP})
+    ## NOTE: without optimizations
+    ## => other optimization levels/options obviously ruin coverage report.
+    add_compile_options(-g -O0)
+  elseif(CMAKE_BUILD_TYPE STREQUAL Release)
     add_compile_options(-O3)
   else()
     add_compile_options(-g -Og)

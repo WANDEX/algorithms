@@ -43,10 +43,11 @@ include_subdirs(include)
 
 ## GUARD: check the real root of the source tree.
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-  option(WNDXLIB_BUILD_BENCHMARKS "whether or not benchmarks should be built"  OFF) # TODO: UNIMPLEMENTED
-  option(WNDXLIB_BUILD_TESTS      "whether or not tests should be built"       ON)
-  option(WNDXLIB_BUILD_PACKAGE    "whether or not the package should be built" ON)  # TODO: UNIMPLEMENTED
-  option(WNDXLIB_ENABLE_INSTALL   "whether or not to enable the install rule"  ON)  # TODO: UNIMPLEMENTED
+  option(WNDXLIB_BUILD_BENCHMARKS "whether or not benchmarks should be built"   OFF) # TODO: UNIMPLEMENTED
+  option(WNDXLIB_BUILD_TESTS      "whether or not tests should be built"        ON)
+  option(WNDXLIB_BUILD_PACKAGE    "whether or not the package should be built"  ON)  # TODO: UNIMPLEMENTED
+  option(WNDXLIB_ENABLE_COVERAGE  "whether or not to enable the tests coverage" ON)
+  option(WNDXLIB_ENABLE_INSTALL   "whether or not to enable the install rule"   ON)  # TODO: UNIMPLEMENTED
 
   ## For the list of supported compilers visit:
   ## https://cmake.org/cmake/help/latest/prop_tgt/COMPILE_WARNING_AS_ERROR.html
@@ -62,7 +63,5 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     add_subdirectory(tests/units)
   endif()
 
-  # TODO: add via option or smth...
-  # set(CMAKE_CXX_FLAGS --coverage)
 endif()
 
