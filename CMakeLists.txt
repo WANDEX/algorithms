@@ -8,7 +8,7 @@ endif()
 
 ## ^ POLICIES
 project(
-  wndx
+  wndxlib
   VERSION       0.0.1.0
   LANGUAGES     CXX C
   DESCRIPTION   "[WIP] C++20 platform-agnostic DSA lib. (NOT FOR USE IN PRODUCTION CODEBASES)"
@@ -23,38 +23,46 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-## XXX: for the wndxc lib (currently unused)
+## XXX: for the wndxc lib (C headers lib - not bundled into the main project: C++ wndx lib)
 set(CMAKE_C_STANDARD 90)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
-## Generate a compilation database for use with automated tools like IDE/editor
-## plugins. See https://clang.llvm.org/docs/JSONCompilationDatabase.html
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-## For the list of supported compilers visit:
-## https://cmake.org/cmake/help/latest/prop_tgt/COMPILE_WARNING_AS_ERROR.html
-## NOTE: Flip value to not treat warnings as errors!
-set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
+message(NOTICE "/**")
+message(NOTICE " * PROJECT: ${PROJECT_NAME}")
+message(NOTICE " * VERSION: ${PROJECT_VERSION}")
+message(NOTICE " * DSCRPTN: ${PROJECT_DESCRIPTION}")
+message(NOTICE " * HOMEURL: ${PROJECT_HOMEPAGE_URL}")
+message(NOTICE " */")
 
-message("/**")
-message(" * PROJECT: ${PROJECT_NAME}")
-message(" * VERSION: ${PROJECT_VERSION}")
-message(" * DSCRPTN: ${PROJECT_DESCRIPTION}")
-message(" * HOMEURL: ${PROJECT_HOMEPAGE_URL}")
-message(" */")
+include(cmake/funcs.cmake) # useful project functions / variables
 
-include(cmake/funcs.cmake) # useful functions / variables
-## prefer GoogleTest version installed in the system || fetch if not found
-include(cmake/gtest.cmake)
-
-include(cmake/comp_opts_cxx.cmake)
-
-# TODO: add via option or smth...
-# set(CMAKE_CXX_FLAGS --coverage)
-
-## so that the project sources can find the necessary project header files
+## so that the sources can find the necessary header files
 include_subdirs(include)
 
-add_subdirectory(tests/units)
+## GUARD: check the real root of the source tree.
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+  option(WNDXLIB_BUILD_BENCHMARKS "whether or not benchmarks should be built"  OFF) # TODO: UNIMPLEMENTED
+  option(WNDXLIB_BUILD_TESTS      "whether or not tests should be built"       ON)
+  option(WNDXLIB_BUILD_PACKAGE    "whether or not the package should be built" ON)  # TODO: UNIMPLEMENTED
+  option(WNDXLIB_ENABLE_INSTALL   "whether or not to enable the install rule"  ON)  # TODO: UNIMPLEMENTED
+
+  ## For the list of supported compilers visit:
+  ## https://cmake.org/cmake/help/latest/prop_tgt/COMPILE_WARNING_AS_ERROR.html
+  ## NOTE: Flip value to not treat warnings as errors! (project scope)
+  set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
+
+  ## project compilation options/flags
+  include(cmake/comp_opts_cxx.cmake)
+
+  if(WNDXLIB_BUILD_TESTS)
+    ## prefer GoogleTest version installed in the system || fetch if not found
+    include(cmake/gtest.cmake)
+    add_subdirectory(tests/units)
+  endif()
+
+  # TODO: add via option or smth...
+  # set(CMAKE_CXX_FLAGS --coverage)
+endif()
 
