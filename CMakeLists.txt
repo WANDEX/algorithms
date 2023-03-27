@@ -45,17 +45,28 @@ include_subdirs(include)
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   option(WNDXLIB_BUILD_BENCHMARKS "whether or not benchmarks should be built"   OFF) # TODO: UNIMPLEMENTED
   option(WNDXLIB_BUILD_TESTS      "whether or not tests should be built"        ON)
-  option(WNDXLIB_BUILD_PACKAGE    "whether or not the package should be built"  ON)  # TODO: UNIMPLEMENTED
+  option(WNDXLIB_BUILD_PACKAGE    "whether or not the package should be built"  ON)
   option(WNDXLIB_ENABLE_COVERAGE  "whether or not to enable the tests coverage" ON)
   option(WNDXLIB_ENABLE_INSTALL   "whether or not to enable the install rule"   ON)  # TODO: UNIMPLEMENTED
 
   ## For the list of supported compilers visit:
   ## https://cmake.org/cmake/help/latest/prop_tgt/COMPILE_WARNING_AS_ERROR.html
-  ## NOTE: Flip value to not treat warnings as errors! (project scope)
-  set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
+  option(CMAKE_COMPILE_WARNING_AS_ERROR "treat compilation warnings as errors"  ON)
 
   ## project compilation options/flags
   include(cmake/comp_opts_cxx.cmake)
+
+  if(WNDXLIB_BUILD_PACKAGE)
+    set(package_files include/wndx/ cmake/ CMakeLists.txt LICENSE)
+    set(fpath_zip ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-src.zip)
+    add_custom_command(
+      OUTPUT  ${fpath_zip}
+      COMMAND ${CMAKE_COMMAND} -E tar c ${fpath_zip} --format=zip -- ${package_files}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+      DEPENDS ${package_files}
+    )
+    add_custom_target(${PROJECT_NAME}_package DEPENDS ${fpath_zip})
+  endif()
 
   if(WNDXLIB_BUILD_TESTS)
     ## prefer GoogleTest version installed in the system || fetch if not found
