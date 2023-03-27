@@ -68,6 +68,20 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     add_custom_target(${PROJECT_NAME}_package DEPENDS ${fpath_zip})
   endif()
 
+  if(WNDXLIB_ENABLE_COVERAGE)
+    if(${GNU_COMP})
+      add_library(code_coverage INTERFACE)
+      ## NOTE: without optimizations
+      ## => other optimization levels/options obviously ruin coverage report.
+      target_compile_options(code_coverage INTERFACE -g -O0 --coverage)
+      target_link_options(code_coverage INTERFACE --coverage)
+
+      message(NOTICE ">> Code Coverage will be collected!")
+    else()
+      message(WARNING "Code Coverage analysis enabled only on the GNU/GCC toolchain!")
+    endif()
+  endif()
+
   if(WNDXLIB_BUILD_TESTS)
     ## prefer GoogleTest version installed in the system || fetch if not found
     include(cmake/gtest.cmake)

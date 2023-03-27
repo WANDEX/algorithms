@@ -1,8 +1,12 @@
-set(binary ${CMAKE_PROJECT_NAME}_units)
+set(binary ${PROJECT_NAME}_units)
 
 file(GLOB_RECURSE test_sources LIST_DIRECTORIES false *.cc *.cpp)
 
 add_executable(${binary} ${test_sources})
+
+if(code_coverage)
+  target_link_libraries(${binary} PRIVATE code_coverage)
+endif()
 
 target_link_libraries(${binary} PRIVATE GTest::gtest_main)
 
