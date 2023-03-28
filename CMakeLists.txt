@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.3)
 
 ## the timestamps of extracted files. NEW = time of extraction
 if(POLICY CMP0135)
@@ -46,8 +46,9 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   option(WNDXLIB_BUILD_BENCHMARKS "whether or not benchmarks should be built"   OFF) # TODO: UNIMPLEMENTED
   option(WNDXLIB_BUILD_TESTS      "whether or not tests should be built"        ON)
   option(WNDXLIB_BUILD_PACKAGE    "whether or not the package should be built"  ON)
-  option(WNDXLIB_ENABLE_COVERAGE  "whether or not to enable the tests coverage" ON)
-  option(WNDXLIB_ENABLE_INSTALL   "whether or not to enable the install rule"   ON)  # TODO: UNIMPLEMENTED
+  option(WNDXLIB_COVERAGE_ENABLE  "whether or not to enable the tests coverage" ON)
+  option(WNDXLIB_COVERAGE_CLEAN   "clean coverage data before taking new"       ON)
+  option(WNDXLIB_INSTALL_ENABLE   "whether or not to enable the install rule"   ON)  # TODO: UNIMPLEMENTED
 
   ## For the list of supported compilers visit:
   ## https://cmake.org/cmake/help/latest/prop_tgt/COMPILE_WARNING_AS_ERROR.html
@@ -68,13 +69,27 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     add_custom_target(${PROJECT_NAME}_package DEPENDS ${fpath_zip})
   endif()
 
-  if(WNDXLIB_ENABLE_COVERAGE)
+  if(WNDXLIB_COVERAGE_ENABLE)
     if(${GNU_COMP})
       add_library(code_coverage INTERFACE)
       ## NOTE: without optimizations
       ## => other optimization levels/options obviously ruin coverage report.
       target_compile_options(code_coverage INTERFACE -g -O0 --coverage)
       target_link_options(code_coverage INTERFACE --coverage)
+
+      if(WNDXLIB_COVERAGE_CLEAN)
+        ### before taking new coverage analysis data:
+        ## find all coverage files in the project binary dir
+        file(GLOB_RECURSE prev_cov_files LIST_DIRECTORIES false
+          ABSOLUTE "${PROJECT_BINARY_DIR}" *.gcda *.gcno) # XXX *.gcno
+        ## clean from the previous coverage data files (if any)
+        if(NOT prev_cov_files STREQUAL "")
+          file(REMOVE ${prev_cov_files})
+          message(NOTICE ">> Cleared of previous coverage data files.")
+        else()
+          message(NOTICE ">> Nothing to clean up. (no coverage data files found)")
+        endif()
+      endif()
 
       message(NOTICE ">> Code Coverage will be collected!")
     else()

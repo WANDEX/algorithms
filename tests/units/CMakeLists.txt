@@ -4,7 +4,7 @@ file(GLOB_RECURSE test_sources LIST_DIRECTORIES false *.cc *.cpp)
 
 add_executable(${binary} ${test_sources})
 
-if(code_coverage)
+if(TARGET code_coverage)
   target_link_libraries(${binary} PRIVATE code_coverage)
 endif()
 
