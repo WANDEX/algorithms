@@ -81,7 +81,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
         ### before taking new coverage analysis data:
         ## find all coverage files in the project binary dir
         file(GLOB_RECURSE prev_cov_files LIST_DIRECTORIES false
-          ABSOLUTE "${PROJECT_BINARY_DIR}" *.gcda *.gcno) # XXX *.gcno
+          ABSOLUTE "${PROJECT_BINARY_DIR}" *.gcda) # XXX *.gcno
         ## clean from the previous coverage data files (if any)
         if(NOT prev_cov_files STREQUAL "")
           file(REMOVE ${prev_cov_files})
