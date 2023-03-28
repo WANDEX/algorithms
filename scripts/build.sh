@@ -91,7 +91,7 @@ if [ ! -x "$gtest_binary" ]; then
 fi
 
 # shellcheck disable=SC2068 # Intentional - to re-split trailing arguments.
-run_ctest() { ctest --test-dir "$bdir" $@ ;} # shortcut
+run_ctest() { ctest --test-dir "$bdir" -t code_coverage $@ ;} # shortcut
 
 [ -n "$opt" ] && vsep "TESTS" "${RED}"
 [ -n "$test_filter" ] || test_filter='.*'
