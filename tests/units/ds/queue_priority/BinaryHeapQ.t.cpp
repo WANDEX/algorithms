@@ -1,6 +1,6 @@
-#include "BinaryHeapQ.hpp"
+#include <wndx/ds/queue_priority/BinaryHeapQ.hpp>
 
-#include "gen.hpp"
+#include <wndx/common/gen.hpp>
 
 #include <gtest/gtest.h>
 

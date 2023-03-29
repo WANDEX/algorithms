@@ -1,4 +1,4 @@
-#include "UnionFind.hpp"
+#include <wndx/ds/union_find/UnionFind.hpp>
 
 #include <gtest/gtest.h>
 

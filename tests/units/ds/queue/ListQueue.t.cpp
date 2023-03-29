@@ -1,4 +1,4 @@
-#include "ListQueue.hpp"
+#include <wndx/ds/queue/ListQueue.hpp>
 
 #include <gtest/gtest.h>
 

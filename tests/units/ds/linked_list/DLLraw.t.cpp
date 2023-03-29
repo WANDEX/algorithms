@@ -1,6 +1,6 @@
-#include "DLLraw.hpp"
+#include <wndx/ds/linked_list/DLLraw.hpp>
 
-#include "gen.hpp"
+#include <wndx/common/gen.hpp>
 
 #include <gtest/gtest.h>
 
