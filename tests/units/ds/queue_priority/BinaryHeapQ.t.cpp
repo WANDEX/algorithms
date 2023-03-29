@@ -53,23 +53,23 @@ protected:
 TEST_F(BinaryHeapQTest, testEmpty)
 {
     ds::BinaryHeapQ<int> q;
-    ASSERT_TRUE(q.isEmpty());
+    ASSERT_TRUE(q.empty());
     ASSERT_EQ(q.size(), 0);
 }
 
 TEST_F(BinaryHeapQTest, testClear)
 {
     ds::BinaryHeapQ<int> q {0, 1, 2};
-    ASSERT_FALSE(q.isEmpty());
+    ASSERT_FALSE(q.empty());
     q.clear();
     ASSERT_EQ(q.size(), 0);
-    ASSERT_TRUE(q.isEmpty());
+    ASSERT_TRUE(q.empty());
 }
 
 TEST_F(BinaryHeapQTest, testMapGetNoThrow)
 {
     ds::BinaryHeapQ<int> q;
-    ASSERT_TRUE(q.isEmpty());
+    ASSERT_TRUE(q.empty());
     ASSERT_NO_THROW(q.remove(1));
 }
 
@@ -116,7 +116,7 @@ TEST_F(BinaryHeapQTest, EmptyHeap)
 {
     const std::string exp_err{ "Empty Heap." };
     ds::BinaryHeapQ<int> q;
-    ASSERT_TRUE(q.isEmpty());
+    ASSERT_TRUE(q.empty());
 
     try {
         q.peek();
@@ -182,7 +182,7 @@ TEST_F(BinaryHeapQTest, testBasicsStr)
     ASSERT_EQ(q.peek(), "ff");
     ASSERT_EQ(q.poll(), "ff");
     ASSERT_EQ(q.size(), 0);
-    ASSERT_TRUE(q.isEmpty());
+    ASSERT_TRUE(q.empty());
 }
 
 TEST_F(BinaryHeapQTest, testContainmentStr)
@@ -200,7 +200,7 @@ TEST_F(BinaryHeapQTest, testContainmentStr)
     q.remove("ee");
     EXPECT_FALSE(q.contains("ee"));
     EXPECT_EQ(q.size(), 0);
-    EXPECT_TRUE(q.isEmpty());
+    EXPECT_TRUE(q.empty());
 }
 
 // hacky test since std::priority_queue does not have contains(), remove(val) methods
@@ -221,7 +221,7 @@ TEST_F(BinaryHeapQTest, testContainmentRandomized)
             ASSERT_EQ(pq.contains(randVal), false);
         }
     }
-    ASSERT_TRUE(pq.isEmpty());
+    ASSERT_TRUE(pq.empty());
 }
 
 TEST_F(BinaryHeapQTest, testRemovingDuplicates)

@@ -82,9 +82,9 @@ TEST_F(BSTuptrTest, iteratorVirtDtor)
 TEST_F(BSTuptrTest, testEmpty)
 {
     ds::BSTuptr<std::string> tree;
-    ASSERT_TRUE(tree.isEmpty());
+    ASSERT_TRUE(tree.empty());
     tree.add("Hello World!");
-    ASSERT_FALSE(tree.isEmpty());
+    ASSERT_FALSE(tree.empty());
 }
 
 TEST_F(BSTuptrTest, testSize)
@@ -203,7 +203,7 @@ TEST_F(BSTuptrTest, testRemoveRandom)
             ASSERT_TRUE(tree.remove(value));
             ASSERT_EQ(tree.size(), size - j - 1);
         }
-        ASSERT_TRUE(tree.isEmpty());
+        ASSERT_TRUE(tree.empty());
     }
 }
 

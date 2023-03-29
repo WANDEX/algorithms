@@ -39,7 +39,7 @@ protected:
 
 TEST_F(ListStackTest, testEmptyStack)
 {
-    EXPECT_TRUE(stack->isEmpty());
+    EXPECT_TRUE(stack->empty());
     EXPECT_EQ(stack->size(), 0);
 }
 
@@ -87,9 +87,9 @@ TEST_F(ListStackTest, testPop)
 
 TEST_F(ListStackTest, testExhaustively)
 {
-    ASSERT_TRUE(stack->isEmpty());
+    ASSERT_TRUE(stack->empty());
     stack->push(1);
-    ASSERT_FALSE(stack->isEmpty());
+    ASSERT_FALSE(stack->empty());
     stack->push(2);
     EXPECT_EQ(stack->size(), 2);
     EXPECT_EQ(2, stack->peek());
@@ -100,5 +100,5 @@ TEST_F(ListStackTest, testExhaustively)
     EXPECT_EQ(stack->size(), 1);
     EXPECT_EQ(1, stack->pop());
     EXPECT_EQ(stack->size(), 0);
-    ASSERT_TRUE(stack->isEmpty());
+    ASSERT_TRUE(stack->empty());
 }

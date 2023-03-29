@@ -88,7 +88,7 @@ public:
     /**
      * @brief check if binary tree is empty
      */
-    bool isEmpty() const
+    constexpr bool empty() const
     {
         return size() == 0;
     }

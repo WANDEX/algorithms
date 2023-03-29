@@ -46,7 +46,7 @@ public:
     /**
      * check that queue is empty, O(1)
      */
-    virtual bool isEmpty() const
+    virtual constexpr bool empty() const
     {
         return queue.empty();
     }
@@ -65,7 +65,7 @@ public:
      */
     virtual T dequeue()
     {
-        if (isEmpty()) {
+        if (empty()) {
             throw std::runtime_error("Empty Queue");
         }
         T data { queue.front() }; // tmp store the data
@@ -79,7 +79,7 @@ public:
      */
     virtual T peek() const
     {
-        if (isEmpty()) {
+        if (empty()) {
             throw std::runtime_error("Empty Queue");
         }
         return queue.front();

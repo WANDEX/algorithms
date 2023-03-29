@@ -14,7 +14,7 @@ public:
     virtual std::size_t size() const = 0;
 
     // return if the queue is empty
-    virtual bool isEmpty() const = 0;
+    virtual constexpr bool empty() const = 0;
 
     // enqueue the element to the back of the queue
     virtual void enqueue(const T &elem) = 0;

@@ -142,7 +142,7 @@ public:
     /**
      * check that priority queue is empty, O(1)
      */
-    virtual bool isEmpty() const noexcept
+    virtual constexpr bool empty() const noexcept
     {
         return size() == 0;
     }
@@ -154,7 +154,7 @@ public:
      */
     virtual T peek() const
     {
-        if (isEmpty())
+        if (empty())
             throw std::runtime_error("Empty Heap.");
         return heap.front();
     }
@@ -305,7 +305,7 @@ private:
      */
     T removeAt(const std::size_t i)
     {
-        if (isEmpty())
+        if (empty())
             throw std::runtime_error("Empty Heap.");
 
         const std::size_t index_last_elem { size() - 1 };

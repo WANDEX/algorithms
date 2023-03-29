@@ -14,7 +14,7 @@ public:
     virtual std::size_t size() const = 0;
 
     // return if the stack is empty
-    virtual bool isEmpty() const = 0;
+    virtual constexpr bool empty() const = 0;
 
     // push the element on the stack
     virtual void push(const T &elem) = 0;

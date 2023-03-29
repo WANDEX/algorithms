@@ -47,7 +47,7 @@ public:
     /**
      * check that stack is empty, O(1)
      */
-    virtual bool isEmpty() const
+    virtual constexpr bool empty() const
     {
         return stack.empty();
     }
@@ -67,7 +67,7 @@ public:
      */
     virtual T pop()
     {
-        if (isEmpty()) {
+        if (empty()) {
             throw std::runtime_error("Empty Stack");
         }
         T data { stack.front() }; // tmp store the data
@@ -82,7 +82,7 @@ public:
      */
     virtual T peek() const
     {
-        if (isEmpty()) {
+        if (empty()) {
             throw std::runtime_error("Empty Stack");
         }
         return stack.front();

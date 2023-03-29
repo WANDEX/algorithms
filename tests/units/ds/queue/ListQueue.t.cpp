@@ -39,7 +39,7 @@ protected:
 
 TEST_F(ListQueueTest, testEmptyQueue)
 {
-    EXPECT_TRUE(queue->isEmpty());
+    EXPECT_TRUE(queue->empty());
     EXPECT_EQ(queue->size(), 0);
 }
 
@@ -87,9 +87,9 @@ TEST_F(ListQueueTest, testDequeue)
 
 TEST_F(ListQueueTest, testExhaustively)
 {
-    ASSERT_TRUE(queue->isEmpty());
+    ASSERT_TRUE(queue->empty());
     queue->enqueue(1);
-    ASSERT_FALSE(queue->isEmpty());
+    ASSERT_FALSE(queue->empty());
     queue->enqueue(2);
     EXPECT_EQ(queue->size(), 2);
     EXPECT_EQ(1, queue->peek());
@@ -100,5 +100,5 @@ TEST_F(ListQueueTest, testExhaustively)
     EXPECT_EQ(queue->size(), 1);
     EXPECT_EQ(2, queue->dequeue());
     EXPECT_EQ(queue->size(), 0);
-    ASSERT_TRUE(queue->isEmpty());
+    ASSERT_TRUE(queue->empty());
 }
