@@ -40,13 +40,13 @@ under_compiler(cl.exe) # XXX: to compile under linux -> (without big hassle with
 include(CheckCXXCompilerFlag) # -> check_cxx_compiler_flag()
 
 ## NOTE: only one flag is supported as function argument!
-## usage add_check_cxx_compiler_flag( -Wstrict-null-sentinel )
-function(add_check_cxx_compiler_flag flag)
+## usage target_add_check_cxx_compiler_flag(target -Wstrict-null-sentinel )
+function(target_add_check_cxx_compiler_flag target flag)
   check_cxx_compiler_flag(${flag} HAS_${flag})
   if(HAS_${flag})
-    add_compile_options(${flag})
+    target_compile_options(${target} INTERFACE ${flag})
   endif()
-endfunction(add_check_cxx_compiler_flag)
+endfunction(target_add_check_cxx_compiler_flag)
 
 
 ## recursively include all sub-directories of the given dir

@@ -36,10 +36,8 @@ message(NOTICE " * DSCRPTN: ${PROJECT_DESCRIPTION}")
 message(NOTICE " * HOMEURL: ${PROJECT_HOMEPAGE_URL}")
 message(NOTICE " */")
 
-include(cmake/funcs.cmake) # useful project functions / variables
-
-## so that the sources can find the necessary header files
-include_subdirs(include)
+## target compilation options/flags
+include(cmake/comp_opts_cxx.cmake)
 
 ## GUARD: check the real root of the source tree.
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
@@ -53,9 +51,6 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   ## For the list of supported compilers visit:
   ## https://cmake.org/cmake/help/latest/prop_tgt/COMPILE_WARNING_AS_ERROR.html
   option(CMAKE_COMPILE_WARNING_AS_ERROR "treat compilation warnings as errors"  ON)
-
-  ## project compilation options/flags
-  include(cmake/comp_opts_cxx.cmake)
 
   if(WNDXLIB_BUILD_PACKAGE)
     set(package_files include/wndx/ cmake/ CMakeLists.txt LICENSE)
