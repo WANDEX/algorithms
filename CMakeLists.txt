@@ -46,7 +46,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   option(WNDXLIB_BUILD_PACKAGE    "whether or not the package should be built"  ON)
   option(WNDXLIB_COVERAGE_ENABLE  "whether or not to enable the tests coverage" ON)
   option(WNDXLIB_COVERAGE_CLEAN   "clean coverage data before taking new"       ON)
-  option(WNDXLIB_INSTALL_ENABLE   "whether or not to enable the install rule"   ON)  # TODO: UNIMPLEMENTED
+  option(WNDXLIB_INSTALL_ENABLE   "whether or not to enable the install rule"   ON)
 
   ## For the list of supported compilers visit:
   ## https://cmake.org/cmake/help/latest/prop_tgt/COMPILE_WARNING_AS_ERROR.html
@@ -62,7 +62,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
       DEPENDS ${package_files}
     )
     add_custom_target(${PROJECT_NAME}_package DEPENDS ${fpath_zip})
-  endif()
+  endif(WNDXLIB_BUILD_PACKAGE)
 
   if(WNDXLIB_COVERAGE_ENABLE)
     if(${GNU_COMP})
@@ -90,13 +90,54 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     else()
       message(WARNING "Code Coverage analysis enabled only on the GNU/GCC toolchain!")
     endif()
-  endif()
+  endif(WNDXLIB_COVERAGE_ENABLE)
 
   if(WNDXLIB_BUILD_TESTS)
     ## prefer GoogleTest version installed in the system || fetch if not found
     include(cmake/gtest.cmake)
     add_subdirectory(tests/units)
-  endif()
+  endif(WNDXLIB_BUILD_TESTS)
 
-endif()
+  if(WNDXLIB_INSTALL_ENABLE)
+    message(STATUS "Generating Install")
+    include(CMakePackageConfigHelpers)
+    include(GNUInstallDirs)
+
+    install(TARGETS _wndx_base wndx_core wndx_dev wndx
+      EXPORT ${PROJECT_NAME}Targets
+      RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+      LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    )
+
+    install(EXPORT ${PROJECT_NAME}Targets
+      NAMESPACE   wandex::
+      DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+    )
+
+    configure_package_config_file(
+      cmake/${PROJECT_NAME}Config.cmake.in
+      "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+      INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+    )
+    install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+      DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+    )
+
+    write_basic_package_version_file(
+      "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+      COMPATIBILITY SameMinorVersion
+    ) ## YYYY.MM.N1 is compatible with YYYY.MM.N2.
+
+    install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+      DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+    )
+
+    install(DIRECTORY include/wndx # include/wndxc
+      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+      FILES_MATCHING
+      PATTERN     "*.hpp"
+    )
+  endif(WNDXLIB_INSTALL_ENABLE)
+endif(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 
