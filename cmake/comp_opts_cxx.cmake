@@ -10,20 +10,30 @@ function(add_alias name target)
   set_target_properties(${target} PROPERTIES EXPORT_NAME ${name})
 endfunction()
 
-# get_filename_component(include_dir_wndx  ${CMAKE_CURRENT_SOURCE_DIR}/include/wndx  ABSOLUTE)
-# get_filename_component(include_dir_wndxc ${CMAKE_CURRENT_SOURCE_DIR}/include/wndxc ABSOLUTE)
 
-# file(GLOB_RECURSE headers_wndx  LIST_DIRECTORIES false ABSOLUTE ${include_dir_wndx}  *.hpp PARENT_SCOPE)
-# file(GLOB_RECURSE headers_wndxc LIST_DIRECTORIES false ABSOLUTE ${include_dir_wndxc} *.h   PARENT_SCOPE)
+get_filename_component(wndxlib_include_dir ${CMAKE_CURRENT_SOURCE_DIR}/include REALPATH)
 
-## XXX
-get_filename_component(include_dir_libs  ${CMAKE_CURRENT_SOURCE_DIR}/include ABSOLUTE)
-file(GLOB_RECURSE headers_libs LIST_DIRECTORIES false ABSOLUTE ${include_dir_libs} *.hpp *.h PARENT_SCOPE)
+get_filename_component(wndxlib_include_dir_wndx  ${wndxlib_include_dir}/wndx   REALPATH)
+get_filename_component(wndxlib_include_dir_wndxc ${wndxlib_include_dir}/wndxc  REALPATH)
 
+file(GLOB_RECURSE wndxlib_headers_wndx  LIST_DIRECTORIES false ${wndxlib_include_dir_wndx}  *.hpp PARENT_SCOPE)
+file(GLOB_RECURSE wndxlib_headers_wndxc LIST_DIRECTORIES false ${wndxlib_include_dir_wndxc} *.h   PARENT_SCOPE)
+
+## recursively include all sub-directories of the given dir
+file(GLOB_RECURSE wndxlib_include_dirs LIST_DIRECTORIES true ${wndxlib_include_dir}/$)
+list(FILTER       wndxlib_include_dirs EXCLUDE REGEX "/\\.") # exclude paths with .dirs
+## ^ to allow using short includes (for internal library development only)
+
+## uncomment to see which dirs are included
+# foreach(dir ${wndxlib_include_dirs})
+#   message(${dir})
+# endforeach()
 
 ## Base target for common options.
-add_library(_wndx_base INTERFACE)
-target_sources(_wndx_base INTERFACE ${headers_libs})
+add_library(_wndx_base INTERFACE ${wndxlib_headers_wndx})
+target_include_directories(_wndx_base INTERFACE
+  $<BUILD_INTERFACE:${wndxlib_include_dir}>
+)
 target_compile_features(_wndx_base INTERFACE cxx_std_20)
 
 
@@ -32,7 +42,7 @@ add_library(wndx_core INTERFACE)
 add_alias(wndx::core wndx_core)
 target_link_libraries(wndx_core INTERFACE _wndx_base)
 target_include_directories(wndx_core SYSTEM INTERFACE
-  $<BUILD_INTERFACE:${include_dir_libs}>
+  $<BUILD_INTERFACE:${wndxlib_include_dir}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
@@ -42,7 +52,7 @@ add_library(wndx_dev INTERFACE)
 add_alias(wndx::dev wndx_dev)
 target_link_libraries(wndx_dev INTERFACE _wndx_base)
 target_include_directories(wndx_dev INTERFACE
-  $<BUILD_INTERFACE:${include_dir_libs}>
+  $<BUILD_INTERFACE:${wndxlib_include_dirs}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
@@ -113,6 +123,15 @@ else()
   ### for brevity - flags for the other compilers should be here
 
 endif()
+
+## XXX UNUSED
+## this is only for the wndxc library headers (internal use only)
+add_library(wndxc INTERFACE ${wndxlib_headers_wndxc})
+target_include_directories(wndxc INTERFACE
+  $<BUILD_INTERFACE:${wndxlib_include_dir}>
+)
+target_compile_features(wndxc INTERFACE c_std_90)
+## XXX
 
 ## Umbrella target with all components. (for the future buildup)
 add_library(wndx INTERFACE)
