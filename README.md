@@ -7,8 +7,8 @@
 [![windows (MSVC)][ci_windows_bdg]]([ci_windows])
 [![macos (AppleClang)][ci_macos_bdg]]([ci_macos])
 
-# Algorithms
-A collection of **0BSD**-licensed algorithms that I wrote for self-education and reuse in my works.
+# wndxlib
+Header only C++20 library of Data Structures & Algorithms written mainly for self-education.
 
 ## Tests
 **Require:** [GoogleTest (gtest)](https://github.com/google/googletest)
@@ -25,6 +25,23 @@ A collection of **0BSD**-licensed algorithms that I wrote for self-education and
 
 [Ninja (build system)](https://github.com/ninja-build/ninja)
 is optional: change Generator **-G Ninja** in the above build script.
+
+## Integration
+`CMakeLists.txt` that uses `wndxlib` can look like this:
+```cmake
+project(project_1337)
+
+include(FetchContent)
+FetchContent_Declare(
+  wndxlib # v0.0.1.0-rc1
+  URL https://github.com/WANDEX/algorithms/releases/download/v0.0.1.0-rc1/wndxlib-src.zip
+)
+FetchContent_MakeAvailable(wndxlib)
+
+add_executable(project_1337)
+target_sources(project_1337 PRIVATE main.cpp)
+target_link_libraries(project_1337 PRIVATE wandex::wndx)
+```
 
 ## Tree of Implemented DSA
 include/\
