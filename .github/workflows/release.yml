@@ -1,4 +1,10 @@
 name: Release
+permissions:
+  contents: write
+
+defaults:
+  run:
+    shell: sh
 
 on:
   release:
