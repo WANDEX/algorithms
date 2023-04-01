@@ -29,12 +29,8 @@ set -e
 
 beg_epoch=$(date +%s) # for the first call of the time_spent_on_step
 
-if [ -r ./CMakeLists.txt ]; then
-  _="" # just pass
-elif [ -r ../CMakeLists.txt ]; then
-  cd .. || exit 2
-else
-  printf "%s\n" "Neither the current nor the previous directory contains CMakeLists.txt file, exit."
+if [ ! -r ./CMakeLists.txt ]; then
+  printf "%s\n" "Current directory does not contain CMakeLists.txt, exit."
   exit 1
 fi
 
