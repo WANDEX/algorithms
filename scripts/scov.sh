@@ -76,5 +76,6 @@ fi
 
 echo "${YEL}Code coverage has been updated.${END}"
 echo "${YEL}Make commit with README.md changes about code coverage before pushing!${END}"
+echo "[README.md] coverage: L:${L}% F:${F}% B:${B}%"
 exit 5
 
