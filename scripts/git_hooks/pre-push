@@ -2,7 +2,10 @@
 
 set -e
 
+# full path to the project top dir
 git_top_dir=$(realpath "$(git rev-parse --show-toplevel)")
+cd "$git_top_dir" || exit 30
+
 scr="$git_top_dir/scripts"
 ghk="$scr/git_hooks"
 

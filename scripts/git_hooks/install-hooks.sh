@@ -7,7 +7,6 @@ git_dir=$(realpath "$(git rev-parse --git-dir)")
 
 # full path to the dir of this file
 dpath=$(dirname "$(realpath "$0")")
-cd "$dpath" || exit 2
 
 echo "Installing git hooks..."
 
