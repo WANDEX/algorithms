@@ -11,7 +11,6 @@ cd "$dpath" || exit 2
 
 echo "Installing git hooks..."
 
-# this command create symlink to our script and makes it a pre-push hook
-ln -s "${dpath}/hk_coverage" "${git_dir}/hooks/pre-push-hk_coverage"
+ln -s "${dpath}/pre-push" "${git_dir}/hooks/pre-push"
 
 echo "Done!"
