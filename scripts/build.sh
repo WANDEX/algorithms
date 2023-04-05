@@ -79,7 +79,7 @@ cmake -S . -B "$bdir" -G Ninja -D CMAKE_BUILD_TYPE=${bt} -Wdev -Werror=dev ${fre
 vsep "BUILD" "${CYN}"
 cmake --build "$bdir" --config ${bt} ${clean_first}
 
-gtest_binary="./$bdir/tests/units/wndxlib_units"
+gtest_binary="./$bdir/tests/units/tests_units"
 if [ ! -x "$gtest_binary" ]; then
   printf "%s\n^ %s\n" "$gtest_binary" \
     "File not found or not executable, exit."
