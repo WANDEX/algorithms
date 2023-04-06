@@ -9,7 +9,7 @@ endif()
 ## ^ POLICIES
 project(
   wndxlib
-  VERSION       0.0.1.0
+  VERSION       0.0.1.2
   LANGUAGES     CXX C
   DESCRIPTION   "[WIP] C++20 platform-agnostic DSA lib. (NOT FOR USE IN PRODUCTION CODEBASES)"
   HOMEPAGE_URL  "https://github.com/WANDEX/algorithms"
@@ -103,9 +103,9 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     ## valgrind --tool=memcheck -s --error-exitcode=73 --exit-on-first-error=yes --leak-check=full -- ./build/dev-Debug-clang/tests/units/tests_units --gtest_brief=1
     set(dpath_units "${PROJECT_BINARY_DIR}/tests/units")
     add_custom_target(memcheck
-      COMMAND valgrind --tool=memcheck -s --leak-check=full
-                       --error-exitcode=73 --exit-on-first-error=yes
-                       -- ./tests_units --gtest_brief=1
+      COMMAND valgrind --tool=memcheck -s --leak-check=full --show-leak-kinds=all
+                      --error-exitcode=73 --exit-on-first-error=yes
+                      -- ./tests_units --gtest_brief=1
       WORKING_DIRECTORY "${dpath_units}"
       DEPENDS tests_units
     )
