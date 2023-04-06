@@ -46,6 +46,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   option(WNDXLIB_BUILD_PACKAGE    "whether or not the package should be built"  ON)
   option(WNDXLIB_COVERAGE_ENABLE  "whether or not to enable the tests coverage" ON)
   option(WNDXLIB_COVERAGE_CLEAN   "clean coverage data before taking new"       ON)
+  option(WNDXLIB_MEMCHECK_ENABLE  "detect leaks via valgrind memcheck tool"     ON)
   option(WNDXLIB_INSTALL_ENABLE   "whether or not to enable the install rule"   ON)
 
   ## For the list of supported compilers visit:
@@ -97,6 +98,18 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     include(cmake/gtest.cmake)
     add_subdirectory(tests/units)
   endif(WNDXLIB_BUILD_TESTS)
+
+  if(WNDXLIB_MEMCHECK_ENABLE)
+    ## valgrind --tool=memcheck -s --error-exitcode=73 --exit-on-first-error=yes --leak-check=full -- ./build/dev-Debug-clang/tests/units/tests_units --gtest_brief=1
+    set(dpath_units "${PROJECT_BINARY_DIR}/tests/units")
+    add_custom_target(memcheck
+      COMMAND valgrind --tool=memcheck -s --leak-check=full
+                       --error-exitcode=73 --exit-on-first-error=yes
+                       -- ./tests_units --gtest_brief=1
+      WORKING_DIRECTORY "${dpath_units}"
+      DEPENDS tests_units
+    )
+  endif(WNDXLIB_MEMCHECK_ENABLE)
 
   if(WNDXLIB_INSTALL_ENABLE)
     message(STATUS "Generating Install")
