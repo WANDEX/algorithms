@@ -4,9 +4,10 @@
 
 #include <stddef.h>             // size_t
 
-TEST(wndxc_binary_search, ZeroSizeArrayDEATH)
+TEST(wndxc_binary_search_DeathTest, ZeroSizeArrayDEATH)
 {
     const int array[1] = {1};
+    GTEST_FLAG_SET(death_test_style, "threadsafe"); // important for the valgrind memcheck
     ASSERT_DEATH(wndxc_binary_search(NULL,  0, 0), "sorted_array"); // assert NULL pointer
     // Zero size arrays are an extension (but still, just in case)
     // here we supply fake 0 size (in order to have full branch coverage)
