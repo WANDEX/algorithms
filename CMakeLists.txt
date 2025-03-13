@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.5)
 
 ## the timestamps of extracted files. NEW = time of extraction
 if(POLICY CMP0135)
