@@ -14,7 +14,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace wndx {
+namespace wndx::algo {
 namespace ds {
 
 template<typename T>
@@ -389,4 +389,4 @@ private:
 };
 
 } // namespace ds
-} // namespace wndx
+} // namespace wndx::algo

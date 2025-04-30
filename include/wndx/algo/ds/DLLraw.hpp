@@ -13,7 +13,7 @@
 #include <vector>
 // #include <new>                  // std::nothrow
 
-namespace wndx {
+namespace wndx::algo {
 namespace ds {
 
 template<typename T>
@@ -425,4 +425,4 @@ public:
 };
 
 } // namespace ds
-} // namespace wndx
+} // namespace wndx::algo

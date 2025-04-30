@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-using namespace wndx;
+using namespace wndx::algo;
 
 class BSTuptrTest : public ::testing::Test
 {

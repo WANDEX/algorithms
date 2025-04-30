@@ -10,7 +10,7 @@
 #include <stdexcept>            // std::invalid_argument
 #include <vector>
 
-using namespace wndx;
+using namespace wndx::algo;
 
 class BITreeRQPUTest : public ::testing::Test
 {

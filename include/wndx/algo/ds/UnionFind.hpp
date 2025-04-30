@@ -6,7 +6,7 @@
 #include <cstddef>              // std::size_t
 #include <vector>
 
-namespace wndx {
+namespace wndx::algo {
 namespace ds {
 
 class UnionFind
@@ -125,4 +125,4 @@ public:
 };
 
 } // namespace ds
-} // namespace wndx
+} // namespace wndx::algo

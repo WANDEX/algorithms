@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-namespace wndx {
+namespace wndx::algo {
 
 class Timer
 {
@@ -25,4 +25,4 @@ public:
     }
 };
 
-} // namespace wndx
+} // namespace wndx::algo

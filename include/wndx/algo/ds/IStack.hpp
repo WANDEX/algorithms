@@ -2,7 +2,7 @@
 
 #include <cstddef>              // std::size_t
 
-namespace wndx {
+namespace wndx::algo {
 namespace ds {
 
 // Interface of the Stack data structure
@@ -28,4 +28,4 @@ public:
 };
 
 } // namespace ds
-} // namespace wndx
+} // namespace wndx::algo

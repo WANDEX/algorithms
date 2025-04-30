@@ -5,7 +5,7 @@
 #include <stdexcept>            // std::runtime_error
 #include <string>
 
-using namespace wndx;
+using namespace wndx::algo;
 
 class ListQueueTest : public ::testing::Test
 {

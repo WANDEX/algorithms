@@ -8,7 +8,7 @@
 #include <string>
 #include <unordered_set>
 
-using namespace wndx;
+using namespace wndx::algo;
 
 class genTest : public ::testing::Test
 {

@@ -4,7 +4,7 @@
 #include <array>
 #include <vector>
 
-namespace wndx {
+namespace wndx::algo {
 namespace srt {
 
 #ifndef SRT_SWAP_P_Q
@@ -67,4 +67,4 @@ inline void bubble_sort(std::vector<T> &a)
 }
 
 } // namespace srt
-} // namespace wndx
+} // namespace wndx::algo

@@ -5,7 +5,7 @@
 #include <array>
 #include <vector>
 
-namespace wndx {
+namespace wndx::algo {
 namespace srt {
 
 namespace /* (anonymous) */ {
@@ -141,4 +141,4 @@ inline void quick_sort(std::vector<T> &a, const std::size_t lo, const std::size_
 }
 
 } // namespace srt
-} // namespace wndx
+} // namespace wndx::algo

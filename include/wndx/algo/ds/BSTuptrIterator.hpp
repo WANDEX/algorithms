@@ -19,7 +19,7 @@
 #include <stack>
 #include <stdexcept>            // std::invalid_argument
 
-namespace wndx {
+namespace wndx::algo {
 namespace ds {
 
 enum class TreeTravOrder : std::uint8_t
@@ -187,4 +187,4 @@ public:
 };
 
 } // namespace ds
-} // namespace wndx
+} // namespace wndx::algo

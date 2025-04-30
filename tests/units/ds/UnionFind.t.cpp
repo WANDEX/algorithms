@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-using namespace wndx;
+using namespace wndx::algo;
 
 class UnionFindTest : public ::testing::Test
 {

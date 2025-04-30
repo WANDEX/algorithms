@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-using namespace wndx;
+using namespace wndx::algo;
 
 class BinaryHeapQTest : public ::testing::Test
 {

@@ -23,7 +23,7 @@
 #include <stdexcept>            // std::invalid_argument
 #include <utility>              // std::move
 
-namespace wndx {
+namespace wndx::algo {
 namespace ds {
 
 template<typename T>
@@ -405,4 +405,4 @@ public:
 };
 
 } // namespace ds
-} // namespace wndx
+} // namespace wndx::algo

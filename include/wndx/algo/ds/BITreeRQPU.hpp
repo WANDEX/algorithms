@@ -14,7 +14,7 @@
 #include <utility>              // std::move
 #include <vector>
 
-namespace wndx {
+namespace wndx::algo {
 namespace ds {
 
 class BITreeRQPU
@@ -176,4 +176,4 @@ public:
 };
 
 } // namespace ds
-} // namespace wndx
+} // namespace wndx::algo

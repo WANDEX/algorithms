@@ -6,7 +6,7 @@
 #include <list>
 #include <stdexcept>            // std::runtime_error
 
-namespace wndx {
+namespace wndx::algo {
 namespace ds {
 
 template<typename T>
@@ -88,4 +88,4 @@ public:
 };
 
 } // namespace ds
-} // namespace wndx
+} // namespace wndx::algo

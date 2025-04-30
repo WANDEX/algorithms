@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-using namespace wndx;
+using namespace wndx::algo;
 
 class DLLrawTest : public ::testing::Test
 {

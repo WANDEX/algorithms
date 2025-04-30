@@ -8,7 +8,7 @@
 #include <unordered_set>
 #include <vector>
 
-namespace wndx {
+namespace wndx::algo {
 namespace gen {
 
 /**
@@ -108,4 +108,4 @@ inline std::vector<T> random(const std::size_t n, const T fr, const T to, const 
 }
 
 } // namespace gen
-} // namespace wndx
+} // namespace wndx::algo
