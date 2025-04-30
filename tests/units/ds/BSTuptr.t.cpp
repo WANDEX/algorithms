@@ -1,7 +1,7 @@
-#include <wndx/ds/binary_search_tree/BSTuptr.hpp>
+#include "wndx/algo/ds/BSTuptr.hpp"
 
-#include <wndx/common/gen.hpp>
-#include <wndx/common/pprint.hpp>
+#include "wndx/algo/util/gen.hpp"
+#include "wndx/algo/util/pprint.hpp"
 
 #include <gtest/gtest.h>
 

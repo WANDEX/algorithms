@@ -1,4 +1,4 @@
-#include <wndx/ds/stack/ListStack.hpp>
+#include "wndx/algo/ds/ListStack.hpp"
 
 #include <gtest/gtest.h>
 

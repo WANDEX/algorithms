@@ -1,11 +1,11 @@
-#include <wndx/common/gen.hpp>
+#include "wndx/algo/util/gen.hpp"
 
-#include <wndx/sort/bubble_sort.hpp>
-#include <wndx/sort/insertion_sort.hpp>
-#include <wndx/sort/selection_sort.hpp>
+#include "wndx/algo/sort/bubble_sort.hpp"
+#include "wndx/algo/sort/insertion_sort.hpp"
+#include "wndx/algo/sort/selection_sort.hpp"
 
-#include <wndx/sort/merge_sort.hpp>
-#include <wndx/sort/quick_sort.hpp>
+#include "wndx/algo/sort/merge_sort.hpp"
+#include "wndx/algo/sort/quick_sort.hpp"
 
 #include <gtest/gtest.h>
 

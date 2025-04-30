@@ -1,4 +1,4 @@
-#include <wndx/common/gen.hpp>
+#include "wndx/algo/util/gen.hpp"
 
 #include <gtest/gtest.h>
 

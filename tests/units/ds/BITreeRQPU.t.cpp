@@ -1,6 +1,6 @@
-#include <wndx/ds/binary_indexed_tree/BITreeRQPU.hpp>
+#include "wndx/algo/ds/BITreeRQPU.hpp"
 
-#include <wndx/common/gen.hpp>
+#include "wndx/algo/util/gen.hpp"
 
 #include <gtest/gtest.h>
 

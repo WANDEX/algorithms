@@ -1,4 +1,4 @@
-#include <wndxc/search/wndxc_binary_search.h>
+#include "wndx/algo/c/search/wndxc_binary_search.h"
 
 #include <gtest/gtest.h>
 
