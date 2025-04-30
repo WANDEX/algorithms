@@ -1,0 +1,258 @@
+## CMake CI/CD on multiple platforms. AUTHOR: WANDEX
+## project: build, test, deploy
+name: CI/CD cmake-multi-platform
+permissions:
+  contents: write ## for the action release
+
+defaults:
+  run:
+    shell: sh
+
+on:
+  workflow_dispatch:
+  push:
+    # branches: [ "master" ]
+    paths-ignore:
+      - '.*'
+      - 'scripts/**'
+      - 'README*'
+  pull_request:
+    # branches: [ "master" ]
+    paths-ignore:
+      - '.*'
+      - 'scripts/**'
+      - 'README*'
+
+env:
+  PRJ_NAME   : "wndx_algo"
+  BUILD_TESTS: "WNDX_ALGO_BUILD_TESTS=ON"
+
+jobs:
+  multi-build-test-deploy:
+    continue-on-error: false
+    strategy:
+      fail-fast: false
+      matrix:
+        gen: [Ninja] ## default generator
+        cc : [gcc, clang] ## compilers
+        bt : [Release, Debug] ## build type
+        pl : [ubuntu-latest, macos-latest] ## platform
+        exclude:
+          - pl : windows-latest
+            cc : gcc
+          - pl : windows-latest
+            cc : clang
+        include:
+          - name: "ubuntu gcc"
+            pl : ubuntu-latest
+            cc : gcc
+            cxx: g++
+            bp : "lnx_gcc"
+          - name: "ubuntu clang"
+            pl : ubuntu-latest
+            cc : clang
+            cxx: clang++
+            bp : "lnx_clang"
+          - name: "macOS gcc"
+            pl : macos-latest
+            cc : gcc
+            cxx: g++
+            bp : "mac_gcc"
+          - name: "macOS clang"
+            pl : macos-latest
+            cc : clang
+            cxx: clang++
+            bp : "mac_clang"
+          - name: "macOS Xcode"
+            pl : macos-latest
+            cc : cc
+            cxx: c++
+            bp : "mac_Xcode"
+            gen: "Xcode"
+            bt: Debug
+          - name: "windows MSVC"
+            pl : windows-latest
+            cc : cl
+            cxx: cl
+            bp : "win_cl"
+            gen: "Visual Studio 17 2022"
+        ## END include
+      ## END matrix
+    ## END strategy
+    runs-on: ${{ matrix.pl }}
+
+    name: "${{ matrix.bp }}_${{ matrix.bt }} | CC=${{ matrix.cc }} CXX=${{ matrix.cxx }} | ${{ matrix.pl }}"
+    steps:
+      ## https://github.com/marketplace/actions/checkout
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+
+      ## Turn repeated input strings (such as the build output directory) into step outputs.
+      ## These step outputs can be used throughout the workflow file as regular variables.
+      ## NOTE: id strN must be run in separate consecutive steps to get previously put variables.
+    - name: set reusable str1
+      id   : str1
+      shell: bash
+      run  : |
+        echo "date_time=$(date +%y-%m-%d_%H-%M-%S)" >> "$GITHUB_OUTPUT"
+        echo "dir_path_prj=${{ github.workspace }}" >> "$GITHUB_OUTPUT" # full path
+        echo "dir_name_build=build_${{ env.PRJ_NAME }}_${{ matrix.bp }}_${{ matrix.bt }}" >> "$GITHUB_OUTPUT"
+    - name: set reusable str2
+      id   : str2
+      shell: bash
+      run  : |
+        echo "dir_path_build=${{ steps.str1.outputs.dir_path_prj }}/${{ steps.str1.outputs.dir_name_build }}" >> "$GITHUB_OUTPUT"
+        echo "artifact_name=${{ steps.str1.outputs.dir_name_build }}_${{ steps.str1.outputs.date_time }}" >> "$GITHUB_OUTPUT"
+    - name: set reusable str3
+      id   : str3
+      shell: bash
+      run  : |
+        echo "dir_path_env=${{ steps.str2.outputs.dir_path_build }}/env" >> "$GITHUB_OUTPUT"
+        echo "dir_path_deploy=${{ steps.str2.outputs.dir_path_build }}/deploy" >> "$GITHUB_OUTPUT"
+
+    - name: --strip will be used on the binaries of build type Release
+      if   : ${{ matrix.bt == 'Release' }}
+      id   : strip
+      shell: bash
+      run  : echo "__strip=--strip" >> "$GITHUB_OUTPUT"
+
+    - name: Date Time
+      run : |
+        echo "${{ steps.str1.outputs.date_time }}"
+        echo "${{ steps.str2.outputs.dir_path_build }}"
+        echo "${{ steps.str2.outputs.artifact_name }}"
+
+    - name: Create build environment
+      run : |
+        cmake -E make_directory "${{ steps.str2.outputs.dir_path_build }}"
+        cmake -E make_directory "${{ steps.str3.outputs.dir_path_env }}"
+        cmake -E make_directory "${{ steps.str3.outputs.dir_path_deploy }}"
+
+    - name: ENV List All bef
+      working-directory: ${{ steps.str3.outputs.dir_path_env }}
+      run : env > bef.txt && cat bef.txt
+
+      ## get from cache or install and add to the PATH
+      ## https://github.com/marketplace/actions/actions-setup-cmake
+    - name: get/install cmake
+      uses: jwlawson/actions-setup-cmake@v2
+      with:
+        cmake-version: '4.0.0'
+
+    - name: cmake --version
+      run : cmake --version
+
+      ## get from cache or install and add to the PATH
+      ## https://github.com/marketplace/actions/action-get-ninja
+    - name: get/install latest ninja
+      uses: urkle/action-get-ninja@v1
+
+    - name: ninja --version
+      run : ninja --version
+
+    - name: ENV List All post diff
+      working-directory: ${{ steps.str3.outputs.dir_path_env }}
+      run : |
+        env > post.txt && cat post.txt
+      # env > post.txt && diff bef.txt post.txt > env.diff && cat env.diff
+      # env > post.txt && diff -u bef.txt post.txt > env.diff && cat env.diff
+      # TODO: must find a convenient cross-platform way to install diffutils.
+
+    - name: cmake --system-information
+      working-directory: ${{ steps.str3.outputs.dir_path_env }}
+      run : cmake --system-information > cmake_sys_info.txt && cat cmake_sys_info.txt
+
+    - name: cmake -G | Generators available on the current platform ${{ matrix.pl }}
+      working-directory: ${{ steps.str3.outputs.dir_path_env }}
+      run : cmake -G >cmake_pl_generators.txt 2>&1 || true && cat cmake_pl_generators.txt
+
+    - name: Configure CMake
+      working-directory: ${{ steps.str2.outputs.dir_path_build }}
+      run : >
+        cmake -S .. -B . -G ${{ matrix.gen }} --log-level=DEBUG
+        -D CMAKE_INSTALL_PREFIX=${{ steps.str3.outputs.dir_path_deploy }}
+        -D CMAKE_CXX_COMPILER=${{ matrix.cxx }}
+        -D CMAKE_C_COMPILER=${{ matrix.cc }}
+        -D CMAKE_BUILD_TYPE=${{ matrix.bt }}
+        -D CMAKE_CONFIGURATION_TYPES=${{ matrix.bt }}
+        -D ${{ env.BUILD_TESTS }}
+
+      ## Build program with the given configuration. Note that --config is needed for multi-config generator.
+    - name: Build
+      working-directory: ${{ steps.str2.outputs.dir_path_build }}
+      run : cmake --build . --config ${{ matrix.bt }} --verbose
+
+    - name: Test
+      working-directory: ${{ steps.str2.outputs.dir_path_build }}
+      run: ctest --build-config ${{ matrix.bt }} --output-on-failure
+
+    - name: Package source code
+      working-directory: ${{ steps.str2.outputs.dir_path_build }}
+      run : cmake --build . --config ${{ matrix.bt }} --target package_src
+
+    - name: Deploy ${{ steps.strip.outputs.__strip }}
+      working-directory: ${{ steps.str2.outputs.dir_path_build }}
+      run : cmake --install . --config ${{ matrix.bt }} ${{ steps.strip.outputs.__strip }}
+
+    - name: Runner info lines
+      run : |
+        echo "> cwd:"
+        ls -la .
+        echo "> prj_dir:"
+        ls -la "${{ steps.str1.outputs.dir_path_prj }}"
+        echo "> build_dir:"
+        ls -la "${{ steps.str2.outputs.dir_path_build }}"
+        echo "> deploy_dir:"
+        ls -la "${{ steps.str3.outputs.dir_path_deploy }}"
+
+      ## https://github.com/marketplace/actions/upload-a-build-artifact
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        ## Artifact name
+        name: "${{ steps.str2.outputs.artifact_name }}"
+        ## A file, directory or wildcard pattern that describes what to upload
+        path: "${{ steps.str2.outputs.dir_path_build }}"
+        if-no-files-found: warn ## optional, default is warn
+        ## Duration after which artifact will expire in days. 0 means using default retention.
+        ## Minimum 1 day. Maximum 90 days unless changed from the repository settings page.
+        retention-days: 1
+        compression-level: 6
+        overwrite: true ## optional, default is false
+
+    - name : archive
+      id   : archive
+      shell: bash
+      if   : ${{ github.ref_type == 'tag' && matrix.bt == 'Release' }}
+      working-directory: ${{ steps.str2.outputs.dir_path_build }}
+      run  : |
+        PRJNAME=${{ env.PRJ_NAME }}
+        VERSION=$GITHUB_REF_NAME
+        ARCH=$(uname -m)
+        PRJVERA=$PRJNAME-$VERSION-$ARCH
+        PKGNAME=$PRJVERA-${{ matrix.bp }}
+        TARBALL=$PKGNAME.tar.gz
+        SHASUM=$PKGNAME.tar.gz.sha256
+        cp -r deploy $PRJVERA
+        tar -czf $TARBALL $PRJVERA
+        cmake -E sha256sum $TARBALL > $SHASUM
+        echo "TARBALL=$TARBALL" >> $GITHUB_OUTPUT
+        echo  "SHASUM=$SHASUM"  >> $GITHUB_OUTPUT
+
+      ## https://github.com/marketplace/actions/gh-release
+    - name : release
+      uses : softprops/action-gh-release@v2
+      if   : ${{ github.ref_type == 'tag' && matrix.bt == 'Release' }}
+      with :
+        generate_release_notes: true
+        draft: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: |
+          ${{ steps.str2.outputs.dir_path_build }}/${{ env.PRJ_NAME }}-*-src.tar.gz
+          ${{ steps.str2.outputs.dir_path_build }}/${{ steps.archive.outputs.TARBALL }}
+          ${{ steps.str2.outputs.dir_path_build }}/${{ steps.archive.outputs.SHASUM }}
+
+    ## END steps
+  ## END multi-build-test-deploy
+## END jobs
