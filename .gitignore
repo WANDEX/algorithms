@@ -1,8 +1,9 @@
+NOTES*.txt
+TODO
 .cache/
 .coverage/
 build/
 __pycache__/
 .vs/
 *.out
-compile_commands.json
-wndxc_macro.hpp
+compile_commands*.json*
