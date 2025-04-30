@@ -68,7 +68,7 @@ function(targets_and_linking)
 
   if(WNDX_ALGO_BUILD_SRC OR NOT WNDX_ALGO_IS_TOP_PROJECT)
     ## find/fetch dependecies:
-    add_subdirectory(src/wndx/algo)
+    # add_subdirectory(src/wndx/algo)
   endif()
 endfunction(targets_and_linking)
 
