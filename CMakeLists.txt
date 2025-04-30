@@ -1,24 +1,14 @@
-cmake_minimum_required(VERSION 3.5)
-
-## the timestamps of extracted files. NEW = time of extraction
-if(POLICY CMP0135)
-  cmake_policy(SET CMP0135 OLD)
-endif()
-
+cmake_minimum_required(VERSION 3.29)
 
 ## ^ POLICIES
 project(
-  wndxlib
-  VERSION       0.0.1.2
+  wndx_algo
+  VERSION       0.0.2
   LANGUAGES     CXX C
   DESCRIPTION   "[WIP] C++20 platform-agnostic DSA lib. (NOT FOR USE IN PRODUCTION CODEBASES)"
   HOMEPAGE_URL  "https://github.com/WANDEX/algorithms"
 )
 
-## C++23: uz size_t suffix literal
-## (P0330R8) but MSVC does not support it yet. :(
-## https://en.cppreference.com/w/cpp/compiler_support#C.2B.2B23_features
-# set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -36,121 +26,116 @@ message(NOTICE " * DSCRPTN: ${PROJECT_DESCRIPTION}")
 message(NOTICE " * HOMEURL: ${PROJECT_HOMEPAGE_URL}")
 message(NOTICE " */")
 
-## target compilation options/flags
-include(cmake/comp_opts_cxx.cmake)
 
-## GUARD: check the real root of the source tree.
-if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-  option(WNDXLIB_BUILD_BENCHMARKS "whether or not benchmarks should be built"   OFF) # TODO: UNIMPLEMENTED
-  option(WNDXLIB_BUILD_TESTS      "whether or not tests should be built"        ON)
-  option(WNDXLIB_BUILD_PACKAGE    "whether or not the package should be built"  ON)
-  option(WNDXLIB_COVERAGE_ENABLE  "whether or not to enable the tests coverage" ON)
-  option(WNDXLIB_COVERAGE_CLEAN   "clean coverage data before taking new"       ON)
-  option(WNDXLIB_MEMCHECK_ENABLE  "detect leaks via valgrind memcheck tool"     ON)
-  option(WNDXLIB_INSTALL_ENABLE   "whether or not to enable the install rule"   ON)
+option(WNDX_ALGO_DISABLE_TOP_PROJECT OFF)
+if(PROJECT_IS_TOP_LEVEL AND NOT WNDX_ALGO_DISABLE_TOP_PROJECT)
+  set(WNDX_ALGO_IS_TOP_PROJECT ON)
+else()
+  set(WNDX_ALGO_IS_TOP_PROJECT OFF)
+endif()
 
-  ## For the list of supported compilers visit:
+## search path for cmake modules to be loaded by: include() find_package().
+## NOTE: works properly only if defined at the top-level CMakeLists.txt.
+list(APPEND CMAKE_MODULE_PATH
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ## project modules
+  "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/wndx/sane/cmake"
+)
+
+function(targets_and_linking)
+  add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/wndx/sane")
+  include(wndx_sane_modules)
+  include(wndx_sane_create_targets)
+  ## library targets & compilation options/flags
+  wndx_sane_create_targets(PFX wndx LIB algo
+    CXX_STD cxx_std_20
+    PHD "include/wndx/algo"
+  )
+
+  ## inherit from wndx::sane targets
+  target_link_libraries(algo_core INTERFACE wndx::sane::core) # inherit core
+  target_link_libraries(algo_dev  INTERFACE wndx::sane::dev ) # inherit dev
+  target_link_libraries(algo_deps    PUBLIC wndx::sane::deps) # inherit deps
+  target_link_libraries(algo_src     PUBLIC wndx::sane::src ) # inherit src
+
+  ## link sources with project dependencies from the core library target
+  target_link_libraries(algo_src INTERFACE wndx::algo::core)
+
+  ## link sources with project dependencies
+  target_link_libraries(algo_src PUBLIC wndx::algo::deps)
+
+  ## link sources with project dev interface (for the compilation flags/options)
+  target_link_libraries(algo_src PRIVATE wndx::algo::dev)
+
+  if(WNDX_ALGO_BUILD_SRC OR NOT WNDX_ALGO_IS_TOP_PROJECT)
+    ## find/fetch dependecies:
+    add_subdirectory(src/wndx/algo)
+  endif()
+endfunction(targets_and_linking)
+
+if(NOT WNDX_ALGO_IS_TOP_PROJECT)
+  targets_and_linking()
+endif()
+
+if(WNDX_ALGO_IS_TOP_PROJECT)
+  option(WNDX_ALGO_BUILD_SRC        "whether or not src should be built"          ON)
+  option(WNDX_ALGO_BUILD_TESTS      "whether or not tests should be built"        OFF)
+  option(WNDX_ALGO_BUILD_PACKAGE    "whether or not the package should be built"  ON)
+  option(WNDX_ALGO_COVERAGE_ENABLE  "whether or not to enable the tests coverage" OFF)
+  option(WNDX_ALGO_COVERAGE_CLEAN   "clean coverage data before taking new"       ON)
+  option(WNDX_ALGO_INSTALL_ENABLE   "whether or not to enable the install rule"   ON)
+  option(WNDX_ALGO_MEMCHECK_ENABLE  "detect leaks via valgrind memcheck tool"     OFF)
+  option(WNDX_ALGO_SNTZ_ADDR        "whether or not to enable address sanitizer"  OFF) # TODO: UNIMPLEMENTED
+
+  ## for the list of supported compilers visit:
   ## https://cmake.org/cmake/help/latest/prop_tgt/COMPILE_WARNING_AS_ERROR.html
-  option(CMAKE_COMPILE_WARNING_AS_ERROR "treat compilation warnings as errors"  ON)
+  option(CMAKE_COMPILE_WARNING_AS_ERROR "treat compilation warnings as errors" OFF)
 
-  if(WNDXLIB_BUILD_PACKAGE)
-    set(package_files include/wndx/ cmake/ CMakeLists.txt LICENSE)
-    set(fpath_zip ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-src.zip)
-    add_custom_command(
-      OUTPUT  ${fpath_zip}
-      COMMAND ${CMAKE_COMMAND} -E tar c ${fpath_zip} --format=zip -- ${package_files}
-      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-      DEPENDS ${package_files}
-    )
-    add_custom_target(${PROJECT_NAME}_package DEPENDS ${fpath_zip})
-  endif(WNDXLIB_BUILD_PACKAGE)
+  ## output dir is correct by default for most build setups.
+  ## however, when building lib as a DLL, it is important to have the DLL in the same dir
+  ## as the executable using it. Thus, we put all executables in a single /bin dir.
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+  ## on macOS, property ignored for the linker import files
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
-  if(WNDXLIB_COVERAGE_ENABLE)
-    if(${GNU_COMP})
-      add_library(code_coverage INTERFACE)
-      ## NOTE: without optimizations
-      ## => other optimization levels/options obviously ruin coverage report.
-      target_compile_options(code_coverage INTERFACE -g -O0 --coverage)
-      target_link_options(code_coverage INTERFACE --coverage)
+  targets_and_linking()
 
-      if(WNDXLIB_COVERAGE_CLEAN)
-        ### before taking new coverage analysis data:
-        ## find all coverage files in the project binary dir
-        file(GLOB_RECURSE prev_cov_files LIST_DIRECTORIES false
-          ABSOLUTE "${PROJECT_BINARY_DIR}" *.gcda) # XXX *.gcno
-        ## clean from the previous coverage data files (if any)
-        if(NOT prev_cov_files STREQUAL "")
-          file(REMOVE ${prev_cov_files})
-          message(NOTICE ">> Cleared of previous coverage data files.")
-        else()
-          message(NOTICE ">> Nothing to clean up. (no coverage data files found)")
-        endif()
-      endif()
-
-      message(NOTICE ">> Code Coverage will be collected!")
-    else()
-      message(WARNING "Code Coverage analysis enabled only on the GNU/GCC toolchain!")
-    endif()
-  endif(WNDXLIB_COVERAGE_ENABLE)
-
-  if(WNDXLIB_BUILD_TESTS)
-    ## prefer GoogleTest version installed in the system || fetch if not found
-    include(cmake/gtest.cmake)
+  if(WNDX_ALGO_BUILD_TESTS)
+    find_package(gtest REQUIRED)
     add_subdirectory(tests/units)
-  endif(WNDXLIB_BUILD_TESTS)
+  endif(WNDX_ALGO_BUILD_TESTS)
 
-  if(WNDXLIB_MEMCHECK_ENABLE)
-    ## valgrind --tool=memcheck -s --error-exitcode=73 --exit-on-first-error=yes --leak-check=full -- ./build/dev-Debug-clang/tests/units/tests_units --gtest_brief=1
-    set(dpath_units "${PROJECT_BINARY_DIR}/tests/units")
-    add_custom_target(memcheck
-      COMMAND valgrind --tool=memcheck -s --leak-check=full --show-leak-kinds=all
-                      --error-exitcode=73 --exit-on-first-error=yes
-                      -- ./tests_units --gtest_brief=1
-      WORKING_DIRECTORY "${dpath_units}"
-      DEPENDS tests_units
+  if(WNDX_ALGO_BUILD_PACKAGE)
+    include(wndx_sane_package)
+    wndx_sane_package(SUFFIX src DST_DIR FILES
+      include/ src/ cmake/ CMakeLists.txt LICENSE README.md
     )
-  endif(WNDXLIB_MEMCHECK_ENABLE)
+  endif(WNDX_ALGO_BUILD_PACKAGE)
 
-  if(WNDXLIB_INSTALL_ENABLE)
-    message(STATUS "Generating Install")
-    include(CMakePackageConfigHelpers)
-    include(GNUInstallDirs)
-
-    install(TARGETS _wndx_base wndx_core wndx_dev wndx
-      EXPORT ${PROJECT_NAME}Targets
-      RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-      LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-      ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  if(WNDX_ALGO_COVERAGE_ENABLE)
+    include(wndx_sane_coverage)
+    wndx_sane_coverage(TGT_NAME code_coverage TGT_DEPS tests_units
+      CLEAN WNDX_ALGO_COVERAGE_CLEAN
     )
+  endif(WNDX_ALGO_COVERAGE_ENABLE)
 
-    install(EXPORT ${PROJECT_NAME}Targets
-      NAMESPACE   wandex::
-      DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+  if(WNDX_ALGO_MEMCHECK_ENABLE)
+    include(wndx_sane_memcheck)
+    wndx_sane_memcheck(TGT_NAME memcheck
+      TGT_EXEC tests_units
+      TGT_DEPS tests_units
     )
+  endif(WNDX_ALGO_MEMCHECK_ENABLE)
 
-    configure_package_config_file(
-      cmake/${PROJECT_NAME}Config.cmake.in
-      "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-      INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+  if(WNDX_ALGO_INSTALL_ENABLE)
+    include(wndx_sane_install)
+    wndx_sane_install(
+      TARGETS
+        # _algo_base algo_core algo_dev
+        # algo_deps algo_src
+        algo
+      PATTERNS "*.hpp"
     )
-    install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-      DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
-    )
-
-    write_basic_package_version_file(
-      "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-      COMPATIBILITY SameMinorVersion
-    ) ## YYYY.MM.N1 is compatible with YYYY.MM.N2.
-
-    install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-      DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
-    )
-
-    install(DIRECTORY include/wndx # include/wndxc
-      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-      FILES_MATCHING
-      PATTERN     "*.hpp"
-    )
-  endif(WNDXLIB_INSTALL_ENABLE)
-endif(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+  endif(WNDX_ALGO_INSTALL_ENABLE)
+endif(WNDX_ALGO_IS_TOP_PROJECT)
 
