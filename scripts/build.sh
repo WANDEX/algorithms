@@ -55,7 +55,7 @@ notify() {
 }
 
 # shellcheck disable=SC2068 # Intentional - to re-split trailing arguments.
-run_ctest() { cmake -E time ctest --output-on-failure --test-dir "$_bdir" $@ ;} # shortcut
+run_ctest() { cmake -E time ctest --output-on-failure --test-dir "$_bdir/$tdir" $@ ;} # shortcut
 
 sep="=============================================================================="
 vsep() { printf "\n%b%.78s%b\n\n" "${2}" "[${1}]${sep}" "${END}" ;}
@@ -72,6 +72,7 @@ prj_name_upper=$(echo "$prj_name" | tr "[:lower:]" "[:upper:]")
 
 
 PRJ_BUILD_TESTS="${BUILD_TESTS:-"${prj_name_upper}_BUILD_TESTS"}"
+tdir="${TESTS_DIR:-"tests/units"}"
 bt="${BUILD_TYPE:-Debug}"
 generator="${GENERATOR:-Ninja}" # "MSYS Makefiles", "Unix Makefiles", Ninja
 compiler="${CC:-_}"
