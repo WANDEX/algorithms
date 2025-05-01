@@ -101,7 +101,6 @@ if(WNDX_ALGO_IS_TOP_PROJECT)
   targets_and_linking()
 
   if(WNDX_ALGO_BUILD_TESTS)
-    find_package(gtest REQUIRED)
     add_subdirectory(tests/units)
   endif(WNDX_ALGO_BUILD_TESTS)
 
