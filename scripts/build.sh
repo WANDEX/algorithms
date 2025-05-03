@@ -127,14 +127,16 @@ else
 fi
 
 vsep "CONFIGURE" "${BLU}"
+# shellcheck disable=SC2086 # Intentional - to re-split EXTRA CONFIGURE OPTIONS if any
 cmake -E time \
 cmake -S "$_sdir" -B "$_bdir" -G "$generator" -D CMAKE_BUILD_TYPE="${bt}" -D "$PRJ_BUILD_TESTS=${tt}" \
--Wdev -Werror=dev ${fresh} ${cmake_log_level} \
+-Wdev -Werror=dev ${fresh} ${cmake_log_level} ${COPTS} \
 || { notify ERROR "CONFIGURE ERROR" ; exit "$EC" ;}
 
 vsep "BUILD" "${CYN}"
+# shellcheck disable=SC2086 # Intentional - to re-split EXTRA BUILD OPTIONS if any
 cmake -E time \
-cmake --build "$_bdir" --config "${bt}" ${clean_first} ${_verbose} \
+cmake --build "$_bdir" --config "${bt}" ${clean_first} ${_verbose} ${BOPTS} \
 || { notify ERROR "BUILD ERROR" ; exit "$EC" ;}
 
 [ -n "$opt" ] && vsep "TESTS" "${RED}"
