@@ -26,6 +26,7 @@ on:
 env:
   PRJ_NAME   : "wndx_algo"
   BUILD_TESTS: "WNDX_ALGO_BUILD_TESTS=ON"
+  MEMCHECK   : "WNDX_ALGO_MEMCHECK_ENABLE=ON"
 
 jobs:
   multi-build-test-deploy:
@@ -176,7 +177,7 @@ jobs:
         -D CMAKE_C_COMPILER=${{ matrix.cc }}
         -D CMAKE_BUILD_TYPE=${{ matrix.bt }}
         -D CMAKE_CONFIGURATION_TYPES=${{ matrix.bt }}
-        -D ${{ env.BUILD_TESTS }}
+        -D ${{ env.BUILD_TESTS }} -D ${{ env.MEMCHECK }}
 
       ## Build program with the given configuration. Note that --config is needed for multi-config generator.
     - name: Build
@@ -186,6 +187,10 @@ jobs:
     - name: Test
       working-directory: ${{ steps.str2.outputs.dir_path_build }}
       run: ctest --build-config ${{ matrix.bt }} --output-on-failure
+
+    - name: Memcheck
+      working-directory: ${{ steps.str2.outputs.dir_path_build }}
+      run : cmake --build . --config ${{ matrix.bt }} --target memcheck
 
     - name: Package source code
       working-directory: ${{ steps.str2.outputs.dir_path_build }}
