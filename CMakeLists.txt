@@ -136,6 +136,7 @@ if(WNDX_ALGO_IS_TOP_PROJECT)
         # _algo_base algo_core algo_dev
         # algo_deps algo_src
         algo
+      PHD "include/wndx/algo"
       PATTERNS "*.hpp"
     )
   endif(WNDX_ALGO_INSTALL_ENABLE)
