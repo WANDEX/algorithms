@@ -100,23 +100,24 @@ if(WNDX_ALGO_IS_TOP_PROJECT)
 
   targets_and_linking()
 
+  if(WNDX_ALGO_COVERAGE_ENABLE)
+    include(wndx_sane_coverage)
+    wndx_sane_coverage(TGT_NAME code_coverage
+      CLEAN WNDX_ALGO_COVERAGE_CLEAN
+      RMGLOB *.gcda # *.gcno
+    )
+  endif(WNDX_ALGO_COVERAGE_ENABLE)
+
   if(WNDX_ALGO_BUILD_TESTS)
     add_subdirectory(tests/units)
   endif(WNDX_ALGO_BUILD_TESTS)
 
   if(WNDX_ALGO_BUILD_PACKAGE)
     include(wndx_sane_package)
-    wndx_sane_package(SUFFIX src DST_DIR FILES
-      include/ src/ cmake/ CMakeLists.txt LICENSE README.md
+    wndx_sane_package(SUFFIX src FILES
+      cmake/ include/ scripts/ tests/ CMakeLists.txt LICENSE README.md
     )
   endif(WNDX_ALGO_BUILD_PACKAGE)
-
-  if(WNDX_ALGO_COVERAGE_ENABLE)
-    include(wndx_sane_coverage)
-    wndx_sane_coverage(TGT_NAME code_coverage TGT_DEPS tests_units
-      CLEAN WNDX_ALGO_COVERAGE_CLEAN
-    )
-  endif(WNDX_ALGO_COVERAGE_ENABLE)
 
   if(WNDX_ALGO_MEMCHECK_ENABLE)
     include(wndx_sane_memcheck)
