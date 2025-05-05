@@ -1,7 +1,7 @@
 ![coverage ](https://img.shields.io/badge/coverage:-gray)
-![lines    ](https://img.shields.io/badge/L-100%25-brightgreen)
-![functions](https://img.shields.io/badge/F-99%25-brightgreen)
-![branches ](https://img.shields.io/badge/B-98%25-brightgreen)
+![lines    ](https://img.shields.io/badge/L-92%25-green)
+![functions](https://img.shields.io/badge/F-98%25-brightgreen)
+![branches ](https://img.shields.io/badge/B-90%25-green)
 ![license..](https://img.shields.io/github/license/WANDEX/algorithms?color=black)
 [![CI/CD cmake-multi-platform][cicd_cmake_mp_bdg]][cicd_cmake_mp_url]
 
@@ -41,55 +41,49 @@ target_link_libraries(project_1337 PRIVATE wndx_algo::algo)
 ## Tree of Implemented DSA
 include/\
 └── wndx/\
-    ├── ds/\
-    │   ├── binary_indexed_tree/\
-    │   │   └── [BITreeRQPU.hpp] ( *[BITreeRQPU.t.cpp]* )\
-    │   ├── binary_search_tree/\
-    │   │   ├── [BSTuptr.hpp] ( *[BSTuptr.t.cpp]* )\
-    │   │   ├── [BSTuptrIterator.hpp]\
-    │   │   └── [BSTuptrNode.hpp]\
-    │   ├── linked_list/\
-    │   │   └── [DLLraw.hpp] ( *[DLLraw.t.cpp]* )\
-    │   ├── queue/\
-    │   │   ├── [IQueue.hpp]\
-    │   │   └── [ListQueue.hpp] ( *[ListQueue.t.cpp]* )\
-    │   ├── queue_priority/\
-    │   │   └── [BinaryHeapQ.hpp] ( *[BinaryHeapQ.t.cpp]* )\
-    │   ├── stack/\
-    │   │   ├── [IStack.hpp]\
-    │   │   └── [ListStack.hpp] ( *[ListStack.t.cpp]* )\
-    │   └── union_find/\
-    │       └── [UnionFind.hpp] ( *[UnionFind.t.cpp]* )\
-    └── sort/\
-        ├── [bubble_sort.hpp] ( *[sort.t.cpp]* )\
-        ├── [insertion_sort.hpp] ( *[sort.t.cpp]* )\
-        ├── [merge_sort.hpp] ( *[sort.t.cpp]* )\
-        ├── [quick_sort.hpp] ( *[sort.t.cpp]* )\
-        └── [selection_sort.hpp] ( *[sort.t.cpp]* )
+    └── algo/\
+        ├── ds/\
+        │   ├── [BinaryHeapQ.hpp] ( *[BinaryHeapQ.t.cpp]* )\
+        │   ├── [BITreeRQPU.hpp] ( *[BITreeRQPU.t.cpp]* )\
+        │   ├── [BSTuptr.hpp] ( *[BSTuptr.t.cpp]* )\
+        │   ├── [BSTuptrIterator.hpp]\
+        │   ├── [BSTuptrNode.hpp]\
+        │   ├── [DLLraw.hpp] ( *[DLLraw.t.cpp]* )\
+        │   ├── [IQueue.hpp]\
+        │   ├── [IStack.hpp]\
+        │   ├── [ListQueue.hpp] ( *[ListQueue.t.cpp]* )\
+        │   ├── [ListStack.hpp] ( *[ListStack.t.cpp]* )\
+        │   └── [UnionFind.hpp] ( *[UnionFind.t.cpp]* )\
+        └── sort/\
+            ├── [bubble_sort.hpp] ( *[sort.t.cpp]* )\
+            ├── [insertion_sort.hpp] ( *[sort.t.cpp]* )\
+            ├── [merge_sort.hpp] ( *[sort.t.cpp]* )\
+            ├── [quick_sort.hpp] ( *[sort.t.cpp]* )\
+            └── [selection_sort.hpp] ( *[sort.t.cpp]* )
 
-[BITreeRQPU.hpp              ]: ./include/wndx/ds/binary_indexed_tree/BITreeRQPU.hpp
-[BITreeRQPU.t.cpp            ]: ./tests/units/ds/binary_indexed_tree/BITreeRQPU.t.cpp
-[BSTuptr.hpp                 ]: ./include/wndx/ds/binary_search_tree/BSTuptr.hpp
-[BSTuptr.t.cpp               ]: ./tests/units/ds/binary_search_tree/BSTuptr.t.cpp
-[BSTuptrIterator.hpp         ]: ./include/wndx/ds/binary_search_tree/BSTuptrIterator.hpp
-[BSTuptrNode.hpp             ]: ./include/wndx/ds/binary_search_tree/BSTuptrNode.hpp
-[BinaryHeapQ.hpp             ]: ./include/wndx/ds/queue_priority/BinaryHeapQ.hpp
-[BinaryHeapQ.t.cpp           ]: ./tests/units/ds/queue_priority/BinaryHeapQ.t.cpp
-[DLLraw.hpp                  ]: ./include/wndx/ds/linked_list/DLLraw.hpp
-[DLLraw.t.cpp                ]: ./tests/units/ds/linked_list/DLLraw.t.cpp
-[IQueue.hpp                  ]: ./include/wndx/ds/queue/IQueue.hpp
-[IStack.hpp                  ]: ./include/wndx/ds/stack/IStack.hpp
-[ListQueue.hpp               ]: ./include/wndx/ds/queue/ListQueue.hpp
-[ListQueue.t.cpp             ]: ./tests/units/ds/queue/ListQueue.t.cpp
-[ListStack.hpp               ]: ./include/wndx/ds/stack/ListStack.hpp
-[ListStack.t.cpp             ]: ./tests/units/ds/stack/ListStack.t.cpp
-[UnionFind.hpp               ]: ./include/wndx/ds/union_find/UnionFind.hpp
-[UnionFind.t.cpp             ]: ./tests/units/ds/union_find/UnionFind.t.cpp
-[bubble_sort.hpp             ]: ./include/wndx/sort/bubble_sort.hpp
-[insertion_sort.hpp          ]: ./include/wndx/sort/insertion_sort.hpp
-[merge_sort.hpp              ]: ./include/wndx/sort/merge_sort.hpp
-[quick_sort.hpp              ]: ./include/wndx/sort/quick_sort.hpp
-[selection_sort.hpp          ]: ./include/wndx/sort/selection_sort.hpp
+[BITreeRQPU.hpp              ]: ./include/wndx/algo/ds/BITreeRQPU.hpp
+[BITreeRQPU.t.cpp            ]: ./tests/units/ds/BITreeRQPU.t.cpp
+[BSTuptr.hpp                 ]: ./include/wndx/algo/ds/BSTuptr.hpp
+[BSTuptr.t.cpp               ]: ./tests/units/ds/BSTuptr.t.cpp
+[BSTuptrIterator.hpp         ]: ./include/wndx/algo/ds/BSTuptrIterator.hpp
+[BSTuptrNode.hpp             ]: ./include/wndx/algo/ds/BSTuptrNode.hpp
+[BinaryHeapQ.hpp             ]: ./include/wndx/algo/ds/BinaryHeapQ.hpp
+[BinaryHeapQ.t.cpp           ]: ./tests/units/ds/BinaryHeapQ.t.cpp
+[DLLraw.hpp                  ]: ./include/wndx/algo/ds/DLLraw.hpp
+[DLLraw.t.cpp                ]: ./tests/units/ds/DLLraw.t.cpp
+[IQueue.hpp                  ]: ./include/wndx/algo/ds/IQueue.hpp
+[IStack.hpp                  ]: ./include/wndx/algo/ds/IStack.hpp
+[ListQueue.hpp               ]: ./include/wndx/algo/ds/ListQueue.hpp
+[ListQueue.t.cpp             ]: ./tests/units/ds/ListQueue.t.cpp
+[ListStack.hpp               ]: ./include/wndx/algo/ds/ListStack.hpp
+[ListStack.t.cpp             ]: ./tests/units/ds/ListStack.t.cpp
+[UnionFind.hpp               ]: ./include/wndx/algo/ds/UnionFind.hpp
+[UnionFind.t.cpp             ]: ./tests/units/ds/UnionFind.t.cpp
+[bubble_sort.hpp             ]: ./include/wndx/algo/sort/bubble_sort.hpp
+[insertion_sort.hpp          ]: ./include/wndx/algo/sort/insertion_sort.hpp
+[merge_sort.hpp              ]: ./include/wndx/algo/sort/merge_sort.hpp
+[quick_sort.hpp              ]: ./include/wndx/algo/sort/quick_sort.hpp
+[selection_sort.hpp          ]: ./include/wndx/algo/sort/selection_sort.hpp
 [sort.t.cpp                  ]: ./tests/units/sort/sort.t.cpp
 
 ## Hall of Fame
