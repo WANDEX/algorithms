@@ -21,7 +21,6 @@ if [ ! -d "$bdir" ]; then
   exit 11
 fi
 
-incl_dir=$(realpath "./include")
 ccov_dir=$(realpath "./.coverage")
 
 lcov_dir="${ccov_dir}/lcov"
@@ -30,10 +29,13 @@ lcov_info="${lcov_dir}/lcov.info"
 mkdir -p "$lcov_dir"
 
 # shellcheck disable=SC2068 # Intentional - to re-split trailing arguments.
-lcov -c --directory "$bdir" --output-file "$lcov_info" \
--rc lcov_branch_coverage=1 -rc lcov_function_coverage=1 \
--rc geninfo_external=0 -rc geninfo_no_exception_branch=1 \
--rc geninfo_auto_base=1 --base-directory "$incl_dir" $@
+lcov -c --directory "$bdir" --output-file "$lcov_info" --demangle-cpp \
+--exclude /usr/ --exclude tests/ \
+--exclude third_patry --exclude 3rdparty --exclude _deps \
+--ignore-errors unused,inconsistent,inconsistent \
+--rc branch_coverage=1 --rc function_coverage=1 \
+--rc geninfo_external=0 --rc no_exception_branch=1 \
+--rc geninfo_unexecuted_blocks=1 --rc geninfo_auto_base=1 $@
 
 genhtml "$lcov_info" --output-directory "$lcov_dir" \
 --branch-coverage --demangle-cpp --legend --dark-mode
