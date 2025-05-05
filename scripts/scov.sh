@@ -7,8 +7,8 @@ set -e
 readme=$(realpath "./README.md")
 
 _lcovp=$(lcov --summary ./.coverage/lcov/lcov.info \
--rc lcov_branch_coverage=1 -rc lcov_function_coverage=1 \
-| tail -n3 | awk '{print $2}' | cut -d. -f1)
+--rc branch_coverage=1 --rc function_coverage=1 \
+| head -n6 | tail -n3 | awk '{print $2}' | cut -d. -f1)
 
 L=$(echo "$_lcovp" | awk 'NR==1') # lines
 F=$(echo "$_lcovp" | awk 'NR==2') # funcs
