@@ -2,45 +2,40 @@
 ![lines    ](https://img.shields.io/badge/L-100%25-brightgreen)
 ![functions](https://img.shields.io/badge/F-99%25-brightgreen)
 ![branches ](https://img.shields.io/badge/B-98%25-brightgreen)
-![license..](https://img.shields.io/github/license/WANDEX/algorithms?color=black)\
-[![CI linux][ci_linux_bdg]]([ci_linux])
-[![windows (MSVC)][ci_windows_bdg]]([ci_windows])
-[![macos (AppleClang)][ci_macos_bdg]]([ci_macos])
+![license..](https://img.shields.io/github/license/WANDEX/algorithms?color=black)
+[![CI/CD cmake-multi-platform][cicd_cmake_mp_bdg]][cicd_cmake_mp_url]
 
-# wndxlib
-Header only C++20 library of Data Structures & Algorithms written mainly for self-education.
+# wndx::algo
+Header only C++20 lib of Data Structures Algorithms written mainly for self-education and exploration of C++.
 
-## Tests
-**Require:** [GoogleTest (gtest)](https://github.com/google/googletest)
+## Requirements
+* git submodule: [wndx::sane](https://github.com/WANDEX/wndx_sane)
+* Tests Require: [GoogleTest (gtest)](https://github.com/google/googletest) (CMake fetch content at configure time)
 
-**To make clean build & run tests:**
+## Build
+```sh
+$ git clone --recurse-submodules git@github.com:WANDEX/algorithms.git && cd algorithms
+$ cmake -E make_directory build
+$ cmake -S . -B build
+$ cmake --build build
 ```
-./scripts/build.sh clean ctest
-```
-
-**To make cleaner build (for edge cases) & run tests:**
-```
-./scripts/build.sh cleaner ctest
-```
-
-[Ninja (build system)](https://github.com/ninja-build/ninja)
-is optional: change Generator **-G Ninja** in the above build script.
 
 ## Integration
-`CMakeLists.txt` that uses `wndxlib` can look like this:
+`CMakeLists.txt` that uses `wndx::algo` can look like this:
 ```cmake
 project(project_1337)
 
 include(FetchContent)
 FetchContent_Declare(
-  wndxlib # v0.0.1.0-rc1
-  URL https://github.com/WANDEX/algorithms/releases/download/v0.0.1.0-rc1/wndxlib-src.zip
+  wndx_algo
+  GIT_REPOSITORY https://github.com/WANDEX/algorithms.git
+  GIT_TAG        0.0.3 # latest tag commit hash is preferred
 )
-FetchContent_MakeAvailable(wndxlib)
+FetchContent_MakeAvailable(wndx_algo)
 
 add_executable(project_1337)
 target_sources(project_1337 PRIVATE main.cpp)
-target_link_libraries(project_1337 PRIVATE wandex::wndx)
+target_link_libraries(project_1337 PRIVATE wndx_algo::algo)
 ```
 
 ## Tree of Implemented DSA
@@ -107,9 +102,5 @@ for the gratuitous dissemination of knowledge. :godmode:
 ## License
 [0BSD](https://choosealicense.com/licenses/0bsd/)
 
-[ci_linux       ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_linux.yml
-[ci_linux_bdg   ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_linux.yml/badge.svg
-[ci_windows     ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_windows.yml
-[ci_windows_bdg ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_windows.yml/badge.svg
-[ci_macos       ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_macos.yml
-[ci_macos_bdg   ]: https://github.com/WANDEX/algorithms/actions/workflows/ci_macos.yml/badge.svg
+[cicd_cmake_mp_url]: https://github.com/WANDEX/algorithms/actions/workflows/cicd_cmake_multi_platform.yml
+[cicd_cmake_mp_bdg]: https://github.com/WANDEX/algorithms/actions/workflows/cicd_cmake_multi_platform.yml/badge.svg?event=push
