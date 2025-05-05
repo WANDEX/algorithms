@@ -56,7 +56,7 @@ README_MULTILINE_RE = r'\
 ^## Hall of Fame$'
 
 # tuple of names to ignore in paths during fs traversal
-EXCLUDE_NAMES = ("common", "__pycache__", "wndxc")
+EXCLUDE_NAMES = ("util", "c", "__pycache__")
 
 
 def ppr(arg):
