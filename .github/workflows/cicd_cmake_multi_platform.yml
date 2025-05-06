@@ -132,6 +132,7 @@ jobs:
         cmake -E make_directory "${{ steps.str3.outputs.dir_path_env }}"
         cmake -E make_directory "${{ steps.str3.outputs.dir_path_deploy }}"
         cmake -E make_directory "${{ steps.str1.outputs.dir_cache_local }}"
+        cmake -E make_directory "${{ steps.str1.outputs.dir_cache_local }}/bin"
         echo "${{ steps.str1.outputs.dir_cache_local }}/bin" >> "$GITHUB_PATH"
         ls -la .
         ls -la "${{ steps.str1.outputs.dir_cache_local }}"
