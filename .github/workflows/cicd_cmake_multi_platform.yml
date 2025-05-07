@@ -172,7 +172,7 @@ jobs:
       if  : ${{ runner.os == 'Linux' && steps.cache_local.outputs.cache-hit != 'true' }}
       working-directory: ${{ github.workspace }}
       run : |
-        apt-get install libc6-dbg && whereis libc6-dbg && dpkg -L libc6-dbg
+        sudo apt-get install libc6-dbg && whereis libc6-dbg && dpkg -L libc6-dbg
         VALGRIND=valgrind-3.25.0
         curl -sSLO "https://sourceware.org/pub/valgrind/$VALGRIND.tar.bz2"
         tar -xjf $VALGRIND.tar.bz2 && cd $VALGRIND
