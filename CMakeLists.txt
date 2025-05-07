@@ -131,6 +131,7 @@ if(WNDX_ALGO_IS_TOP_PROJECT)
       add_custom_target(memcheck
         COMMAND export MallocStackLogging=1 && ${LEAKS_UTIL} --atExit
                         -- ./tests_units --gtest_brief=1
+        WORKING_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
       )
     else()
       wndx_sane_memcheck(TGT_NAME memcheck
