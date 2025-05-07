@@ -121,26 +121,13 @@ if(WNDX_ALGO_IS_TOP_PROJECT)
 
   if(WNDX_ALGO_MEMCHECK_ENABLE)
     include(wndx_sane_memcheck)
-    if(APPLE)
-      find_program(LEAKS_UTIL NAMES leaks)
-      if(NOT LEAKS_UTIL)
-        message(FATAL_ERROR "${fun} leaks util not found at PATH!")
-      else()
-        message(DEBUG "${fun} leaks util found at PATH ${LEAKS_UTIL}")
-      endif()
-      add_custom_target(memcheck
-        COMMAND export MallocStackLogging=1 && ${LEAKS_UTIL} --atExit
-                        -- ./tests_units --gtest_brief=1
-        WORKING_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
-      )
-    else()
-      wndx_sane_memcheck(TGT_NAME memcheck
-        TGT_EXEC ./tests_units --gtest_brief=1
-        TGT_DEPS tests_units
-        # VALGRIND_OPTS --read-var-info=yes --show-leak-kinds=definite --track-origins=yes
-        # EXIT_ON_FIRST_ERROR
-      )
-    endif()
+    wndx_sane_memcheck(TGT_NAME memcheck
+      TGT_EXEC ./tests_units --gtest_brief=1
+      TGT_DEPS tests_units
+      # VALGRIND_OPTS --read-var-info=yes --show-leak-kinds=definite --track-origins=yes
+      # EXIT_ON_FIRST_ERROR # valgrind only option
+      # FORCE_DRMEMORY
+    )
   endif(WNDX_ALGO_MEMCHECK_ENABLE)
 
   if(WNDX_ALGO_INSTALL_ENABLE)
