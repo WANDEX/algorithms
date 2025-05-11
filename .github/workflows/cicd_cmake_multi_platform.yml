@@ -133,10 +133,8 @@ jobs:
         cmake -E make_directory "${{ steps.str3.outputs.dir_path_deploy }}"
         cmake -E make_directory "${{ steps.str1.outputs.dir_cache_local }}"
         cmake -E make_directory "${{ steps.str1.outputs.dir_cache_local }}/bin"
+        cmake -E make_directory "${{ steps.str1.outputs.dir_cache_local }}/lib"
         echo "${{ steps.str1.outputs.dir_cache_local }}/bin" >> "$GITHUB_PATH"
-        ls -la .
-        ls -la "${{ steps.str1.outputs.dir_cache_local }}"
-        ls -la "${{ steps.str1.outputs.dir_cache_local }}/bin"
 
     - name: ENV List All bef
       working-directory: ${{ steps.str3.outputs.dir_path_env }}
@@ -162,20 +160,40 @@ jobs:
 
     - name: cache local
       id  : cache_local
-      if  : ${{ runner.os == 'Linux' }}
       uses: actions/cache@v4
       with:
         path: "${{ steps.str1.outputs.dir_cache_local }}"
-        key : ${{ runner.os }}-${{ hashFiles('.local/bin', '.local/lib') }}
+        key : ${{ runner.os }}-${{ hashFiles('.local/bin/*', '.local/lib/*') }}
+
+    - name: get/install drmemory
+      if  : ${{ runner.os == 'Windows' && steps.cache_local.outputs.cache-hit != 'true' }}
+      working-directory: ${{ github.workspace }}
+      run : |
+        URL_BASE="https://github.com/DynamoRIO/drmemory/releases/download/release_2.6.0"
+        DRMEMORY=DrMemory-Windows-2.6.0
+        curl -sSLO "$URL_BASE/$DRMEMORY.zip"
+        cmake -E tar -xzf $DRMEMORY.zip && cd $DRMEMORY
+        cmake -E copy_directory bin "${{ steps.str1.outputs.dir_cache_local }}/bin"
+
+    - name: get/install valgrind deps
+      if  : ${{ runner.os == 'Linux' }}
+      working-directory: ${{ github.workspace }}
+      run : |
+        sudo apt-get install libc6-dbg
+        echo
+        echo
+        whereis libc6-dbg
+        echo
+        echo
+        dpkg -L libc6-dbg
 
     - name: get/install valgrind
       if  : ${{ runner.os == 'Linux' && steps.cache_local.outputs.cache-hit != 'true' }}
       working-directory: ${{ github.workspace }}
       run : |
-        sudo apt-get install libc6-dbg && whereis libc6-dbg && dpkg -L libc6-dbg
         VALGRIND=valgrind-3.25.0
         curl -sSLO "https://sourceware.org/pub/valgrind/$VALGRIND.tar.bz2"
-        tar -xjf $VALGRIND.tar.bz2 && cd $VALGRIND
+        cmake -E tar -xjf $VALGRIND.tar.bz2 && cd $VALGRIND
         ./configure --prefix "${{ steps.str1.outputs.dir_cache_local }}"
         make -j $(getconf _NPROCESSORS_ONLN) && make install
 
@@ -268,7 +286,7 @@ jobs:
     #     TARBALL=$PKGNAME.tar.gz
     #     SHASUM=$PKGNAME.tar.gz.sha256
     #     cp -r deploy $PRJVERA
-    #     tar -czf $TARBALL $PRJVERA
+    #     cmake -E tar -czf $TARBALL $PRJVERA
     #     cmake -E sha256sum $TARBALL > $SHASUM
     #     echo "TARBALL=$TARBALL" >> "$GITHUB_OUTPUT"
     #     echo  "SHASUM=$SHASUM"  >> "$GITHUB_OUTPUT"
