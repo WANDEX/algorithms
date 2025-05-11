@@ -122,8 +122,7 @@ if(WNDX_ALGO_IS_TOP_PROJECT)
   if(WNDX_ALGO_MEMCHECK_ENABLE)
     include(wndx_sane_memcheck)
     wndx_sane_memcheck(TGT_NAME memcheck
-      TGT_EXEC ./tests_units --gtest_brief=1
-      TGT_DEPS tests_units
+      TGT_EXEC tests_units --gtest_brief=1
       # VALGRIND_OPTS --read-var-info=yes --show-leak-kinds=definite --track-origins=yes
       # EXIT_ON_FIRST_ERROR # valgrind only option
       # FORCE_DRMEMORY
