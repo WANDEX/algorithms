@@ -74,13 +74,16 @@ prj_name_upper=$(echo "$prj_name" | tr "[:lower:]" "[:upper:]")
 PRJ_BUILD_TESTS="${BUILD_TESTS:-"${prj_name_upper}_BUILD_TESTS"}"
 tdir="${TESTS_DIR:-"tests/units"}"
 bt="${BUILD_TYPE:-Debug}"
-generator="${GENERATOR:-Ninja}" # "MSYS Makefiles", "Unix Makefiles", Ninja
+generator="${GENERATOR:-Ninja}" # "MSYS Makefiles", "Unix Makefiles", "Ninja Multi-Config", Ninja
 compiler="${CC:-_}"
 verbose="${VERBOSE:-0}"
 deploy="${DEPLOY:-0}"
 rel="${REL:-0}"
 cmbn=$(basename "$compiler") # get compiler basename in case declared via full path
-bdir="build/dev-$bt-$cmbn"
+gen_dir_name=$(echo "$generator" | sed "s/[ |-]/_/g" | tr "[:upper:]" "[:lower:]")
+arch=$(uname -m)
+bdir="build/${gen_dir_name}_${arch}/dev_${cmbn}_${bt}"
+[ -d "$bdir" ] || mkdir -p "$bdir"
 
 
 _verbose=""
@@ -119,7 +122,7 @@ fi
 if [ "$rel" = 1 ]; then
   cd "$bdir" || exit 11
   pwd
-  _sdir="../.."
+  _sdir="../../.."
   _bdir="."
 else
   _sdir="."
