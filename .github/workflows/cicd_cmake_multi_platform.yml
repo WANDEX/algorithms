@@ -173,19 +173,14 @@ jobs:
         DRMEMORY=DrMemory-Windows-2.6.0
         curl -sSLO "$URL_BASE/$DRMEMORY.zip"
         cmake -E tar -xzf $DRMEMORY.zip && cd $DRMEMORY
-        cmake -E copy_directory bin "${{ steps.str1.outputs.dir_cache_local }}/bin"
+        cmake -E copy_directory bin64 "${{ steps.str1.outputs.dir_cache_local }}/bin"
 
     - name: get/install valgrind deps
-      if  : ${{ runner.os == 'Linux' }}
+      if  : ${{ runner.os == 'Linux' && steps.cache_local.outputs.cache-hit != 'true' }}
       working-directory: ${{ github.workspace }}
       run : |
         sudo apt-get install libc6-dbg
-        echo
-        echo
-        whereis libc6-dbg
-        echo
-        echo
-        dpkg -L libc6-dbg
+        sudo cp -r /usr/lib/debug "${{ steps.str1.outputs.dir_cache_local }}/lib/debug"
 
     - name: get/install valgrind
       if  : ${{ runner.os == 'Linux' && steps.cache_local.outputs.cache-hit != 'true' }}
@@ -247,7 +242,6 @@ jobs:
 
     - name: Runner info lines
       run : |
-        echo "$PATH"
         echo "> cwd:"
         ls -la .
         echo "> prj_dir:"
