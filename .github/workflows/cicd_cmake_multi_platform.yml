@@ -38,11 +38,11 @@ jobs:
         # cc : [gcc, clang] ## compilers
         # bt : [Release, Debug] ## build type
         # pl : [ubuntu-latest, macos-latest] ## platform
-        exclude:
-          - pl : windows-latest
-            cc : gcc
-          - pl : windows-latest
-            cc : clang
+        # exclude:
+        #   - pl : windows-latest
+        #     cc : gcc
+        #   - pl : windows-latest
+        #     cc : clang
         include:
           - name: "ubuntu gcc"
             pl : ubuntu-latest
