@@ -35,9 +35,9 @@ jobs:
       fail-fast: false
       matrix:
         gen: [Ninja] ## default generator
-        cc : [gcc, clang] ## compilers
-        bt : [Release, Debug] ## build type
-        pl : [ubuntu-latest, macos-latest] ## platform
+        # cc : [gcc, clang] ## compilers
+        # bt : [Release, Debug] ## build type
+        # pl : [ubuntu-latest, macos-latest] ## platform
         exclude:
           - pl : windows-latest
             cc : gcc
@@ -49,21 +49,23 @@ jobs:
             cc : gcc
             cxx: g++
             bp : "lnx_gcc"
-          - name: "ubuntu clang"
-            pl : ubuntu-latest
-            cc : clang
-            cxx: clang++
-            bp : "lnx_clang"
-          - name: "macOS gcc"
-            pl : macos-latest
-            cc : gcc
-            cxx: g++
-            bp : "mac_gcc"
+            bt : Debug # XXX
+          # - name: "ubuntu clang"
+          #   pl : ubuntu-latest
+          #   cc : clang
+          #   cxx: clang++
+          #   bp : "lnx_clang"
+          # - name: "macOS gcc"
+          #   pl : macos-latest
+          #   cc : gcc
+          #   cxx: g++
+          #   bp : "mac_gcc"
           - name: "macOS clang"
             pl : macos-latest
             cc : clang
             cxx: clang++
             bp : "mac_clang"
+            bt : Debug # XXX
           - name: "macOS Xcode"
             pl : macos-latest
             cc : cc
@@ -288,7 +290,7 @@ jobs:
       ## https://github.com/marketplace/actions/gh-release
     - name : release
       uses : softprops/action-gh-release@v2
-      if   : ${{ github.ref_type == 'tag' && matrix.bt == 'Release' && matrix.bp == 'lnx_clang' }}
+      if   : ${{ github.ref_type == 'tag' && matrix.bt == 'Release' && matrix.bp == 'lnx_gcc' }}
       with :
         generate_release_notes: true
         draft: false
