@@ -1,10 +1,14 @@
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 3.26..4.1)
+# cmake_minimum_required(VERSION 3.29..4.1) ## XXX: 3.26.0-msvc3
+# cmake_minimum_required(VERSION 3.29) # Compatibility with CMake < 3.5 has been removed from CMake.
+
 
 ## ^ POLICIES
 project(
   wndx_algo
   VERSION       0.0.2
-  LANGUAGES     CXX C
+  # LANGUAGES     CXX C
+  LANGUAGES     CXX
   DESCRIPTION   "[WIP] C++20 platform-agnostic DSA lib. (NOT FOR USE IN PRODUCTION CODEBASES)"
   HOMEPAGE_URL  "https://github.com/WANDEX/algorithms"
 )
@@ -142,4 +146,3 @@ if(WNDX_ALGO_IS_TOP_PROJECT)
     )
   endif(WNDX_ALGO_INSTALL_ENABLE)
 endif(WNDX_ALGO_IS_TOP_PROJECT)
-

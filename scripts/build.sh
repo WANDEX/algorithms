@@ -11,6 +11,19 @@
 #
 # export CC=gcc   CXX=g++
 # export CC=clang CXX=clang++
+# export CC=cl    CXX=cl
+#
+## example MSVC compilation on win10 platform in git-bash shell:
+# export PATH0="$PATH" # backup unmodified PATH
+# export PATH="$PATH:/c/Program Files/Microsoft Visual Studio/2022/Professional/VC/Tools/MSVC/14.36.32532/bin/Hostx64/x64"
+# export PATH="$PATH:/c/wndx/src/top/DrMemory-Windows-2.6.0/bin64"
+# export PATH="$PATH:/c/wndx/src/top/DrMemory-Windows-2.6.0/bin"
+# rm -rf ./build/msvc/ && mkdir -p ./build/msvc/
+# cmake -S . -B ./build/msvc/ -G "Visual Studio 17 2022" -DWNDX_ALGO_BUILD_TESTS=ON -DWNDX_ALGO_MEMCHECK_ENABLE=ON
+# cmake --build ./build/msvc/
+# ctest --test-dir ./build/msvc/tests/units/
+# cmake --build ./build/msvc/ --target memcheck
+#
 #
 ## build:
 # ./scripts/build.sh
@@ -24,6 +37,8 @@
 # ./scripts/build.sh ctest .*regex.*
 ## or
 # ./scripts/build.sh gtest *wildcard*
+##
+# CC=cl CXX=cl VERBOSE=1 DEPLOY=1 BUILD_TYPE=Debug BUILD_TESTS="WNDX_ALGO_BUILD_TESTS" GENERATOR="Visual Studio 17 2022" ./scripts/build.sh c ct
 
 set -e
 
@@ -55,7 +70,7 @@ notify() {
 }
 
 # shellcheck disable=SC2068 # Intentional - to re-split trailing arguments.
-run_ctest() { cmake -E time ctest --output-on-failure --test-dir "$_bdir/$tdir" $@ ;} # shortcut
+run_ctest() { cmake -E time ctest --build-config "$bt" --output-on-failure --test-dir "$_bdir/$tdir" $@ ;} # shortcut
 
 sep="=============================================================================="
 vsep() { printf "\n%b%.78s%b\n\n" "${2}" "[${1}]${sep}" "${END}" ;}
@@ -132,7 +147,7 @@ fi
 vsep "CONFIGURE" "${BLU}"
 # shellcheck disable=SC2086 # Intentional - to re-split EXTRA CONFIGURE OPTIONS if any
 cmake -E time \
-cmake -S "$_sdir" -B "$_bdir" -G "$generator" -D CMAKE_BUILD_TYPE="${bt}" -D "$PRJ_BUILD_TESTS=${tt}" \
+cmake -S "$_sdir" -B "$_bdir" -G "$generator" -D CMAKE_BUILD_TYPE="${bt}" -D "$PRJ_BUILD_TESTS=${tt}" -D "WNDX_ALGO_MEMCHECK_ENABLE=ON" \
 -Wdev -Werror=dev ${fresh} ${cmake_log_level} ${COPTS} \
 || { notify ERROR "CONFIGURE ERROR" ; exit "$EC" ;}
 
@@ -178,4 +193,3 @@ fi
 
 vsep   "COMPLETED" "${GRN}"
 notify "COMPLETED"
-
