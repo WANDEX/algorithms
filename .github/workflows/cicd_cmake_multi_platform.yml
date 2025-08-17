@@ -74,7 +74,7 @@ jobs:
             gen: "Xcode"
             bt : Debug
           - name: "windows MSVC"
-            pl : windows-latest
+            pl : windows-2022 # drmemory currently not works on windows-2025 - Dr. Memory internal crash at PC.
             cc : cl
             cxx: cl
             bp : "win_cl"
@@ -167,12 +167,30 @@ jobs:
         path: "${{ steps.str1.outputs.dir_cache_local }}"
         key : ${{ runner.os }}-${{ hashFiles('.local/bin/*', '.local/lib/*') }}
 
-    - name: get/install drmemory
+      ## https://github.com/marketplace/actions/install-winget
+    - name: get/install winget
+      if  : ${{ runner.os == 'Windows' }}
+      uses: Cyberboss/install-winget@v1
+
+    - name: get/install WingetPathUpdater
       if  : ${{ runner.os == 'Windows' }}
       working-directory: ${{ github.workspace }}
-      run : winget install --id=DynamoRIO.drmemory -e
+      run : winget install jazzdelightsme.WingetPathUpdater --disable-interactivity --accept-source-agreements
 
-    ## occupies to much space in cache - 434 Mb. Whole dir must be cached, not only bin/64!
+    - name: install drmemory
+      if  : ${{ runner.os == 'Windows' }}
+      working-directory: ${{ github.workspace }}
+      run : |
+        DRMEMORY_V=2.6.20185
+        DRMEMORY_DN=DrMemory-Windows-$DRMEMORY_V
+        DRMEMORY_ID=DynamoRIO.drmemory
+        MS_WG_DIR="/c/Users/runneradmin/AppData/Local/Microsoft/WinGet"
+        MS_WG_SRC=_Microsoft.Winget.Source_
+        MS_PUB_ID=8wekyb3d8bbwe
+        winget install --id=$DRMEMORY_ID -v $DRMEMORY_V -e --disable-interactivity --accept-source-agreements
+        echo ";${MS_WG_DIR}/Packages/${DRMEMORY_ID}${MS_WG_SRC}${MS_PUB_ID}/${DRMEMORY_DN}/bin64" >> "$GITHUB_PATH"
+
+    ## occupies to much space in cache - 434 Mb. Whole dir must be cached, not only bin64 - exe require parent dirs!
     # - name: get/install drmemory
     #   if  : ${{ runner.os == 'Windows' && steps.cache_local.outputs.cache-hit != 'true' }}
     #   working-directory: ${{ github.workspace }}
