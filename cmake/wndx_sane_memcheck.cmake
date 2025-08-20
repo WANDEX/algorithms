@@ -1,5 +1,68 @@
 include_guard(GLOBAL)
 ## cmake module from WANDEX/wndx_sane lib.
+##
+## https://drmemory.org/page_help.html
+## https://drmemory.org/page_options.html
+## https://github.com/DynamoRIO/drmemory/issues/2232
+## https://github.com/DynamoRIO/drmemory/issues/2487
+
+## remove option from target. e.g. -fsanitize=address.
+function(wndx_sane_tgt_rm_opt tgt opt)
+  if(NOT TARGET ${tgt})
+    return()
+  endif()
+  ## FIXME: I broke the function or why it does not remove options?
+  set(fun "wndx_sane_tgt_rm_opt()")
+  message(WARNING "${fun} rm opt : ${opt}")
+  # set(_c_opts "") # remove from COMPILE_OPTIONS (if present)
+  get_target_property(c_opts ${tgt} COMPILE_OPTIONS)
+  if(_c_opts)
+    list(FILTER _c_opts EXCLUDE REGEX "^${opt}$")
+    set_target_properties(${tgt} PROPERTIES COMPILE_OPTIONS "${_c_opts}")
+  endif(_c_opts)
+
+  # set(l_opts "") # remove from LINK_OPTIONS (if present)
+  get_target_property(_l_opts ${tgt} LINK_OPTIONS)
+  if(_l_opts)
+    list(FILTER _l_opts EXCLUDE REGEX "^${opt}$")
+    set_target_properties(${tgt} PROPERTIES LINK_OPTIONS "${_l_opts}")
+  endif(_l_opts)
+
+  # set(i_opts "") # remove from INTERFACE_COMPILE_OPTIONS (if propagated)
+  get_target_property(_i_opts ${tgt} INTERFACE_COMPILE_OPTIONS)
+  if(_i_opts)
+    list(FILTER _i_opts EXCLUDE REGEX "^${opt}$")
+    set_target_properties(${tgt} PROPERTIES INTERFACE_COMPILE_OPTIONS "${_i_opts}")
+  endif(_i_opts)
+endfunction()
+
+## helper: remove any -fsanitize=address flags from a target
+# function(remove_asan_from_target tgt)
+#   if (TARGET ${tgt})
+#     get_target_property(_old_cflags ${tgt} COMPILE_OPTIONS)
+#     if (NOT _old_cflags)
+#       set(_old_cflags "")
+#     endif()
+#     # remove -fsanitize=address from COMPILE_OPTIONS
+#     list(FILTER _old_cflags EXCLUDE REGEX "^-fsanitize=address$")
+#     set_target_properties(${tgt} PROPERTIES COMPILE_OPTIONS "${_old_cflags}")
+
+#     # remove ASAN from link flags (if present)
+#     get_target_property(_old_linkopts ${tgt} LINK_OPTIONS)
+#     if (NOT _old_linkopts)
+#       set(_old_linkopts "")
+#     endif()
+#     list(FILTER _old_linkopts EXCLUDE REGEX "^-fsanitize=address$")
+#     set_target_properties(${tgt} PROPERTIES LINK_OPTIONS "${_old_linkopts}")
+
+#     # also remove from INTERFACE_COMPILE_OPTIONS if propagated
+#     get_target_property(_int_opts ${tgt} INTERFACE_COMPILE_OPTIONS)
+#     if(_int_opts)
+#       list(FILTER _int_opts EXCLUDE REGEX "^-fsanitize=address$")
+#       set_target_properties(${tgt} PROPERTIES INTERFACE_COMPILE_OPTIONS "${_int_opts}")
+#     endif()
+#   endif()
+# endfunction()
 
 function(wndx_sane_memcheck) ## args
   cmake_parse_arguments(arg # pfx
@@ -51,9 +114,12 @@ function(wndx_sane_memcheck) ## args
   endif()
 
   cmake_path(SET drmemory_logs_dir NORMALIZE "${arg_WORKING_DIRECTORY}/logs/drmemory")
+  ## NOTE: on WIN32 -crash_at_error must be specified! => Error #1 : warning : writing to readonly memory
+  ##       without this flag on WIN32 process is not terminated if leak detected!
   list(PREPEND arg_DRMEMORY_OPTS
-    -exit_code_if_errors 73
-    # -logdir "${drmemory_logs_dir}"
+    -batch -ignore_kernel -exit_code_if_errors 73
+    -logdir "${drmemory_logs_dir}"
+    -crash_at_error
   )
 
   list(PREPEND arg_LEAKS_OPTS
@@ -69,7 +135,7 @@ function(wndx_sane_memcheck) ## args
     list(APPEND arg_DRMEMORY_OPTS -crash_at_error)
   endif()
 
-  # split on executable name and trailing arguments if any
+  ## split on executable name and trailing arguments if any
   if(FALSE) # regex way
     set(exec_re "[A-Za-z0-9_.-]+") # regex match executable name
     string(REGEX MATCH   "${exec_re}" tgt_exec "${arg_TGT_EXEC}")
@@ -84,12 +150,34 @@ function(wndx_sane_memcheck) ## args
     message(FATAL_ERROR "${fun} TGT_EXEC executable name: '${tgt_exec}' - TARGET not exist!")
   endif()
 
+  ## NOTE: USES_TERMINAL with Ninja Generator on APPLE platform under AppleClang compiler,
+  ## when leak is detected, program exec with XCODE leaks utility - hangs infinitely (horrible for CI)!
   list(APPEND CUSTOM_TARGET_OPTS
     WORKING_DIRECTORY "${arg_WORKING_DIRECTORY}"
     DEPENDS ${tgt_exec}
-    USES_TERMINAL
     VERBATIM
   )
+
+  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+    # target_link_libraries(${tgt_exec} PRIVATE debug -fsanitize=thread) # MutExc
+    # target_link_libraries(${tgt_exec} PRIVATE debug -fsanitize=address) # XXX
+    # target_link_libraries(${tgt_exec} PRIVATE debug -fsanitize=leak)
+    # target_link_libraries(${tgt_exec} PRIVATE debug -fsanitize=undefined)
+    ## NOTE: target_link_libraries(${tgt_exec} PRIVATE debug -fsanitize=address)
+    ## CAUSES FOLLOWING ERROR on APPLE platform!
+    ##
+    ## Can't examine target process's malloc zone asan_0x*, so memory analysis will be incomplete or incorrect.
+    ## Reason: for security, cannot load non-system library **/libclang_rt.asan_osx_dynamic.dylib
+    ##
+    ## Thus, we must explicitly remove from our target all MUTUALLY EXCLUSIVE OPTIONS
+    ## Otherwise it will lead to undefined behavior.
+    ## Because not all warnings/errors guarantee a failure with non 0 exit code.
+    ## i.e. memcheck used as a CI step which is expected to FAIL if leak is detected!
+    ## TODO: remove all other MUTUALLY EXCLUSIVE OPTIONS which break this main scenario!
+    # XXX: WTF... now it compiles without this?
+    # wndx_sane_tgt_rm_opt(${tgt_exec} -fsanitize=address)
+    # remove_asan_from_target(${tgt_exec})
+  endif()
 
   if(WIN32 OR arg_FORCE_DRMEMORY)
     find_program(DRMEMORY_COMMAND NAMES drmemory)
@@ -98,23 +186,19 @@ function(wndx_sane_memcheck) ## args
     else()
       message(DEBUG "${fun} drmemory util found at PATH ${DRMEMORY_COMMAND}")
     endif()
-    if(MSVC) # XXX call makes the flow of control return to Visual Studio's batch file
-      set(call call) # and hence lets other Custom Build steps run.
-    else()
+    if(MSVC) # https://stackoverflow.com/questions/3686837/why-are-my-custom-build-steps-not-running-in-visual-studio
+      set(call "call") # '$ call' makes the flow of control return to Visual Studio's batch file
+    else()             # and hence lets other Custom Build steps run.
       unset(call)
     endif()
-      # COMMAND ${call} ${CMAKE_COMMAND} -E make_directory "${drmemory_logs_dir}"
     add_custom_target(${arg_TGT_NAME}
-      COMMAND call ${DRMEMORY_COMMAND} ${arg_DRMEMORY_OPTS}
+      COMMAND ${call} ${CMAKE_COMMAND} -E make_directory "${drmemory_logs_dir}"
+      && ${call} ${DRMEMORY_COMMAND} ${arg_DRMEMORY_OPTS}
         -- $<TARGET_FILE:${tgt_exec}> ${tgt_opts}
       ${CUSTOM_TARGET_OPTS}
     )
     add_dependencies(${arg_TGT_NAME} ${tgt_exec})
   elseif(APPLE)
-    # FIXME: when leak detected leaks utility hangs infinitely in ~50% of cases (CI).
-    # exits with error code properly if generator is Xcode, otherwise hangs! why?
-    # when such issue occurs CI workflow must be manually canceled!
-    ## https://keith.github.io/xcode-man-pages/leaks.1.html
     find_program(LEAKS_COMMAND NAMES leaks)
     if(NOT LEAKS_COMMAND)
       message(FATAL_ERROR "${fun} leaks util not found at PATH!")
