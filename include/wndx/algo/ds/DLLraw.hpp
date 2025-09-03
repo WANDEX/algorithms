@@ -19,13 +19,31 @@ namespace ds {
 template<typename T>
 class DLLraw {
 protected:
-    // trivially constructible aggregate type
+#if 1 // trivially constructible aggregate type
     struct Node
     {
         T     m_data{};
         Node* m_prev{ nullptr };
         Node* m_next{ nullptr };
     };
+#else
+    class Node
+    {
+    public:
+        Node() = delete;
+        Node(Node &&) = default;
+        Node(const Node &) = default;
+        Node &operator=(Node &&) = default;
+        Node &operator=(const Node &) = default;
+        virtual ~Node() = default;
+        explicit Node(T const& data, Node* const prev, Node* const next)
+            : m_data{data}, m_prev{prev}, m_next{next}
+        {}
+        T     m_data{};
+        Node* m_prev{ nullptr };
+        Node* m_next{ nullptr };
+    };
+#endif // trivially constructible aggregate type
 
     // aliases
     using data_t   = T;
@@ -228,9 +246,9 @@ public:
     void addFirst(const T &elem) noexcept
     {
         if (empty()) {
-            m_head = m_tail = new node_t{elem, nullptr, nullptr};
+            m_head = m_tail = new node_t(elem, nullptr, nullptr);
         } else {
-            m_head->m_prev  = new node_t{elem, nullptr, m_head};
+            m_head->m_prev  = new node_t(elem, nullptr,  m_head);
             m_head = m_head->m_prev;
         }
         m_size++;
@@ -242,9 +260,9 @@ public:
     void addLast(const T &elem) noexcept
     {
         if (empty()) {
-            m_head = m_tail = new node_t{elem, nullptr, nullptr};
+            m_tail = m_head = new node_t(elem, nullptr, nullptr);
         } else {
-            m_tail->m_next  = new node_t{elem, m_tail, nullptr};
+            m_tail->m_next  = new node_t(elem,  m_tail, nullptr);
             m_tail = m_tail->m_next;
         }
         m_size++;
@@ -270,7 +288,7 @@ public:
         for (std::size_t i = 0; i < index - 1; i++) {
             temp = temp->m_next;
         }
-        node_ptr newNode{ new node_t{elem, temp, temp->m_next} };
+        node_ptr newNode{ new node_t(elem, temp, temp->m_next) };
         temp->m_next->m_prev = newNode;
         temp->m_next = newNode;
         m_size++;
@@ -300,12 +318,14 @@ public:
     T removeFirst()
     {
         if (empty()) throw std::runtime_error("Empty list.");
-        T data = m_head->m_data; // Extract the data at the m_head
-        m_head = m_head->m_next; // move the m_head pointer forwards one node
+        node_t const& h_old{ *m_head };
+        T const data{ h_old.m_data }; // extract the data at the head
+        m_head = h_old.m_next; // move the head pointer forwards one node
+        delete  &h_old;
         --m_size;
         if (empty()) m_tail = nullptr;
         else m_head->m_prev = nullptr; // memory cleanup
-        return data; // Return the data of the node we just removed
+        return data;
     }
 
     /**
@@ -314,8 +334,10 @@ public:
     T removeLast()
     {
         if (empty()) throw std::runtime_error("Empty list.");
-        T data = m_tail->m_data; // Extract the data at the tail
-        m_tail = m_tail->m_prev; // move the tail pointer backwards one node
+        node_t const& t_old{ *m_tail };
+        T const data{ t_old.m_data }; // extract the data at the tail
+        m_tail = t_old.m_prev; // move the tail pointer backwards one node
+        delete  &t_old;
         --m_size;
         if (empty()) m_head = nullptr;
         else m_tail->m_next = nullptr; // memory cleanup
@@ -332,9 +354,9 @@ public:
         // Make the pointers of adjacent nodes skip over 'node'
         node->m_next->m_prev = node->m_prev;
         node->m_prev->m_next = node->m_next;
-        T data = node->m_data;  // tmp store the data
-        // memory cleanup
-        node = node->m_prev = node->m_next = nullptr;
+        T const data = node->m_data; // tmp store the data
+        delete node;
+        node = nullptr; // memory cleanup
         --m_size;
         return data;
     }
