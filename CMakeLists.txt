@@ -114,6 +114,12 @@ if(WNDX_ALGO_IS_TOP_PROJECT)
 
   if(WNDX_ALGO_BUILD_TESTS)
     add_subdirectory(tests/units)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+      # target_link_libraries(tests_units PRIVATE debug -fsanitize=thread) # MutExc
+      # target_link_libraries(tests_units PRIVATE debug -fsanitize=address)
+      # target_link_libraries(tests_units PRIVATE debug -fsanitize=leak)
+      # target_link_libraries(tests_units PRIVATE debug -fsanitize=undefined)
+    endif()
   endif(WNDX_ALGO_BUILD_TESTS)
 
   if(WNDX_ALGO_BUILD_PACKAGE)
