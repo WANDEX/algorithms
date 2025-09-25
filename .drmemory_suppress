@@ -1,0 +1,50 @@
+## NOTE: this file DOES NOT suppress any errors.
+## ALL commented out lines are left as notes to myself on bizare syntax quirks that I encountered.
+##
+## WARNING: writing to readonly memory
+# ignore originating in MSVC
+# text: "writing to readonly memory"
+## XXX: UNFORTUNATELY this simple rule hangs the program, puts into inf loop...
+##      This warning can not be ignored? Or I just do it wrong way?
+## XXX: does not work - hangs in inf loop!
+## REPORTED WARNING: writing to readonly memory
+#WARNING
+#name=bug (I HATE MSBuild/MSVC! false positive WARNING: writing to readonly memory)
+##wndx::algo::gen::random<>
+#*
+
+## XXX: DOES NOT WORK!
+#UNADDRESSABLE ACCESS
+##testing::internal::UnitTestImpl::CurrentOsStackTraceExceptTop
+#!testing*
+##testing::internal::GetCurrentOsStackTraceExceptTop
+#!testing*
+##testing::internal::UnitTestOptions::GTestProcessSEH
+#!testing*
+##`testing::internal::HandleSehExceptionsInMethodIfSupported<>'::`1'::filt$0
+#!*filt*
+#!testing::internal::HandleSehExceptionsInMethodIfSupported<>
+#*
+#ntdll.dll!_chkstk
+#ntdll.dll!RtlRaiseException
+#ntdll.dll!KiUserExceptionDispatcher
+#KERNEL32.dll!BaseThreadInitThunk
+
+# XXX: DOES WORK!
+#UNADDRESSABLE ACCESS
+#name=bug #123 (I HATE MSVC: UNADDRESSABLE ACCESS!)
+#*
+
+# XXX: DOES WORK! FULL
+#UNINITIALIZED READ
+#ntdll.dll!RtlCaptureContext2
+#ntdll.dll!RtlUnwindEx
+#ntdll.dll!RtlUserThreadStart
+
+# XXX: DOES WORK!
+# UNINITIALIZED READ
+# name=NOT bug #666 (I HATE MSVC: UNINITIALIZED READ!)
+##ntdll.dll!Rtl*
+##ntdll.dll!*
+##*!Rtl*
+##*!*

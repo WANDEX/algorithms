@@ -278,9 +278,9 @@ TEST_F(DLLrawTest, testRemoveAtBranches)
 {
     constexpr std::size_t nloops{ 24 };
     std::vector<int> rndm(nloops);
-    for (std::size_t sz{ 1 }; sz <= nloops; sz++) {
+    for (std::size_t sz = 1; sz < nloops; sz++) {
         rndm = gen::random<int>(sz, 0, nloops * 4);
-        ds::DLLraw<int> tmp_list{ rndm };
+        ds::DLLraw<int> tmp_list( rndm );
         ASSERT_EQ(rndm.size(), tmp_list.size());
         while (!tmp_list.empty()) {
             tmp_list.removeAt(gen::srng<std::size_t>(0, tmp_list.size() - 1));

@@ -134,7 +134,8 @@ if(WNDX_ALGO_IS_TOP_PROJECT)
     wndx_sane_memcheck(TGT_NAME memcheck
       TGT_EXEC tests_units --gtest_brief=1
       # VALGRIND_OPTS --read-var-info=yes --show-leak-kinds=definite --track-origins=yes
-      # DRMEMORY_OPTS -brief
+      # DRMEMORY_OPTS -brief -no_crash_at_error
+      DRMEMORY_OPTS -suppress "${CMAKE_CURRENT_SOURCE_DIR}/.drmemory_suppress"
       # EXIT_ON_FIRST_ERROR
       # FORCE_DRMEMORY
     )

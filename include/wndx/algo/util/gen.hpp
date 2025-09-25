@@ -8,9 +8,62 @@
 #include <unordered_set>
 #include <vector>
 
+#ifndef WNDX_MSC // MSC/WIN32 specific - enforced by the OS-env!
+#if defined(_MSC_VER) && !defined(__clang__) && !defined(__INTEL_COMPILER)
+    #define WNDX_MSC 1
+#else
+    #define WNDX_MSC 0
+#endif//defined ...
+#endif//WNDX_MSC
+
 namespace wndx::algo {
 namespace gen {
 
+/**
+ * @brief construct once a static/global std::random_device and engine.
+ * Because constructing them on every call is expensive and can degrade randomness on some platforms.
+ */
+inline std::mt19937& g_rng()
+{
+#if WNDX_MSC
+    // deterministic seeding! std::random_device => drmemory "WARNING: writing to readonly memory".
+    // because of the SH*TTY WIN random_* implementation: BCryptGenRandom, CryptGenRandom, etc.
+    constexpr int seed{ 123456 };
+    static std::mt19937 s_rng(seed);
+#else
+    static std::random_device s_rd;
+    static std::mt19937 s_rng(s_rd());
+#endif
+    return s_rng;
+}
+
+#if 0
+/**
+ * @brief simple random number generator.
+ *
+ * @param  fr - range from the number (lower bound of the distribution).
+ * @param  to - range to the number (upper bound of the distribution).
+ * @return random number in range of distribution.
+ *
+ * NOTE: construcs a new std::random_device and engine on every call
+ * => expensive and can degrade randomness on some platforms.
+ */
+template<typename T>
+inline T srng(const T fr, const T to)
+{
+#if WNDX_MSC
+    // deterministic seeding! std::random_device => drmemory error "UNADDRESSABLE ACCESS: reading".
+    // because of the SH*TTY WIN random_* implementation: BCryptGenRandom, CryptGenRandom, etc.
+    constexpr int seed{ 123456 };
+    std::default_random_engine rng(seed);
+#else
+    std::random_device rd;
+    std::default_random_engine rng(rd());
+#endif
+    std::uniform_real_distribution<double> dist(static_cast<double>(fr), static_cast<double>(to));
+    return static_cast<T>(dist(rng));
+}
+#else
 /**
  * @brief simple random number generator.
  *
@@ -21,11 +74,15 @@ namespace gen {
 template<typename T>
 inline T srng(const T fr, const T to)
 {
-    std::random_device rd;
-    std::default_random_engine rng(rd());
-    std::uniform_real_distribution<double> dist(static_cast<double>(fr), static_cast<double>(to));
-    return static_cast<T>(dist(rng));
+    if constexpr (std::is_integral_v<T>) {
+        std::uniform_int_distribution<T>  dist(fr, to);
+        return dist(g_rng());
+    } else {
+        std::uniform_real_distribution<T> dist(fr, to);
+        return dist(g_rng());
+    }
 }
+#endif
 
 /**
  * @brief @return generate random unordered_set containing n unique elements.
@@ -95,16 +152,47 @@ inline std::array<T, n> random(const T fr, const T to)
 template<typename T>
 inline std::vector<T> random(const std::size_t n, const T fr, const T to, const bool unique=false)
 {
+    // if (n == 0) return {}; // XXX
     if (unique) {
         std::unordered_set<T> uset{ gen::random_uset<T>(n, fr, to) };
         return{ uset.begin(), uset.end() };
     }
-
+#if 1
+    std::vector<T> out(n);
+#else
     std::vector<T> out;
-    out.resize(n);
-    for (std::size_t i = 0; i < n; i++)
+    out.reserve(n); // allocate space but keep size = 0
+    // out.resize(n);  // size bocomes n
+#endif
+    // std::random_device rd;
+    // std::mt19937 rng(rd());
+#if 0
+    // drmemory UNADDRESSABLE ACCESS: reading
+    std::uniform_int_distribution<T> dist(fr, to);
+    std::generate_n(out.begin(), n, [&rng, &dist]() { return dist(rng); });
+#else
+    for (std::size_t i = 0; i < n; i++) {
+    #if 1
         out.at(i) = gen::srng<T>(fr, to);
-    return out;
+        // out[i] = gen::srng<T>(fr, to);
+    #elif 1
+        out[i] = static_cast<T>(to); // XXX
+    #elif 1
+        std::uniform_int_distribution<T> dist(fr, to);
+        T val = dist(rng);
+        out[i] = val;
+    #elif 0
+        std::uniform_int_distribution<T> dist; // default ctor
+        dist.param(typename std::uniform_int_distribution<T>::param_type(fr, to));
+        out[i] = dist(rng);
+    #else
+        T val = gen::srng<T>(fr, to); // ensure a copy, not a reference | copy from read-only source
+        out[i] = val;
+    #endif
+    }
+#endif
+    return std::move(out);
+    // return out; // rely on NRVO (named return value optimization)
 }
 
 } // namespace gen
