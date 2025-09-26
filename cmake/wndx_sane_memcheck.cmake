@@ -186,14 +186,17 @@ function(wndx_sane_memcheck) ## args
     else()
       message(DEBUG "${fun} drmemory util found at PATH ${DRMEMORY_COMMAND}")
     endif()
-    if(MSVC) # https://stackoverflow.com/questions/3686837/why-are-my-custom-build-steps-not-running-in-visual-studio
-      set(call "call") # '$ call' makes the flow of control return to Visual Studio's batch file
-    else()             # and hence lets other Custom Build steps run.
-      unset(call)
-    endif()
+    unset(exports)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+      set(exports export G_SLICE=always-malloc G_DEBUG=gc-friendly &&)
+    endif() # see about: G_SLICE G_DEBUG https://drmemory.org/page_leaks.html
+    unset(call)
+    if(MSVC) # '$ call' makes the flow of control return to Visual Studio's batch file
+      set(call call) # and hence lets other Custom Build steps run.
+    endif() # https://stackoverflow.com/questions/3686837/why-are-my-custom-build-steps-not-running-in-visual-studio
     add_custom_target(${arg_TGT_NAME}
-      COMMAND ${call} ${CMAKE_COMMAND} -E make_directory "${drmemory_logs_dir}"
-      && ${call} ${DRMEMORY_COMMAND} ${arg_DRMEMORY_OPTS}
+      COMMAND ${exports} ${call} ${CMAKE_COMMAND} -E make_directory "${drmemory_logs_dir}"
+        && ${call} ${DRMEMORY_COMMAND} ${arg_DRMEMORY_OPTS}
         -- $<TARGET_FILE:${tgt_exec}> ${tgt_opts}
       ${CUSTOM_TARGET_OPTS}
     )
