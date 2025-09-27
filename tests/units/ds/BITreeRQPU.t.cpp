@@ -190,8 +190,9 @@ TEST_F(BITreeRQPUTest, testRandomizedStaticSumQueries)
 
     const int max{ static_cast<int>(LOOPS) };
 
-    for (std::size_t sz = 2; sz <= LOOPS; sz++) {
+    for (std::size_t sz = 2; sz < LOOPS; sz++) {
         rndm = gen::random<int>(sz, 0, max, true);
+        rndm.at(0) = UNUSED_VAL;
         tree = ds::BITreeRQPU(rndm);
 
         for (std::size_t j = 0; j < LOOPS / 10; j++) {
@@ -207,15 +208,16 @@ TEST_F(BITreeRQPUTest, testRandomizedSetSumQueries)
 
     const int max{ static_cast<int>(LOOPS) };
 
-    for (std::size_t sz = 2; sz <= LOOPS; sz++) {
+    for (std::size_t sz = 2; sz < LOOPS; sz++) {
         rndm = gen::random<int>(sz, 0, max, true);
+        rndm.at(0) = UNUSED_VAL;
         tree = ds::BITreeRQPU(rndm);
 
         for (std::size_t j = 0; j < LOOPS / 10; j++) {
-            const std::size_t index = gen::srng<std::size_t>(1, sz);
+            const std::size_t index = gen::srng<std::size_t>(1, sz - 1);
             const int randn = randNum();
 
-            rndm[index]  += randn;
+            rndm.at(index) += randn;
             tree.add(index, randn);
 
             doRandomRangeQuery(rndm, tree);
@@ -226,8 +228,7 @@ TEST_F(BITreeRQPUTest, testRandomizedSetSumQueries)
 TEST_F(BITreeRQPUTest, testReusability)
 {
     const std::size_t size {1000};
-    std::vector<int> v;
-    v.resize(size); // it is essential to populate vector with default values!
+    std::vector<int> v(size);
     ds::BITreeRQPU tree(size);
 
     for (std::size_t loop = 0; loop < LOOPS; loop++) {
