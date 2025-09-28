@@ -71,8 +71,8 @@ notify() {
 
 # NOTE: on win10 in MINGW64:/git-bash shell -- trailing args via -- '$*' - works; '$@' - NOT works;
 # ^ apparently in this environment - this function is still not always finds tests...
-# shellcheck disable=SC2068 # Intentional - to re-split trailing arguments.
-run_ctest() { cmake -E time ctest --build-config "$bt" --output-on-failure --test-dir "$_bdir/$tdir" $* ;} # shortcut
+# shellcheck disable=SC2048,SC2068,SC2086 # intentional - to re-split trailing arguments.
+run_ctest() { cmake -E time ctest --build-config "$bt" --output-on-failure --test-dir "$_bdir/$tdir" $* ;}
 
 sep="=============================================================================="
 vsep() { printf "\n%b%.78s%b\n\n" "${2}" "[${1}]${sep}" "${END}" ;}
