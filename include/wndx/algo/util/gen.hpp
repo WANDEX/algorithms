@@ -1,8 +1,9 @@
 #pragma once
 
 #include <array>
-#include <cmath>                // std::abs
+#include <cmath>                // std::abs, std::fabs
 #include <cstddef>              // std::size_t
+#include <cstdint>
 #include <random>
 #include <stdexcept>            // std::invalid_argument
 #include <unordered_set>
@@ -17,12 +18,11 @@
 #endif//WNDX_MSC
 
 #ifndef WNDX_ALGO_FIXED_SEED
-#define WNDX_ALGO_FIXED_SEED 0
+#define WNDX_ALGO_FIXED_SEED 1
 #endif//WNDX_ALGO_FIXED_SEED
 
 #if WNDX_MSC && !WNDX_ALGO_FIXED_SEED
 #include <chrono>
-#include <cstdint>              // std::uint64_t
 #endif//WNDX_MSC
 
 namespace wndx::algo {
@@ -38,10 +38,15 @@ inline std::mt19937& g_rng()
     // deterministic seeding! std::random_device => drmemory "WARNING: writing to readonly memory".
     // because of the SH*TTY WIN random_* implementation: BCryptGenRandom, CryptGenRandom, etc.
   #if WNDX_ALGO_FIXED_SEED
-    constexpr std::size_t seed{ 9876543210 }; // fixed seed (value chosen arbitrarily)
+    // constexpr std::size_t seed{ 9876543210 }; // fixed seed (value chosen arbitrarily)
+    // constexpr std::uint64_t seed{ 9876543210 }; // fixed seed (value chosen arbitrarily)
+    constexpr auto seed{ static_cast<std::uint32_t>(9876543210) }; // fixed seed (value chosen arbitrarily)
   #else
     static const auto now{ std::chrono::steady_clock::now().time_since_epoch() };
-    static const std::uint64_t seed{ static_cast<std::uint64_t>(
+    // static const std::uint64_t seed{ static_cast<std::uint64_t>(
+        // std::chrono::duration_cast<std::chrono::seconds>(now).count()
+    // )};
+    static const auto seed{ static_cast<std::uint32_t>(
         std::chrono::duration_cast<std::chrono::seconds>(now).count()
     )};
   #endif//WNDX_ALGO_FIXED_SEED
@@ -63,12 +68,39 @@ inline std::mt19937& g_rng()
 template<typename T>
 inline T srng(const T fr, const T to)
 {
-    if constexpr (std::is_integral_v<T>) {
-        std::uniform_int_distribution<T>  dist(fr, to);
-        return dist(g_rng());
-    } else {
+    // NOTE: static_cast is essential, otherwise - ambiguous call to overloaded function.
+    if constexpr (std::is_floating_point_v<T>) {
         std::uniform_real_distribution<T> dist(fr, to);
-        return dist(g_rng());
+        return static_cast<T>(dist(g_rng()));
+    } else if constexpr (std::is_integral_v<T> && sizeof(T) == 1) {
+        std::uniform_int_distribution<int16_t> dist(fr, to); // smallest supported type
+        // std::uniform_int_distribution<uint16_t> dist(fr, to); // smallest supported type
+        // const T val{ dist(g_rng()) & 0xFF }; // width bitmask: int8_t, uint8_t and less
+        // return val; // return as a copy of T type
+        return static_cast<T>(dist(g_rng()) & 0xFF); // width bitmask: int8_t, uint8_t and less
+    } else if constexpr (std::is_integral_v<T>) {
+        std::uniform_int_distribution<T>  dist(fr, to);
+        return static_cast<T>(dist(g_rng()));
+    } else {
+        return 0; // => not supported type
+    }
+}
+
+template<typename T>
+constexpr inline std::size_t calc_nums_in_range(const T fr, const T to)
+{
+    if constexpr (std::is_floating_point_v<T>) {
+        constexpr std::size_t mul{ 1'000'000'000 }; // value chosen arbitrarily
+        return static_cast<std::size_t>(std::fabs(fr - to) * mul);
+    } else if constexpr (std::is_integral_v<T> && sizeof(T) == 1) {
+        return static_cast<std::size_t>(std::abs(fr - to) & 0xFF); // width bitmask: int8_t, uint8_t and less
+        // const std::size_t val{ std::abs(fr - to) & 0xFF }; // width bitmask: int8_t, uint8_t and less
+        // return val; // return as a copy
+    } else if constexpr (std::is_integral_v<T>) { // TODO: why it works differently?
+        return std::abs(static_cast<std::int64_t>(fr) - static_cast<std::int64_t>(to)); // XXX: this works!
+        // return static_cast<std::size_t>(std::abs(fr - to)); // XXX: this gives error...
+    } else {
+        return 0; // => not supported type
     }
 }
 
@@ -83,8 +115,7 @@ template<typename T>
 inline std::unordered_set<T> random_uset(const std::size_t n, const T fr, const T to)
 {
     std::unordered_set<T> uset(n);
-    // TODO: different check/formula (for double/float T the real range is bigger)
-    const std::size_t nums_in_range{ static_cast<size_t>(std::abs(to) + std::abs(fr)) };
+    const std::size_t nums_in_range{ calc_nums_in_range<T>(fr, to) };
     // if n > fr..to range of possible unique elements => impossible (insufficient_range)
     // => Not enough unique elements in range fr..to
     if (n > nums_in_range)
