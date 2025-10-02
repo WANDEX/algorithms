@@ -13,7 +13,7 @@ using namespace wndx::algo;
 class genTest : public ::testing::Test
 {
 protected:
-    static const std::size_t LOOPS{ 5 };
+    const std::size_t LOOPS{ 5 };
     const std::string range_err{ "Insufficient range" };
 
     void SetUp()
@@ -22,7 +22,6 @@ protected:
     template<typename T>
     void make_rndm_uset(const std::size_t n, const T fr, const T to) const
     {
-        // std::unordered_set<T> ruset{ gen::random_uset<T>(n, static_cast<T>(0), static_cast<T>(n)) };
         std::unordered_set<T> ruset{ gen::random_uset<T>(n, fr, to) };
         ASSERT_EQ(ruset.size(), n);
     }
@@ -31,7 +30,6 @@ protected:
     void make_rndm_uset_test() const
     {
         for (std::size_t n = 0; n < LOOPS; n++) {
-            // make_rndm_uset<T>(n, 0, n);
             make_rndm_uset<T>(n, static_cast<T>(0), static_cast<T>(n));
         }
     }
@@ -70,9 +68,9 @@ TEST_F(genTest, random_uset_unsigned)
 {
     make_rndm_uset_test<std::uint8_t>();
     make_rndm_uset_test<std::uint16_t>();
-    make_rndm_uset_test<std::uint32_t>(); // FIXME
-    make_rndm_uset_test<std::uint64_t>(); // FIXME
-    make_rndm_uset_test<std::size_t>(); // FIXME
+    make_rndm_uset_test<std::uint32_t>();
+    make_rndm_uset_test<std::uint64_t>();
+    make_rndm_uset_test<std::size_t>();
 }
 #endif
 

@@ -74,12 +74,9 @@ inline T srng(const T fr, const T to)
         return static_cast<T>(dist(g_rng()));
     } else if constexpr (std::is_integral_v<T> && sizeof(T) == 1) {
         std::uniform_int_distribution<int16_t> dist(fr, to); // smallest supported type
-        // std::uniform_int_distribution<uint16_t> dist(fr, to); // smallest supported type
-        // const T val{ dist(g_rng()) & 0xFF }; // width bitmask: int8_t, uint8_t and less
-        // return val; // return as a copy of T type
-        return static_cast<T>(dist(g_rng()) & 0xFF); // width bitmask: int8_t, uint8_t and less
+        return static_cast<T>(dist(g_rng()) & 0xFF); // width bitmask: int8_t, uint8_t
     } else if constexpr (std::is_integral_v<T>) {
-        std::uniform_int_distribution<T>  dist(fr, to);
+        std::uniform_int_distribution<T> dist(fr, to);
         return static_cast<T>(dist(g_rng()));
     } else {
         return 0; // => not supported type
@@ -93,12 +90,13 @@ constexpr inline std::size_t calc_nums_in_range(const T fr, const T to)
         constexpr std::size_t mul{ 1'000'000'000 }; // value chosen arbitrarily
         return static_cast<std::size_t>(std::fabs(fr - to) * mul);
     } else if constexpr (std::is_integral_v<T> && sizeof(T) == 1) {
-        return static_cast<std::size_t>(std::abs(fr - to) & 0xFF); // width bitmask: int8_t, uint8_t and less
-        // const std::size_t val{ std::abs(fr - to) & 0xFF }; // width bitmask: int8_t, uint8_t and less
-        // return val; // return as a copy
-    } else if constexpr (std::is_integral_v<T>) { // TODO: why it works differently?
-        return std::abs(static_cast<std::int64_t>(fr) - static_cast<std::int64_t>(to)); // XXX: this works!
-        // return static_cast<std::size_t>(std::abs(fr - to)); // XXX: this gives error...
+        return static_cast<std::size_t>(std::abs(
+            static_cast<std::int16_t>(fr) - static_cast<std::int16_t>(to)
+        ) & 0xFF); // width bitmask: int8_t, uint8_t
+    } else if constexpr (std::is_integral_v<T>) {
+        return static_cast<std::size_t>(std::abs(
+            static_cast<std::int64_t>(fr) - static_cast<std::int64_t>(to)
+        )); // cast all unsigned std::abs args to the bigger signed integrals!
     } else {
         return 0; // => not supported type
     }
