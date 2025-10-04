@@ -1,5 +1,5 @@
-## NOTE: this file DOES NOT suppress any errors.
-## ALL commented out lines are left as notes to myself on bizare syntax quirks that I encountered.
+## NOTE: ALL commented out lines are left as notes to myself on bizare syntax quirks that I encountered.
+## Uncommented lines with suppressions enabled should be placed at the end of the file for ease of reading!
 ##
 ## WARNING: writing to readonly memory
 # ignore originating in MSVC
@@ -48,3 +48,9 @@
 ##ntdll.dll!*
 ##*!Rtl*
 ##*!*
+
+
+## Dr. Memory + MSVC structured-exception unwinding interaction
+UNINITIALIZED READ
+name=bug (I HATE MSBuild/MSVC! false positive caused by exception-unwinding and gtest/CRT interaction)
+ntdll.dll!RtlCaptureContext2
