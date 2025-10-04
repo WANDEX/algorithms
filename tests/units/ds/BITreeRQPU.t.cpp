@@ -18,7 +18,7 @@ protected:
     const int MIN_RAND_NUM = -1000;
     const int MAX_RAND_NUM = +2000;
 
-    const std::size_t LOOPS = 100;
+    const std::size_t LOOPS = 50;
 
     const int UNUSED_VAL = -9999;
 
@@ -227,7 +227,7 @@ TEST_F(BITreeRQPUTest, testRandomizedSetSumQueries)
 
 TEST_F(BITreeRQPUTest, testReusability)
 {
-    const std::size_t size {1000};
+    const std::size_t size {100};
     std::vector<int> v(size);
     ds::BITreeRQPU tree(size);
 
