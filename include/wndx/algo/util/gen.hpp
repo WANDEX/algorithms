@@ -18,7 +18,7 @@
 #endif//WNDX_MSC
 
 #ifndef WNDX_ALGO_FIXED_SEED
-#define WNDX_ALGO_FIXED_SEED 1
+#define WNDX_ALGO_FIXED_SEED 0
 #endif//WNDX_ALGO_FIXED_SEED
 
 #if WNDX_MSC && !WNDX_ALGO_FIXED_SEED
@@ -37,15 +37,10 @@ inline std::mt19937& g_rng()
 #if WNDX_MSC || WNDX_ALGO_FIXED_SEED
     // deterministic seeding! std::random_device => drmemory "WARNING: writing to readonly memory".
     // because of the SH*TTY WIN random_* implementation: BCryptGenRandom, CryptGenRandom, etc.
-  #if WNDX_ALGO_FIXED_SEED
-    // constexpr std::size_t seed{ 9876543210 }; // fixed seed (value chosen arbitrarily)
-    // constexpr std::uint64_t seed{ 9876543210 }; // fixed seed (value chosen arbitrarily)
-    constexpr auto seed{ static_cast<std::uint32_t>(9876543210) }; // fixed seed (value chosen arbitrarily)
+  #if WNDX_ALGO_FIXED_SEED // fixed seed (value chosen arbitrarily)
+    constexpr auto seed{ static_cast<std::uint32_t>(9876543210) };
   #else
-    static const auto now{ std::chrono::steady_clock::now().time_since_epoch() };
-    // static const std::uint64_t seed{ static_cast<std::uint64_t>(
-        // std::chrono::duration_cast<std::chrono::seconds>(now).count()
-    // )};
+    static const auto  now{ std::chrono::steady_clock::now().time_since_epoch() };
     static const auto seed{ static_cast<std::uint32_t>(
         std::chrono::duration_cast<std::chrono::seconds>(now).count()
     )};
