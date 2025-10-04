@@ -73,8 +73,6 @@ function(wndx_sane_memcheck) ## args
   )
   set(fun "wndx_sane_memcheck()")
 
-  message(WARNING "wndx_algo: ${fun} !!!") # XXX
-
   ## use default value if not explicitly provided
   if(NOT arg_WORKING_DIRECTORY OR arg_KEYWORDS_MISSING_VALUES MATCHES ".*WORKING_DIRECTORY.*")
     list(REMOVE_ITEM arg_KEYWORDS_MISSING_VALUES "WORKING_DIRECTORY")
@@ -111,6 +109,12 @@ function(wndx_sane_memcheck) ## args
   endif()
   if(NOT arg_TGT_EXEC MATCHES "^.+$")
     message(FATAL_ERROR "${fun} TGT_EXEC not provided!")
+  endif()
+
+  ## use default drmemory_suppress file located in the project root dir if file is readable.
+  cmake_path(SET drmemory_suppress NORMALIZE "${PROJECT_SOURCE_DIR}/.drmemory_suppress")
+  if(IS_READABLE "${drmemory_suppress}")
+    list(PREPEND arg_DRMEMORY_OPTS -suppress "${drmemory_suppress}")
   endif()
 
   cmake_path(SET drmemory_logs_dir NORMALIZE "${arg_WORKING_DIRECTORY}/logs/drmemory")
