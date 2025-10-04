@@ -11,15 +11,15 @@ defaults:
 on:
   workflow_dispatch:
   push:
-    # branches: [ "master" ]
     paths-ignore:
       - '.*'
+      - '!.drmemory_suppress'
       - 'scripts/**'
       - 'README*'
   pull_request:
-    # branches: [ "master" ]
     paths-ignore:
       - '.*'
+      - '!.drmemory_suppress'
       - 'scripts/**'
       - 'README*'
 
@@ -31,59 +31,72 @@ env:
 jobs:
   multi-build-test-deploy:
     continue-on-error: false
+    runs-on : ${{ matrix.pl }}
     strategy:
       fail-fast: false
       matrix:
-        gen: [Ninja] ## default generator
-        # cc : [gcc, clang] ## compilers
-        # bt : [Release, Debug] ## build type
-        # pl : [ubuntu-latest, macos-latest] ## platform
-        # exclude:
-        #   - pl : windows-latest
-        #     cc : gcc
-        #   - pl : windows-latest
-        #     cc : clang
+        bt : [Debug, Release] ## build type
+        bp :
+          - "lnx_gcc"
+          - "lnx_clang"
+          - "mac_gcc"
+          - "mac_clang"
+          - "mac_Xcode"
+          - "win11_clang"
+          - "win11_cl"
+          - "win10_cl"
         include:
           - name: "ubuntu gcc"
+            bp : "lnx_gcc"
             pl : ubuntu-latest
             cc : gcc
             cxx: g++
-            bp : "lnx_gcc"
-            bt : Debug # XXX
-          # - name: "ubuntu clang"
-          #   pl : ubuntu-latest
-          #   cc : clang
-          #   cxx: clang++
-          #   bp : "lnx_clang"
-          # - name: "macOS gcc"
-          #   pl : macos-latest
-          #   cc : gcc
-          #   cxx: g++
-          #   bp : "mac_gcc"
+            gen: "Ninja"
+          - name: "ubuntu clang"
+            bp : "lnx_clang"
+            pl : ubuntu-latest
+            cc : clang
+            cxx: clang++
+            gen: "Ninja"
+          - name: "macOS gcc"
+            bp : "mac_gcc"
+            pl : macos-latest
+            cc : gcc
+            cxx: g++
+            gen: "Ninja"
           - name: "macOS clang"
+            bp : "mac_clang"
             pl : macos-latest
             cc : clang
             cxx: clang++
-            bp : "mac_clang"
-            bt : Debug # XXX
+            gen: "Ninja"
           - name: "macOS Xcode"
+            bp : "mac_Xcode"
             pl : macos-latest
             cc : cc
             cxx: c++
-            bp : "mac_Xcode"
             gen: "Xcode"
-            bt : Debug
-          - name: "windows MSVC"
-            pl : windows-2022 # drmemory currently not works on windows-2025 - Dr. Memory internal crash at PC.
+          - name: "win11 clang"
+            bp : "win11_clang"
+            pl : windows-latest
+            cc : clang
+            cxx: clang++
+            gen: "Ninja"
+          - name: "win11 MSVC"
+            bp : "win11_cl"
+            pl : windows-latest
             cc : cl
             cxx: cl
-            bp : "win_cl"
             gen: "Visual Studio 17 2022"
-            bt : Debug
+          - name: "win10 MSVC"
+            bp : "win10_cl"
+            pl : windows-2022
+            cc : cl
+            cxx: cl
+            gen: "Visual Studio 17 2022"
         ## END include
       ## END matrix
     ## END strategy
-    runs-on: ${{ matrix.pl }}
 
     name: "${{ matrix.bp }}_${{ matrix.bt }} | CC=${{ matrix.cc }} CXX=${{ matrix.cxx }} | ${{ matrix.pl }}"
     steps:
@@ -169,7 +182,7 @@ jobs:
 
       ## https://github.com/marketplace/actions/install-winget
     - name: get/install winget
-      if  : ${{ runner.os == 'Windows' }}
+      if  : ${{ runner.os == 'Windows' && matrix.pl == 'windows-2022' }}
       uses: Cyberboss/install-winget@v1
 
     - name: get/install WingetPathUpdater
@@ -254,7 +267,9 @@ jobs:
       working-directory: ${{ steps.str2.outputs.dir_path_build }}
       run: ctest --build-config ${{ matrix.bt }} --output-on-failure
 
+      ## drmemory currently not works on windows-latest/windows-2025 => Dr. Memory internal crash at PC 0x*.
     - name: Memcheck
+      if  : ${{ matrix.bt == 'Debug' && matrix.pl != 'windows-latest' }}
       working-directory: ${{ steps.str2.outputs.dir_path_build }}
       run : cmake --build . --config ${{ matrix.bt }} --target memcheck
 
