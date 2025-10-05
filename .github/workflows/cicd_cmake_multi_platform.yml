@@ -112,10 +112,11 @@ jobs:
       id   : str1
       shell: bash
       run  : |
+        echo "date=$(date +%y-%m-%d)" >> "$GITHUB_OUTPUT"
         echo "date_time=$(date +%y-%m-%d_%H-%M-%S)" >> "$GITHUB_OUTPUT"
-        echo "dir_path_prj=${{ github.workspace }}" >> "$GITHUB_OUTPUT" # full path
+        echo "dir_path_prj=${{ github.workspace }}" >> "$GITHUB_OUTPUT"
         echo "dir_name_build=build_${{ env.PRJ_NAME }}_${{ matrix.bp }}_${{ matrix.bt }}" >> "$GITHUB_OUTPUT"
-        echo "dir_cache_local=${{ github.workspace }}/.local" >> "$GITHUB_OUTPUT" # full path
+        echo "dir_cache_local=${{ github.workspace }}/.local" >> "$GITHUB_OUTPUT"
     - name: set reusable str2
       id   : str2
       shell: bash
@@ -150,6 +151,8 @@ jobs:
         cmake -E make_directory "${{ steps.str1.outputs.dir_cache_local }}/bin"
         cmake -E make_directory "${{ steps.str1.outputs.dir_cache_local }}/lib"
         echo "${{ steps.str1.outputs.dir_cache_local }}/bin" >> "$GITHUB_PATH"
+        cmake -E touch "${{ steps.str1.outputs.dir_cache_local }}/.DS_Store"
+      ## ^ create empty file .DS_Store to make sure that step "Post cache local" will work!
 
     - name: ENV List All bef
       working-directory: ${{ steps.str3.outputs.dir_path_env }}
@@ -173,12 +176,14 @@ jobs:
     - name: ninja --version
       run : ninja --version
 
+      ## XXX: not sure that the cache works properly...
     - name: cache local
       id  : cache_local
       uses: actions/cache@v4
       with:
-        path: "${{ steps.str1.outputs.dir_cache_local }}"
-        key : ${{ runner.os }}-${{ hashFiles('.local/bin/*', '.local/lib/*') }}
+        path: |
+          ${{ steps.str1.outputs.dir_cache_local }}
+        key : ${{ runner.os }}-local-${{ steps.str1.outputs.date }}
 
       ## https://github.com/marketplace/actions/install-winget
     - name: get/install winget
@@ -214,12 +219,24 @@ jobs:
     #     cmake -E tar -xzf $DRMEMORY.zip
     #     cmake -E copy_directory $DRMEMORY "${{ steps.str1.outputs.dir_cache_local }}"
 
+    ## install libc6-dbg and/or use previously installed files from cache.
+    ## LD_LIBRARY_PATH cannot be set in github workflow, thus manual copy to the system lib dir.
     - name: get/install valgrind deps
-      if  : ${{ runner.os == 'Linux' && steps.cache_local.outputs.cache-hit != 'true' }}
+      if  : ${{ runner.os == 'Linux' }}
       working-directory: ${{ github.workspace }}
       run : |
-        sudo apt-get install libc6-dbg
-        sudo cp -r /usr/lib/debug "${{ steps.str1.outputs.dir_cache_local }}/lib/debug"
+        lib_debug_usr="/usr/lib/debug"
+        lib_debug_lcl="${{ steps.str1.outputs.dir_cache_local }}/lib/debug"
+        if [ ! -d "$lib_debug_usr" ] && [ ! -d "$lib_debug_lcl" ]; then
+          sudo apt-get install libc6-dbg
+        fi
+        if [   -d "$lib_debug_usr" ] && [ ! -d "$lib_debug_lcl" ]; then
+          echo "> copy   to the local cache"
+          sudo cp -r "$lib_debug_usr" "$lib_debug_lcl"
+        else
+          echo "> copy from the local cache"
+          sudo cp -r "$lib_debug_lcl" "$lib_debug_usr"
+        fi
 
     - name: get/install valgrind
       if  : ${{ runner.os == 'Linux' && steps.cache_local.outputs.cache-hit != 'true' }}
