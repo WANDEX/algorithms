@@ -1,4 +1,3 @@
-# cmake_minimum_required(VERSION 3.26..4.1)
 cmake_minimum_required(VERSION 3.29..4.1) ## XXX: 3.26.0-msvc3
 # cmake_minimum_required(VERSION 3.29) # Compatibility with CMake < 3.5 has been removed from CMake.
 
@@ -108,7 +107,6 @@ if(WNDX_ALGO_IS_TOP_PROJECT)
     include(wndx_sane_coverage)
     wndx_sane_coverage(TGT_NAME code_coverage
       CLEAN WNDX_ALGO_COVERAGE_CLEAN
-      RMGLOB *.gcda # *.gcno
     )
   endif(WNDX_ALGO_COVERAGE_ENABLE)
 
