@@ -1,7 +1,7 @@
 ![coverage ](https://img.shields.io/badge/coverage:-gray)
-![lines    ](https://img.shields.io/badge/L-92%25-green)
-![functions](https://img.shields.io/badge/F-98%25-brightgreen)
-![branches ](https://img.shields.io/badge/B-90%25-green)
+![lines    ](https://img.shields.io/badge/L-99%25-brightgreen)
+![functions](https://img.shields.io/badge/F-99%25-brightgreen)
+![branches ](https://img.shields.io/badge/B-94%25-green)
 ![license..](https://img.shields.io/github/license/WANDEX/algorithms?color=black)
 [![CI/CD cmake-multi-platform][cicd_cmake_mp_bdg]][cicd_cmake_mp_url]
 
