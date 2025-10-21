@@ -99,10 +99,24 @@ check_prerequisites() {
 }
 
 get_prj_name() {
-  if at_path rg; then
-    _prj_name=$(rg -Ue '\bproject\([\s]*[\n]*\b(\w+)\b' --trim -or '$1' ./CMakeLists.txt)
-  else
+  fn_re='\bproject\b' # function name regex
+  pn_re='\b(\w+)\b' # project name regex group
+  ws_ol='\s*?' # optional=*, lazy=?, \s=ws including '\n' etc.
+  beg_re="${ws_ol}${fn_re}${ws_ol}\(?"
+  end_re="${ws_ol}${pn_re}.*?\)?"
+  rg_re="${beg_re}${end_re}"
+  ## no comments - remove comments & delete empty lines with/without spaces
+  no_co=$(sed "s/[[:space:]]*#.*$//g; /^[[:space:]]*$/d" ./CMakeLists.txt)
+  if   at_path  rg; then
+    # _span=$(echo "$no_co" | rg -U -or '$0' --trim "$rg_re")
+    _prj_name=$(echo "$no_co" | rg -U -or '$1' --trim "$rg_re")
+  elif at_path sed; then
+    _span=$(echo "$no_co" | sed -E -n "/${beg_re}/,/\)? /p; s/^[[:blank:]]*//g") # blank = 'rg --trim'
+    _prj_name=$(echo "$_span" | sed -E -e "s/${fn_re}\(//g;  /^[[:space:]]*$/d; s/\)//g")
+  elif at_path git; then # not robust - clone dir != project name
     _prj_name=$(basename "$(git rev-parse --show-toplevel)")
+  else
+    exit 67
   fi
   printf "%s" "$_prj_name"
 }
@@ -296,7 +310,6 @@ get_opt() {
 check_prerequisites
 get_opt "$@"
 pre_configure
-
 
 vsep "CONFIGURE" "${BLU}"
 # shellcheck disable=SC2086 # intentional - re-split OPTIONS CONFIGURE
