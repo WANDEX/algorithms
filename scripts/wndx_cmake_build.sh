@@ -235,9 +235,10 @@ get_opt() {
   LONG=clean,cleaner,get_build_dir,get_project_name,get_project_name_upper,help
   OPTIONS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
   ## PLACE FOR OPTION DEFAULTS BEG
-  TESTS_DIR="${TESTS_DIR:-tests/units}"
   BUILD_TYPE="${BUILD_TYPE:-Debug}"
   GENERATOR="${GENERATOR:-Ninja}" # "MSYS Makefiles", "Unix Makefiles", "Ninja Multi-Config", Ninja
+  TESTS_DIR="${TESTS_DIR:-tests/units}"
+  MEMCHECK="${MEMCHECK:-0}"
   VERBOSE="${VERBOSE:-0}"
   DEPLOY="${DEPLOY:-0}"
   REL="${REL:-0}"
@@ -361,6 +362,11 @@ if [ "$RUN_TESTS" = 1 ]; then
     "$gtest_binary" --gtests_filter="$TESTS_FILTER"
   ;;
   esac
+fi
+
+if [ "$MEMCHECK" = 1 ]; then
+  vsep "MEMCHECK" "${YEL}"
+  "$CMAKE" --build "$_bdir" --config "${BUILD_TYPE}" --target memcheck
 fi
 
 if [ "$DEPLOY" = 1 ]; then
