@@ -1,6 +1,6 @@
 #!/bin/sh
 ## AUTHOR : github.com/WANDEX
-## LICENCE: MIT
+## LICENSE: MIT
 ##
 ## wndx cmake build script & optionally run tests. (POSIX sh compliant)
 ##
@@ -33,9 +33,9 @@ bname=$(basename "$0")
 USAGE="\
 Usage: $bname [OPTION...]
 OPTIONS
-    --get-build-dir           print build dir
-    --get-project-name        print project name parsed from CMakeLists.txt
-    --get-project-name-upper  print project name in uppercase
+    --get_build_dir           print build dir
+    --get_project_name        print project name parsed from CMakeLists.txt
+    --get_project_name_upper  print project name in uppercase
     -h, --help                print help
 POSITIONAL
     c , clean  , --clean
@@ -59,7 +59,6 @@ EXAMPLES
 ./scripts/$bname gtest *wildcard*
 # ======
 export CC=cl CXX=cl VERBOSE=1 DEPLOY=1 BUILD_TYPE=Debug GENERATOR='Visual Studio 17 2022'
-export BUILD_TESTS=WNDX_ALGO_BUILD_TESTS
 ./scripts/$bname c ct
 "
 
@@ -167,9 +166,9 @@ pre_configure() {
   fi
   ## cleaner is a heavy artillery - for edge cases!
   if [ "$CLEANER" = 1 ]; then
-    [ -d "$BUILD_DIR" ] &&   rm -rf "$BUILD_DIR"
-    [ -d "$BUILD_DIR" ] || mkdir -p "$BUILD_DIR"
+    [ -d "$BUILD_DIR" ] && rm -rf "$BUILD_DIR"
   fi
+  [ -d "$BUILD_DIR" ] || mkdir -p "$BUILD_DIR"
   ## source and build dirs provided as the relative paths
   _sdir="."
   _bdir="$BUILD_DIR"
@@ -188,9 +187,12 @@ trailing_args() {
   argn=0
   set -o noglob # disable (wildcard expansion)
   IFS=" " # split arguments by space
+  _dbg_trailing_args=0 # debug
   for arg in $targv; do
     argn=$((argn+1))
-    true && printf "\ntargc=%d targv='%s' argv[%d]='%s'\n" "$targc" "$targv" "$argn" "$arg" # debug
+    if [ $_dbg_trailing_args = 1 ]; then
+      printe "\ntargc=%d targv='%s' argv[%d]='%s'\n" "$targc" "$targv" "$argn" "$arg"
+    fi
     if [ -n "$arg_type" ]; then # => filter pattern: ctest regex or gtest wildcard
       TESTS_FILTER="$arg"
       arg_type="" # set tmp var type - back to empty
@@ -222,16 +224,15 @@ trailing_args() {
   done
   set +o noglob # restore - enable (wildcard expansion)
   IFS="$OLDIFS" # restore
-  if true; then # debug
+  if [ $_dbg_trailing_args = 1 ]; then
     printe "CLEAN=$CLEAN CLEANER=$CLEANER RUN_TESTS_TYPE=$RUN_TESTS_TYPE TESTS_FILTER=$TESTS_FILTER"
-    exit 33
   fi
 }
 
 get_opt() {
   ## Parse and read OPTIONS command-line options
   SHORT=h
-  LONG=clean,cleaner,get-build-dir,get-project-name,get-project-name-upper,help
+  LONG=clean,cleaner,get_build_dir,get_project_name,get_project_name_upper,help
   OPTIONS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
   ## PLACE FOR OPTION DEFAULTS BEG
   TESTS_DIR="${TESTS_DIR:-tests/units}"
@@ -252,25 +253,31 @@ get_opt() {
   cmbn=$(basename "$_compiler") # get compiler basename in case declared via full path
   gen_dir_name=$(echo "$GENERATOR" | sed "s/[ |-]/_/g" | tr "[:upper:]" "[:lower:]")
   arch=$(uname -m)
-  BUILD_DIR="build/${gen_dir_name}_${arch}/dev_${cmbn}_${BUILD_TYPE}" # XXX: old
-  # TODO: do not append BUILD_TYPE if Multi-Config Generator is used
-  # BUILD_DIR="build/${gen_dir_name}_${arch}/${cmbn}_${BUILD_TYPE}"
-  [ -d "$BUILD_DIR" ] || mkdir -p "$BUILD_DIR"
+  BUILD_DIR="build/${gen_dir_name}/${arch}-${cmbn}"
+  case "$GENERATOR" in # v Multi-Config Generator
+  *"Multi-Config"*|"Xcode"|"Visual Studio"*|"Green Hills MULTI") ;;
+  *) BUILD_DIR="${BUILD_DIR}-${BUILD_TYPE}" ;; # else append build type
+  esac
+  BUILD_DIR=$(echo "$BUILD_DIR" | tr "[:upper:]" "[:lower:]") # force lowercase build dir path
   ##
   PRJ_NAME=$(get_prj_name)
   PRJ_NAME_UPPER=$(echo "$PRJ_NAME" | tr "[:lower:]" "[:upper:]")
   PRJ_BUILD_TESTS="${BUILD_TESTS:-${PRJ_NAME_UPPER}_BUILD_TESTS}"
   PRJ_MEMCHECK_EN="${MEMCHECK:-${PRJ_NAME_UPPER}_MEMCHECK_ENABLE}"
+  ##
   COPTS=\
 "-D CMAKE_BUILD_TYPE=$BUILD_TYPE
- -D $PRJ_BUILD_TESTS=$RUN_TESTS
+ -D $PRJ_BUILD_TESTS=ON
  -D $PRJ_MEMCHECK_EN=ON
+ -D CMAKE_C_COMPILER=$CC
+ -D CMAKE_CXX_COMPILER=$CXX
  $COPTS
 " ## <- default cmake configure options
   BOPTS=\
 "$BOPTS
 " ## <- default cmake build options
   ## PLACE FOR OPTION DEFAULTS END
+  _dbg=0 # debug
   eval set -- "$OPTIONS"
   while true; do
     case "$1" in
@@ -280,15 +287,15 @@ get_opt() {
     --cleaner)
       CLEANER=1
     ;;
-    --get-build-dir)
+    --get_build_dir)
       printf "%s" "$BUILD_DIR"
       exit 0
     ;;
-    --get-project-name)
+    --get_project_name)
       printf "%s" "$PRJ_NAME"
       exit 0
     ;;
-    --get-project-name-upper)
+    --get_project_name_upper)
       printf "%s" "$PRJ_NAME_UPPER"
       exit 0
     ;;
@@ -304,6 +311,14 @@ get_opt() {
     esac
     shift
   done
+  ## join string using only single space delimeter
+  COPTS=$(echo "$COPTS" | tr -s '[:space:]' ' ')
+  BOPTS=$(echo "$BOPTS" | tr -s '[:space:]' ' ')
+  if [ $_dbg = 1 ]; then
+    printe "COPTS: ${COPTS}"
+    printe "BOPTS: ${BOPTS}"
+    exit 33
+  fi
 }
 
 ## MAIN
