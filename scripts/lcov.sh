@@ -10,18 +10,17 @@ if ! at_path lcov; then
   exit 9
 fi
 
-## TODO: ideally build dir lookup must be done without hardcoded build dir path!
-bdir="./build/this-was-unexpected/"
+bdir=$(./scripts/wndx_cmake_build.sh --get_build_dir)
+if [ ! -d "$bdir" ]; then
+  printf "%s\n%s\n" "build dir does not exist:" "$bdir"
+  exit 11
+fi
 case "$CC" in
-  *gcc) bdir=$(realpath "./build/ninja_x86_64/dev_gcc_Debug") ;;
+  *gcc|*clang) # bypass
+  ;;
   *)
-    if [ ! -d "$bdir" ]; then
-      printf "%s\n%s\n" "hardcoded build dir does not exist:" "$bdir"
-      exit 10
-    else
-      echo "only GCC compiler is supported by gcov which is lcov backend! Exit."
-      exit 11
-    fi
+    echo "only gcc & clang compiler supported by lcov! EXIT."
+    exit 10
   ;;
 esac
 
