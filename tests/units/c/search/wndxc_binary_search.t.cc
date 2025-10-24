@@ -4,6 +4,7 @@
 
 #include <stddef.h>             // size_t
 
+#ifndef NDEBUG // Release build -> assertions are disabled => disable test, will fail otherwise.
 TEST(wndxc_binary_search_DeathTest, ZeroSizeArrayDEATH)
 {
     const int array[1] = {1};
@@ -14,6 +15,7 @@ TEST(wndxc_binary_search_DeathTest, ZeroSizeArrayDEATH)
     ASSERT_DEATH(wndxc_binary_search(array, 0, 0), "n != 0");
     ASSERT_DEATH(wndxc_binary_search(array, 0, 1), "n != 0");
 }
+#endif//NDEBUG
 
 TEST(wndxc_binary_search, simple)
 {
