@@ -19,20 +19,22 @@ at_path() { hash "$1" >/dev/null 2>&1 ;} # if $1 is found at $PATH -> return 0
 
 if ! at_path grcov; then
   echo "grcov not found at PATH! Exit."
-  exit 1
+  exit 13
 fi
 
-bdir="./build/this-was-unexpected/"
-case "$CC" in
-  *clang) bdir=$(realpath "./build/dev-Debug-clang/") ;;
-  *gcc)   bdir=$(realpath "./build/dev-Debug-gcc/")   ;;
-  *) echo "Compiler is not supported by grcov, exit." && exit 10 ;;
-esac
-
+bdir=$(./scripts/wndx_cmake_build.sh --get_build_dir)
 if [ ! -d "$bdir" ]; then
-  printf "%s\n%s\n" "hardcoded build dir does not exist:" "$bdir"
+  printf "%s\n%s\n" "build dir does not exist:" "$bdir"
   exit 11
 fi
+case "$CC" in
+  *gcc|*clang) # bypass
+  ;;
+  *)
+    echo "compiler is not supported by grcov! EXIT."
+    exit 10
+  ;;
+esac
 
 incl_dir=$(realpath "./include")
 grcov_dir=$(realpath "./.coverage/grcov")
