@@ -33,6 +33,7 @@ bname=$(basename "$0")
 USAGE="\
 Usage: $bname [OPTION...]
 OPTIONS
+    -D <var>[:<type>]=<value> create or update a cmake cache entry
     --get_build_dir           print build dir
     --get_project_name        print project name parsed from CMakeLists.txt
     --get_project_name_upper  print project name in uppercase
@@ -231,7 +232,7 @@ trailing_args() {
 
 get_opt() {
   ## Parse and read OPTIONS command-line options
-  SHORT=h
+  SHORT=D:h
   LONG=clean,cleaner,get_build_dir,get_project_name,get_project_name_upper,help
   OPTIONS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
   ## PLACE FOR OPTION DEFAULTS BEG
@@ -263,15 +264,15 @@ get_opt() {
   ##
   PRJ_NAME=$(get_prj_name)
   PRJ_NAME_UPPER=$(echo "$PRJ_NAME" | tr "[:lower:]" "[:upper:]")
-  PRJ_BUILD_TESTS="${BUILD_TESTS:-${PRJ_NAME_UPPER}_BUILD_TESTS}"
-  PRJ_MEMCHECK_EN="${MEMCHECK:-${PRJ_NAME_UPPER}_MEMCHECK_ENABLE}"
+  PRJ_BUILD_TESTS="${BUILD_TESTS_OPT:-${PRJ_NAME_UPPER}_BUILD_TESTS}"
+  PRJ_MEMCHECK_EN="${MEMCHECK_OPT:-${PRJ_NAME_UPPER}_MEMCHECK_ENABLE}"
   ##
   COPTS=\
-"-D CMAKE_BUILD_TYPE=$BUILD_TYPE
+"-D CMAKE_C_COMPILER='$CC'
+ -D CMAKE_CXX_COMPILER='$CXX'
+ -D CMAKE_BUILD_TYPE=$BUILD_TYPE
  -D $PRJ_BUILD_TESTS=ON
  -D $PRJ_MEMCHECK_EN=ON
- -D CMAKE_C_COMPILER=$CC
- -D CMAKE_CXX_COMPILER=$CXX
  $COPTS
 " ## <- default cmake configure options
   BOPTS=\
@@ -287,6 +288,10 @@ get_opt() {
     ;;
     --cleaner)
       CLEANER=1
+    ;;
+    -D)
+      shift
+      COPTS="$COPTS -D $1"
     ;;
     --get_build_dir)
       printf "%s" "$BUILD_DIR"
@@ -316,8 +321,8 @@ get_opt() {
   COPTS=$(echo "$COPTS" | tr -s '[:space:]' ' ')
   BOPTS=$(echo "$BOPTS" | tr -s '[:space:]' ' ')
   if [ $_dbg = 1 ]; then
-    printe "COPTS: ${COPTS}"
-    printe "BOPTS: ${BOPTS}"
+    printe "COPTS: $COPTS"
+    printe "BOPTS: $BOPTS"
     exit 33
   fi
 }
@@ -337,7 +342,7 @@ ${_fresh} ${_cmake_log_level} ${COPTS} \
 vsep "BUILD" "${CYN}"
 # shellcheck disable=SC2086 # intentional - re-split OPTIONS BUILD
 "$CMAKE" -E time \
-"$CMAKE" --build "$_bdir" --config "${BUILD_TYPE}" ${_clean_first} ${_verbose} ${BOPTS} \
+"$CMAKE" --build "$_bdir" --config "$BUILD_TYPE" ${_clean_first} ${_verbose} ${BOPTS} \
 || { notify ERROR "CMAKE BUILD ERROR" ; exit "$EC" ;}
 
 if [ "$RUN_TESTS" = 1 ]; then
@@ -364,14 +369,14 @@ if [ "$RUN_TESTS" = 1 ]; then
   esac
 fi
 
-if [ "$MEMCHECK" = 1 ]; then
+if [ "$MEMCHECK" = 1 ] && [ "$BUILD_TYPE" = Debug ]; then
   vsep "MEMCHECK" "${YEL}"
-  "$CMAKE" --build "$_bdir" --config "${BUILD_TYPE}" --target memcheck
+  "$CMAKE" --build "$_bdir" --config "$BUILD_TYPE" --target memcheck
 fi
 
 if [ "$DEPLOY" = 1 ]; then
   vsep "DEPLOY" "${MAG}"
-  "$CMAKE" --install "$_bdir" --config "${BUILD_TYPE}" --prefix "$_bdir/deploy"
+  "$CMAKE" --install "$_bdir" --config "$BUILD_TYPE" --prefix "$_bdir/deploy"
 fi
 
 vsep   "COMPLETED" "${GRN}"
