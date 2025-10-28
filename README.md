@@ -20,6 +20,55 @@ $ cmake -S . -B build
 $ cmake --build build
 ```
 
+#### Detailed Instruction
+<details><summary><b>
+MSVC -- Windows platform using Visual Studio compiler in git-bash shell -- MINGW
+</b></summary>
+
+<details><summary>
+NOTE: Always preferred version of CMake is a modern stable release compiled from source!
+</summary>
+
+* Check project root `CMakeLists.txt` `cmake_minimum_required` VERSION.
+* CMake version installed with your Visual Studio may be obsolete.
+* Microsoft also patches CMake versions for their MSVC toolchain.
+* Such patched and/or obsolete versions may be e.g. `cmake --version` *3.26.0-msvc3* etc.
+* Proper work with patched versions of CMake is not guaranteed and may not be guaranteed!
+</details>
+
+##### prepare build environment:
+```sh
+## backup unmodified PATH
+$ export PATH0="$PATH"
+
+## add MSVC toolchain dir with cl compiler to the PATH
+$ export PATH="$PATH:/c/Program Files/Microsoft Visual Studio/2022/Professional/VC/Tools/MSVC/14.36.32532/bin/Hostx64/x64"
+
+## add DrMemory to the PATH
+$ export PATH="$PATH:/c/wndx/src/top/DrMemory-Windows-2.6.0/bin64"
+
+## make new build dir
+$ bdir="./build/msvc"
+$ [ -d "$bdir" ] &&   rm -rf "$bdir"
+$ [ -d "$bdir" ] || mkdir -p "$bdir"
+```
+
+##### compile, test, memcheck:
+```sh
+## cmake configure
+$ cmake -S . -B "$bdir" -G "Visual Studio 17 2022" -D WNDX_ALGO_BUILD_TESTS=ON -D WNDX_ALGO_MEMCHECK_ENABLE=ON
+
+## cmake build
+$ cmake --build "$bdir"
+
+## execute unit tests
+$ ctest --test-dir "$bdir/tests/units/"
+
+## check onto memory leaks executing unit tests via DrMemory
+$ cmake --build "$bdir" --target memcheck
+```
+</details>
+
 ## Integration
 `CMakeLists.txt` that uses `wndx::algo` can look like this:
 ```cmake
