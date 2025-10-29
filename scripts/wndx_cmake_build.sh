@@ -12,22 +12,20 @@
 ## NOTE: manually export following environment variables
 ## or pass -D CMAKE_C_COMPILER=clang -D CMAKE_CXX_COMPILER=clang++
 ## to build/test under multiple compilers before submitting code!
-#
-# export CC=gcc   CXX=g++
-# export CC=clang CXX=clang++
-# export CC=cl    CXX=cl
-#
-## example MSVC compilation on win10 platform in git-bash shell:
-# export PATH0="$PATH" # backup unmodified PATH
-# export PATH="$PATH:/c/Program Files/Microsoft Visual Studio/2022/Professional/VC/Tools/MSVC/14.36.32532/bin/Hostx64/x64"
-# export PATH="$PATH:/c/wndx/src/top/DrMemory-Windows-2.6.0/bin64"
-# rm -rf ./build/msvc/ && mkdir -p ./build/msvc/
-# cmake -S . -B ./build/msvc/ -G "Visual Studio 17 2022" -DWNDX_ALGO_BUILD_TESTS=ON -DWNDX_ALGO_MEMCHECK_ENABLE=ON
-# cmake --build ./build/msvc/
-# ctest --test-dir ./build/msvc/tests/units/
-# cmake --build ./build/msvc/ --target memcheck
+##
+## export CC=gcc   CXX=g++
+## export CC=clang CXX=clang++  GENERATOR=Ninja
+## export CC=cl    CXX=cl       GENERATOR='Visual Studio 17 2022'
 
 set -e
+
+## version update should reflect improvement or a functional change in the script logic.
+## get_opt() change of the "OPTION DEFAULTS" should not lead to a version update.
+## "OPTION DEFAULTS" - project specific, they may be changed between the projects freely.
+## In other cases, version should be bumped, then updated script must be propagated
+## to older versions of the script and changes must be merged except "OPTION DEFAULTS".
+VERSION="1.0.0"
+VERSION_DATE="2025-10-29" # update at each VERSION bump
 
 bname=$(basename "$0")
 USAGE="\
@@ -38,6 +36,7 @@ OPTIONS
     --get_project_name        print project name parsed from CMakeLists.txt
     --get_project_name_upper  print project name in uppercase
     -h, --help                print help
+    -v, --version             print version
 POSITIONAL
     c , clean  , --clean
     cc, cleaner, --cleaner
@@ -232,8 +231,8 @@ trailing_args() {
 
 get_opt() {
   ## Parse and read OPTIONS command-line options
-  SHORT=D:h
-  LONG=clean,cleaner,get_build_dir,get_project_name,get_project_name_upper,help
+  SHORT=D:hv
+  LONG=clean,cleaner,get_build_dir,get_project_name,get_project_name_upper,help,version
   OPTIONS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
   ## PLACE FOR OPTION DEFAULTS BEG
   BUILD_TYPE="${BUILD_TYPE:-Debug}"
@@ -309,6 +308,11 @@ get_opt() {
       echo "$USAGE"
       exit 0
     ;;
+    -v|--version)
+      VERSION_STRING="$bname: WNDX_CMAKE_BUILD [$PRJ_NAME] version $VERSION_DATE@$VERSION"
+      echo "$VERSION_STRING"
+      exit 0
+    ;;
     --)
       shift
       trailing_args "$*"
@@ -317,7 +321,7 @@ get_opt() {
     esac
     shift
   done
-  ## join string using only single space delimeter
+  ## join string using only single space delimiter
   COPTS=$(echo "$COPTS" | tr -s '[:space:]' ' ')
   BOPTS=$(echo "$BOPTS" | tr -s '[:space:]' ' ')
   if [ $_dbg = 1 ]; then
