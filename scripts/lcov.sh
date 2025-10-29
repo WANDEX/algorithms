@@ -26,6 +26,7 @@ esac
 
 ccov_dir=$(realpath "./.coverage")
 
+lcovrc="${ccov_dir}/lcovrc"
 lcov_dir="${ccov_dir}/lcov"
 lcov_info="${lcov_dir}/lcov.info"
 [ -d "$lcov_dir" ] &&   rm -rf "$lcov_dir"
@@ -33,17 +34,16 @@ lcov_info="${lcov_dir}/lcov.info"
 
 lcov_ignore_errors="unused,inconsistent,inconsistent,mismatch,mismatch"
 
+# FIXME: apparently LCOV_EXCL_* etc. does not work anymore... why?
+
 # shellcheck disable=SC2068 # Intentional - to re-split trailing arguments.
-lcov -q -c --directory "$bdir" --output-file "$lcov_info" --demangle-cpp \
+lcov -q -c --directory "$bdir" --output-file "$lcov_info" \
 --exclude /usr/ --exclude /tests/ \
 --exclude third_patry --exclude 3rdparty --exclude _deps \
 --ignore-errors "$lcov_ignore_errors" \
---rc branch_coverage=1 --rc function_coverage=1 \
---rc geninfo_external=1 --rc no_exception_branch=1 \
---rc geninfo_unexecuted_blocks=1 --rc geninfo_auto_base=1 $@
+--config-file "$lcovrc" $@
 
-genhtml "$lcov_info" --output-directory "$lcov_dir" --demangle-cpp \
---branch-coverage --legend --dark-mode
+genhtml "$lcov_info" --output-directory "$lcov_dir" --config-file "$lcovrc"
 
 ## path to the index.html to easily copy-paste into the browser (if needed)
 printf "\n%s\n" "${lcov_dir}/index.html"
