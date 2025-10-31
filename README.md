@@ -2,7 +2,6 @@
 ![lines    ](https://img.shields.io/badge/L-99%25-brightgreen)
 ![functions](https://img.shields.io/badge/F-99%25-brightgreen)
 ![branches ](https://img.shields.io/badge/B-94%25-green)
-![license..](https://img.shields.io/github/license/WANDEX/algorithms?color=black)
 [![CI/CD cmake-multi-platform][cicd_cmake_mp_bdg]][cicd_cmake_mp_url]
 
 # wndx::algo
@@ -143,7 +142,7 @@ Huge respect to [William Fiset](https://github.com/williamfiset)
 for the gratuitous dissemination of knowledge. :godmode:
 
 ## License
-[0BSD](https://choosealicense.com/licenses/0bsd/)
+[MIT](https://choosealicense.com/licenses/mit/)
 
 [cicd_cmake_mp_url]: https://github.com/WANDEX/algorithms/actions/workflows/cicd_cmake_multi_platform.yml
 [cicd_cmake_mp_bdg]: https://github.com/WANDEX/algorithms/actions/workflows/cicd_cmake_multi_platform.yml/badge.svg?event=push
