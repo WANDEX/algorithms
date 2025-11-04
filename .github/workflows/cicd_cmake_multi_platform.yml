@@ -1,5 +1,6 @@
-## CMake CI/CD on multiple platforms. AUTHOR: WANDEX
-## project: build, test, deploy
+## CI/CD CMake on multiple platforms.
+## AUTHOR: github.com/WANDEX. LICENSE: MIT.
+## CMake project: build, test, memcheck, package, deploy.
 name: CI/CD cmake-multi-platform
 permissions:
   contents: write ## for the action release
@@ -25,6 +26,7 @@ on:
 
 env:
   PRJ_NAME   : "wndx_algo"
+  TESTS_DIR  : "tests/units"
   BUILD_TESTS: "WNDX_ALGO_BUILD_TESTS=ON"
   MEMCHECK   : "WNDX_ALGO_MEMCHECK_ENABLE=ON"
 
@@ -176,7 +178,6 @@ jobs:
     - name: ninja --version
       run : ninja --version
 
-      ## XXX: not sure that the cache works properly...
     - name: cache local
       id  : cache_local
       uses: actions/cache@v4
@@ -282,7 +283,7 @@ jobs:
 
     - name: Test
       working-directory: ${{ steps.str2.outputs.dir_path_build }}
-      run: ctest --build-config ${{ matrix.bt }} --output-on-failure
+      run: ctest --test-dir ${{ env.TESTS_DIR }} --build-config ${{ matrix.bt }} --output-on-failure
 
       ## drmemory currently not works on windows-latest/windows-2025 => Dr. Memory internal crash at PC 0x*.
     - name: Memcheck
