@@ -1,12 +1,9 @@
-cmake_minimum_required(VERSION 3.29..4.1) ## XXX: 3.26.0-msvc3
-# cmake_minimum_required(VERSION 3.29) # Compatibility with CMake < 3.5 has been removed from CMake.
-
+cmake_minimum_required(VERSION 3.29..4.1)
 
 ## ^ POLICIES
 project(
   wndx_algo
   VERSION       0.0.2
-  # LANGUAGES     CXX C
   LANGUAGES     CXX
   DESCRIPTION   "[WIP] C++20 platform-agnostic DSA lib. (NOT FOR USE IN PRODUCTION CODEBASES)"
   HOMEPAGE_URL  "https://github.com/WANDEX/algorithms"
@@ -16,19 +13,12 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-## XXX: for the wndxc lib (C headers lib - not bundled into the main project: C++ wndx lib)
-set(CMAKE_C_STANDARD 90)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_EXTENSIONS OFF)
-
-
 message(NOTICE "/**")
 message(NOTICE " * PROJECT: ${PROJECT_NAME}")
 message(NOTICE " * VERSION: ${PROJECT_VERSION}")
 message(NOTICE " * DSCRPTN: ${PROJECT_DESCRIPTION}")
 message(NOTICE " * HOMEURL: ${PROJECT_HOMEPAGE_URL}")
 message(NOTICE " */")
-
 
 option(WNDX_ALGO_DISABLE_TOP_PROJECT OFF)
 if(PROJECT_IS_TOP_LEVEL AND NOT WNDX_ALGO_DISABLE_TOP_PROJECT)
@@ -46,7 +36,6 @@ list(APPEND CMAKE_MODULE_PATH
 
 function(targets_and_linking)
   add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/wndx/sane")
-  include(wndx_sane_modules)
   include(wndx_sane_create_targets)
   ## library targets & compilation options/flags
   wndx_sane_create_targets(PFX wndx LIB algo
@@ -87,7 +76,6 @@ if(WNDX_ALGO_IS_TOP_PROJECT)
   option(WNDX_ALGO_COVERAGE_CLEAN   "clean coverage data before taking new"       ON)
   option(WNDX_ALGO_INSTALL_ENABLE   "whether or not to enable the install rule"   ON)
   option(WNDX_ALGO_MEMCHECK_ENABLE  "detect leaks via valgrind memcheck tool"     OFF)
-  option(WNDX_ALGO_SNTZ_ADDR        "whether or not to enable address sanitizer"  OFF) # TODO: UNIMPLEMENTED
 
   ## for the list of supported compilers visit:
   ## https://cmake.org/cmake/help/latest/prop_tgt/COMPILE_WARNING_AS_ERROR.html
