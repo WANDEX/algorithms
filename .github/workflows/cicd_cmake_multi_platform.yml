@@ -105,6 +105,7 @@ jobs:
       ## https://github.com/marketplace/actions/checkout
     - uses: actions/checkout@v4
       with:
+        ref: ${{ github.ref }}
         submodules: 'recursive'
 
       ## Turn repeated input strings (such as the build output directory) into step outputs.
@@ -325,37 +326,51 @@ jobs:
         compression-level: 6
         overwrite: true ## optional, default is false
 
-    # - name : archive
-    #   id   : archive
-    #   shell: bash
-    #   if   : ${{ github.ref_type == 'tag' && matrix.bt == 'Release' }}
-    #   working-directory: ${{ steps.str2.outputs.dir_path_build }}
-    #   run  : |
-    #     PRJNAME=${{ env.PRJ_NAME }}
-    #     VERSION=$GITHUB_REF_NAME
-    #     ARCH=$(uname -m)
-    #     PRJVERA=$PRJNAME-$VERSION-$ARCH
-    #     PKGNAME=$PRJVERA-${{ matrix.bp }}
-    #     TARBALL=$PKGNAME.tar.gz
-    #     SHASUM=$PKGNAME.tar.gz.sha256
-    #     cp -r deploy $PRJVERA
-    #     cmake -E tar -czf $TARBALL $PRJVERA
-    #     cmake -E sha256sum $TARBALL > $SHASUM
-    #     echo "TARBALL=$TARBALL" >> "$GITHUB_OUTPUT"
-    #     echo  "SHASUM=$SHASUM"  >> "$GITHUB_OUTPUT"
+    - name : archive
+      id   : archive
+      shell: bash
+      if   : ${{ github.ref_type == 'tag' && matrix.bt == 'Release' }}
+      working-directory: ${{ steps.str2.outputs.dir_path_build }}
+      run  : |
+        PRJNAME=${{ env.PRJ_NAME }}
+        VERSION=$GITHUB_REF_NAME
+        ARCH=$(uname -m)
+        PRJVERA=$PRJNAME-$VERSION-$ARCH
+        PKGNAME=$PRJVERA-${{ matrix.bp }}
+        TARBALL=$PKGNAME.tar.gz
+        SHASUM=$PKGNAME.tar.gz.sha256
+        cp -r deploy $PRJVERA
+        cmake -E tar -czf $TARBALL $PRJVERA
+        cmake -E sha256sum $TARBALL > $SHASUM
+        echo "TARBALL=$TARBALL" >> "$GITHUB_OUTPUT"
+        echo  "SHASUM=$SHASUM"  >> "$GITHUB_OUTPUT"
+
+      ## https://github.com/ericcornelissen/git-tag-annotation-action
+    - name : extract git tag annotation for release body text
+      id   : git
+      shell: bash
+      if   : ${{ github.ref_type == 'tag' && matrix.bt == 'Release' }}
+      run  : |
+        { ## handle multi-line output
+          echo 'annotation<<EOF'
+          git tag -l "$GITHUB_REF_NAME" --format '%(body)'
+          echo 'EOF'
+        } >> "$GITHUB_OUTPUT"
+        echo "tag=$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
 
       ## https://github.com/marketplace/actions/gh-release
     - name : release
       uses : softprops/action-gh-release@v2
-      if   : ${{ github.ref_type == 'tag' && matrix.bt == 'Release' && matrix.bp == 'lnx_gcc' }}
+      if   : ${{ github.ref_type == 'tag' && matrix.bt == 'Release' }}
       with :
+        body : ${{ steps.git.outputs.annotation }}
         generate_release_notes: true
         draft: false
         token: ${{ secrets.GITHUB_TOKEN }}
         files: |
           ${{ steps.str2.outputs.dir_path_build }}/${{ env.PRJ_NAME }}-*-src.tar.gz
-        # ${{ steps.str2.outputs.dir_path_build }}/${{ steps.archive.outputs.TARBALL }}
-        # ${{ steps.str2.outputs.dir_path_build }}/${{ steps.archive.outputs.SHASUM }}
+          ${{ steps.str2.outputs.dir_path_build }}/${{ steps.archive.outputs.TARBALL }}
+          ${{ steps.str2.outputs.dir_path_build }}/${{ steps.archive.outputs.SHASUM }}
 
     ## END steps
   ## END multi-build-test-deploy
