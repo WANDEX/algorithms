@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.29..4.1)
 ## ^ POLICIES
 project(
   wndx_algo
-  VERSION       0.0.2
+  VERSION       0.1.0
   LANGUAGES     CXX
   DESCRIPTION   "[WIP] C++20 platform-agnostic DSA lib. (NOT FOR USE IN PRODUCTION CODEBASES)"
   HOMEPAGE_URL  "https://github.com/WANDEX/algorithms"
