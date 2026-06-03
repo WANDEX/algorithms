@@ -12,9 +12,10 @@ target_sources(tests_units PRIVATE
   sort/sort.t.cpp
   str/str_trim_right.t.cc
   c/search/wndxc_binary_search.t.cc
-  
+
+  ds/arb.t.cpp
   ds/BITreeRQPU.t.cpp
-  ds/BSTuptr.t.cpp 
+  ds/BSTuptr.t.cpp
   ds/BinaryHeapQ.t.cpp
   ds/DLLraw.t.cpp
   ds/ListQueue.t.cpp
