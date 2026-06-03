@@ -9,7 +9,7 @@
 ## Use standard cmake commands for building the project.
 ## Or adapt script steps yourself for your personal preference.
 ##
-## NOTE: manually export following environment variables
+## Manually export following environment variables
 ## or pass -D CMAKE_C_COMPILER=clang -D CMAKE_CXX_COMPILER=clang++
 ## to build/test under multiple compilers before submitting code!
 ##
@@ -19,15 +19,22 @@
 
 set -e
 
+OLDIFS="$IFS"
+
+CMAKE="${CMAKE:-cmake}" # override cmake executable path via env var
+CTEST="${CTEST:-ctest}"
+
+at_path() { hash "$1" >/dev/null 2>&1 ;} # if $1 is found at $PATH -> return 0
+
 ## version update should reflect improvement or a functional change in the script logic.
 ## get_opt() change of the "OPTION DEFAULTS" should not lead to a version update.
 ## "OPTION DEFAULTS" - project specific, they may be changed between the projects freely.
 ## In other cases, version should be bumped, then updated script must be propagated
 ## to older versions of the script and changes must be merged except "OPTION DEFAULTS".
-VERSION="1.0.1"
-VERSION_DATE="2026-02-05" # update at each VERSION bump
+VERSION="1.3.2"
+VERSION_DATE="2026-03-17" # update at each VERSION bump
 
-bname=$(basename "$0")
+bname="wndx_cmake_build.sh"; at_path basename && bname=$(basename "$0")
 USAGE="\
 Usage: $bname [OPTION...]
 OPTIONS
@@ -38,15 +45,19 @@ OPTIONS
     -h, --help                print help
     -v, --version             print version
 POSITIONAL
-    c , clean  , --clean
-    cc, cleaner, --cleaner
+    x  , x_cache , --x_cache  rm CMakeCache.txt with cached variables
+    c  , clean   , --clean    built-in cmake clean build
+    cc , cleaner , --cleaner  built-in cmake clean configure & build
+    ccc, cleanest, --cleanest rm build dir & build from scratch
     ctest, ct, ctp, ctr       (optional) arg - filter regex    (default: '.*')
     gtest, gt                 (optional) arg - filter wildcard (default:  '*')
                               special chars (:,*,?,-), ':' separator, '-' negative
 EXAMPLES
+./scripts/$bname
+./scripts/$bname x
+./scripts/$bname x c
 ./scripts/$bname c ct
 ./scripts/$bname c gt *
-./scripts/$bname
 # ====== build & run tests:
 ./scripts/$bname ctest
 # ====== make clean build & run tests:
@@ -57,17 +68,14 @@ EXAMPLES
 ./scripts/$bname ctest .*regex.*
 # ====== or
 ./scripts/$bname gtest *wildcard*
-# ======
+# ====== override default env vars
+CC=clang CXX=clang++ BUILD_TYPE=Release COPTS='-Wno-dev -Wno-error=dev' ./scripts/$bname x
+# ====== or export modified env vars
 export CC=cl CXX=cl VERBOSE=1 DEPLOY=1 BUILD_TYPE=Debug GENERATOR='Visual Studio 17 2022'
 ./scripts/$bname c ct
 "
 
-CMAKE="${CMAKE:-cmake}" # override cmake executable path via env var
-OLDIFS="$IFS"
-
-at_path() { hash "$1" >/dev/null 2>&1 ;} # if $1 is found at $PATH -> return 0
-
-printe() {
+printe() { # print to stderr
   at_path printf || exit 63
   if [ "$#" = 1 ]; then
     printf "%s\n" "$*" 1>&2
@@ -77,25 +85,46 @@ printe() {
 }
 
 check_prerequisites() {
-  if [ ! -r ./CMakeLists.txt ]; then
-    printe "%s %s\n" "Current directory does not contain CMakeLists.txt!" "EXIT."
-    exit 64
-  fi
   if ! at_path "$CMAKE"; then
     printe "\$CMAKE='$CMAKE'- NOT VALID cmake executable"
     printe "'cmake' - REQUIRED DEPENDENCY NOT FOUND AT \$PATH! EXIT."
+    exit 64
+  fi
+  if ! at_path "$CTEST"; then
+    printe "\$CTEST='$CTEST'- NOT VALID ctest executable"
+    printe "'ctest' - REQUIRED DEPENDENCY NOT FOUND AT \$PATH! EXIT."
     exit 65
   fi
+  if [ ! -r ./CMakeLists.txt ]; then
+    printe "%s %s\n" "Current directory does not contain CMakeLists.txt!" "EXIT."
+    exit 66
+  fi
   IFS=" " # split arguments by space
-  deps="basename cut echo false getopt grep mkdir printf sed tr true uname"
+  deps="basename cut getopt printf sed tr uname"
   for executable in $deps; do
     if ! at_path "$executable"; then
       printe "'$executable' - REQUIRED DEPENDENCY NOT FOUND AT \$PATH! EXIT."
-      exit 66
+      exit 67
     fi
   done
   IFS="$OLDIFS" # restore
 }
+
+check_prerequisites
+
+## do not override, on win10 in MINGW64:/git-bash shell
+## $(uname -s)="MINGW64_NT-10.0-19045"
+## overriding time() as time() leads to weird error!
+## unset -f time # does not work as it is hardcoded built-in!
+time_() { "$CMAKE" -E time "$@"           ;}
+
+echo()  { "$CMAKE" -E echo_append "$*"    ;}
+echon() { "$CMAKE" -E echo "$*"           ;}
+false() { "$CMAKE" -E false               ;}
+mkdir() { "$CMAKE" -E make_directory "$1" ;}
+rm_f()  { "$CMAKE" -E rm  -f "$1"         ;}
+rm_rf() { "$CMAKE" -E rm -rf "$1"         ;}
+true()  { "$CMAKE" -E true                ;}
 
 get_prj_name() {
   fn_re='\bproject\b' # function name regex
@@ -115,9 +144,9 @@ get_prj_name() {
   elif at_path git; then # not robust - clone dir != project name
     _prj_name=$(basename "$(git rev-parse --show-toplevel)")
   else
-    exit 67
+    exit 68
   fi
-  printf "%s" "$_prj_name"
+  echo "$_prj_name"
 }
 
 notify() {
@@ -141,14 +170,6 @@ notify() {
   notify-send -u "$urg" -h "$tag:$PRJ_NAME" -h "$tag:hi" -h "$sbg" -h "$sfg" "[$PRJ_NAME]" "$arg"
 }
 
-# NOTE: on win10 in MINGW64:/git-bash shell -- trailing args via -- '$*' - works; '$@' - NOT works;
-# ^ apparently in this environment - this function is still not always finds tests...
-# shellcheck disable=SC2048,SC2068,SC2086 # intentional - re-split trailing arguments.
-run_ctest() { "$CMAKE" -E time ctest --build-config "$BUILD_TYPE" --output-on-failure --test-dir "$_bdir/$TESTS_DIR" $* ;}
-
-SEP="=============================================================================="
-vsep() { printf "\n%b%.78s%b\n\n" "${2}" "[${1}]${SEP}" "${END}" ;}
-
 pre_configure() {
   ## cmake verbosity level
   _verbose=""
@@ -160,18 +181,28 @@ pre_configure() {
   ## cmake clean options
   _fresh=""
   _clean_first=""
+  ## x_cache - rm CMakeCache.txt with cached variables.
+  if [ "$RM_CMAKECACHE" = 1 ]; then
+    [ -f "$BUILD_DIR/CMakeCache.txt" ] && rm_f "$BUILD_DIR/CMakeCache.txt"
+  fi
+  ## clean - built-in cmake clean build step.
   if [ "$CLEAN" = 1 ]; then
+    _clean_first="--clean-first"
+  fi
+  ## cleaner - build using built-in cmake clean options, for both: configure & build step.
+  if [ "$CLEANER" = 1 ]; then
     _fresh="--fresh"
     _clean_first="--clean-first"
   fi
-  ## cleaner is a heavy artillery - for edge cases!
-  if [ "$CLEANER" = 1 ]; then
-    [ -d "$BUILD_DIR" ] && rm -rf "$BUILD_DIR"
+  ## cleanest - wipe whole build dir, build from scratch.
+  if [ "$CLEANEST" = 1 ]; then
+    [ -d "$BUILD_DIR" ] && rm_rf "$BUILD_DIR"
   fi
-  [ -d "$BUILD_DIR" ] || mkdir -p "$BUILD_DIR"
+  [ -d "$BUILD_DIR" ] || mkdir "$BUILD_DIR"
   ## source and build dirs provided as the relative paths
   _sdir="."
   _bdir="$BUILD_DIR"
+  prefix_deploy="$(pwd)/$BUILD_DIR/deploy" # must be an absolute path for Qt deploy etc.
   if [ "$REL" = 1 ]; then
     cd "$BUILD_DIR" || exit 11
     pwd # cd - cmd visual feedback about internal behavior
@@ -207,12 +238,20 @@ trailing_args() {
       case "$arg_type" in gtest|gt) TESTS_FILTER='*' ;; esac # gtest - default wildcard
       continue
     ;;
+    cleanest|ccc)
+      CLEANEST=1
+      continue
+    ;;
     cleaner|cc)
       CLEANER=1
       continue
     ;;
     clean|c)
       CLEAN=1
+      continue
+    ;;
+    x_cache|x)
+      RM_CMAKECACHE=1
       continue
     ;;
     *)
@@ -225,14 +264,15 @@ trailing_args() {
   set +o noglob # restore - enable (wildcard expansion)
   IFS="$OLDIFS" # restore
   if [ $_dbg_trailing_args = 1 ]; then
-    printe "CLEAN=$CLEAN CLEANER=$CLEANER RUN_TESTS_TYPE=$RUN_TESTS_TYPE TESTS_FILTER=$TESTS_FILTER"
+    printe "CLEAN=$CLEAN CLEANER=$CLEANER CLEANEST=$CLEANEST"
+    printe "RUN_TESTS_TYPE=$RUN_TESTS_TYPE TESTS_FILTER=$TESTS_FILTER"
   fi
 }
 
 get_opt() {
   ## Parse and read OPTIONS command-line options
   SHORT=D:hv
-  LONG=clean,cleaner,get_build_dir,get_project_name,get_project_name_upper,help,version
+  LONG=x_cache,clean,cleaner,cleanest,get_build_dir,get_project_name,get_project_name_upper,help,version
   OPTIONS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
   ## PLACE FOR OPTION DEFAULTS BEG
   BUILD_TYPE="${BUILD_TYPE:-Debug}"
@@ -243,8 +283,10 @@ get_opt() {
   DEPLOY="${DEPLOY:-0}"
   REL="${REL:-0}"
   ##
+  RM_CMAKECACHE=0
   CLEAN=0
   CLEANER=0
+  CLEANEST=0
   ##
   RUN_TESTS=0
   RUN_TESTS_TYPE=''
@@ -282,35 +324,41 @@ get_opt() {
   eval set -- "$OPTIONS"
   while true; do
     case "$1" in
+    --x_cache)
+      RM_CMAKECACHE=1
+    ;;
     --clean)
       CLEAN=1
     ;;
     --cleaner)
       CLEANER=1
     ;;
+    --cleanest)
+      CLEANEST=1
+    ;;
     -D)
       shift
       COPTS="$COPTS -D $1"
     ;;
     --get_build_dir)
-      printf "%s" "$BUILD_DIR"
+      echo "$BUILD_DIR"
       exit 0
     ;;
     --get_project_name)
-      printf "%s" "$PRJ_NAME"
+      echo "$PRJ_NAME"
       exit 0
     ;;
     --get_project_name_upper)
-      printf "%s" "$PRJ_NAME_UPPER"
+      echo "$PRJ_NAME_UPPER"
       exit 0
     ;;
     -h|--help)
-      echo "$USAGE"
+      echon "$USAGE"
       exit 0
     ;;
     -v|--version)
       VERSION_STRING="$bname: WNDX_CMAKE_BUILD [$PRJ_NAME] version $VERSION_DATE@$VERSION"
-      echo "$VERSION_STRING"
+      echon "$VERSION_STRING"
       exit 0
     ;;
     --)
@@ -331,23 +379,56 @@ get_opt() {
   fi
 }
 
+## https://cmake.org/cmake/help/latest/variable/CMAKE_LINKER_TYPE.html
+use_linker_mold() {
+  case "$COPTS" in # if explicitly provided - do not override
+  *"CMAKE_LINKER_TYPE"*) return ;;
+  esac
+  if ! at_path mold; then
+    printe "%b%s%b\n" "${YEL}" "mold linker not found at \$PATH!" "${END}"
+    return
+  fi
+  pl=$(uname)
+  if [ "$pl" = Darwin ]; then
+    case "$CC" in *"clang"*)
+      COPTS="$COPTS -D CMAKE_LINKER_TYPE=MOLD"
+    ;;
+    esac
+  elif [ "$pl" = Linux ]; then
+    case "$CC" in *"clang"*|*"gcc"*)
+      COPTS="$COPTS -D CMAKE_LINKER_TYPE=MOLD"
+    ;;
+    esac
+  fi
+}
+
+## on win10 in MINGW64:/git-bash shell trailing args via '$*' - works; '$@' - NOT works;
+## ^ apparently in this environment - this function is still not always finds tests...
+# shellcheck disable=SC2048,SC2068,SC2086 # intentional - re-split trailing arguments.
+run_ctest() {
+  time_ "$CTEST" --build-config "$BUILD_TYPE" --test-dir "$_bdir/$TESTS_DIR" \
+--output-on-failure "$@" \
+|| { notify ERROR "RUN CTEST ERROR"; exit "$EC" ;}
+}
+
+SEP="=============================================================================="
+vsep() { printf "\n%b%.78s%b\n\n" "${2}" "[${1}]${SEP}" "${END}" ;}
+
 ## MAIN
-check_prerequisites
 get_opt "$@"
+use_linker_mold
 pre_configure
 
 vsep "CONFIGURE" "${BLU}"
 # shellcheck disable=SC2086 # intentional - re-split OPTIONS CONFIGURE
-"$CMAKE" -E time \
-"$CMAKE" -S "$_sdir" -B "$_bdir" -G "$GENERATOR" -Wdev -Werror=dev \
+time_ "$CMAKE" -S "$_sdir" -B "$_bdir" -G "$GENERATOR" -Wdev -Werror=dev \
 ${_fresh} ${_cmake_log_level} ${COPTS} \
-|| { notify ERROR "CMAKE CONFIGURE ERROR" ; exit "$EC" ;}
+|| { notify ERROR "CMAKE CONFIGURE ERROR"; exit "$EC" ;}
 
 vsep "BUILD" "${CYN}"
 # shellcheck disable=SC2086 # intentional - re-split OPTIONS BUILD
-"$CMAKE" -E time \
-"$CMAKE" --build "$_bdir" --config "$BUILD_TYPE" ${_clean_first} ${_verbose} ${BOPTS} \
-|| { notify ERROR "CMAKE BUILD ERROR" ; exit "$EC" ;}
+time_ "$CMAKE" --build "$_bdir" --config "$BUILD_TYPE" ${_clean_first} ${_verbose} ${BOPTS} \
+|| { notify ERROR "CMAKE BUILD ERROR"; exit "$EC" ;}
 
 if [ "$RUN_TESTS" = 1 ]; then
   vsep "TESTS" "${RED}"
@@ -373,14 +454,20 @@ if [ "$RUN_TESTS" = 1 ]; then
   esac
 fi
 
-if [ "$MEMCHECK" = 1 ] && [ "$BUILD_TYPE" = Debug ]; then
+has_debug_info=0
+if [ "$BUILD_TYPE" = Debug ] || [ "$BUILD_TYPE" = RelWithDebInfo ]; then
+  has_debug_info=1
+fi
+
+if [ "$MEMCHECK" = 1 ] && [ "$has_debug_info" = 1 ]; then
   vsep "MEMCHECK" "${YEL}"
-  "$CMAKE" --build "$_bdir" --config "$BUILD_TYPE" --target memcheck
+  time_ "$CMAKE" --build "$_bdir" --config "$BUILD_TYPE" --target memcheck
 fi
 
 if [ "$DEPLOY" = 1 ]; then
   vsep "DEPLOY" "${MAG}"
-  "$CMAKE" --install "$_bdir" --config "$BUILD_TYPE" --prefix "$_bdir/deploy"
+  printe "%s %s\n" "--prefix" "$prefix_deploy"
+  time_ "$CMAKE" --install "$_bdir" --config "$BUILD_TYPE" --prefix "$prefix_deploy"
 fi
 
 vsep   "COMPLETED" "${GRN}"
