@@ -3,8 +3,10 @@
 #include "wndx/sane/log.hpp"
 
 #include <fmt/ranges.h>         // fmt::join
-
 #include <gtest/gtest.h>
+
+#include <functional>           // std::ref
+#include <thread>               // std::thread
 
 using namespace wndx::algo;
 
@@ -210,5 +212,49 @@ TEST_F(arbTest, test_accumulator_2)
     while (!arb.empty()) {
         acc += arb.pop();
     }
+    EXPECT_EQ(acc, 992);
+}
+
+TEST_F(arbTest, test_accumulator_threads_1)
+{
+    static constexpr size_t CAPACITY{ 64 };
+    auto write = [&](ds::arb<size_t, CAPACITY> &arb_) {
+        for (size_t i = 0; i < CAPACITY; i++) {
+            arb_.push(i);
+        }
+    };
+    auto read = [&](ds::arb<size_t, CAPACITY> &arb_, size_t &acc_) {
+        while (!arb_.empty()) {
+            acc_ += arb_.pop();
+        }
+    };
+    ds::arb<size_t, CAPACITY> arb;
+    size_t acc{ 0 };
+    std::thread wth{ write, std::ref(arb) };
+    std::thread rth{ read,  std::ref(arb), std::ref(acc) };
+    wth.join();
+    rth.join();
+    EXPECT_EQ(acc, 2016);
+}
+
+TEST_F(arbTest, test_accumulator_threads_2)
+{
+    static constexpr size_t CAPACITY{ 64 };
+    auto write = [&](ds::arb<size_t, CAPACITY> &arb_) {
+        for (size_t i = 0; i < CAPACITY; i+=2) {
+            arb_.push(i);
+        }
+    };
+    auto read = [&](ds::arb<size_t, CAPACITY> &arb_, size_t &acc_) {
+        while (!arb_.empty()) {
+            acc_ += arb_.pop();
+        }
+    };
+    ds::arb<size_t, CAPACITY> arb;
+    size_t acc{ 0 };
+    std::thread wth{ write, std::ref(arb) };
+    std::thread rth{ read,  std::ref(arb), std::ref(acc) };
+    wth.join();
+    rth.join();
     EXPECT_EQ(acc, 992);
 }
