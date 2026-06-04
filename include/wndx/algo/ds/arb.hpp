@@ -1,22 +1,18 @@
 #pragma once
+/// AUTHOR : github.com/WANDEX
+/// LICENSE: MIT
+///
 /// \brief thread-safe atomic ring buffer with static capacity.
 
-#include <wndx/sane/log.hpp> // XXX
-
-#include <algorithm>
 #include <array>
 #include <atomic>
 #include <cstddef>              // size_t
-// #include <cstdlib>              // std::abs
 #include <initializer_list>
-#include <iterator>
 
 namespace wndx::algo {
 namespace ds {
 
 /// \brief thread-safe atomic ring buffer with static capacity.
-// TODO: Очередь должна поддерживать конструктор копирования и оператор присваивания.
-//       requires?
 template<typename T, size_t CAPACITY>
 class arb final {
 public:
@@ -27,14 +23,14 @@ public:
     arb& operator=(arb const&) noexcept = default;
     ~arb() noexcept                     = default;
 
-    explicit arb(std::initializer_list<T> const& il) noexcept
+    explicit constexpr arb(std::initializer_list<T> const& il) noexcept
     {
         for (const T &e : il) {
             push(e);
         }
     }
 
-    explicit arb(std::array<T, CAPACITY> const& a) noexcept
+    explicit constexpr arb(std::array<T, CAPACITY> const& a) noexcept
     {
         for (const T &e : a) {
             push(e);
@@ -43,7 +39,7 @@ public:
 
     /// \brief ctor for passing generic begin(), end() iterators.
     template<class InputIt = std::array<T, CAPACITY>::const_iterator>
-    explicit arb(InputIt begin, InputIt end) noexcept
+    explicit constexpr arb(InputIt begin, InputIt end) noexcept
     {
         while(begin != end) {
             push(*begin++);
@@ -98,7 +94,6 @@ private:
     /// \brief helper - decrement size with wrap around behavior.
     inline constexpr void dec_size() noexcept
     {
-        // FIXME: ?
         if (size() - 1 > CAPACITY) {
             m_size.store(CAPACITY, std::memory_order_relaxed);
         } else {
@@ -135,12 +130,12 @@ public:
     constexpr void push(T const& data) noexcept
     {
         inc_size();
-        WNDX_LOG(wndx::sane::LL::DBUG, "BEF widx: {} size:{}\n", get_widx(), size());
+        // WNDX_LOG(wndx::sane::LL::DBUG, "BEF widx: {} size:{}\n", get_widx(), size());
         m_buf[get_widx()] = data;
         // std::atomic_thread_fence(std::memory_order_acquire);
         inc_widx();
         // std::atomic_thread_fence(std::memory_order_release);
-        WNDX_LOG(wndx::sane::LL::DBUG, "AFT widx: {} size:{}\n", get_widx(), size());
+        // WNDX_LOG(wndx::sane::LL::DBUG, "AFT widx: {} size:{}\n", get_widx(), size());
     }
 
     constexpr T pop() noexcept

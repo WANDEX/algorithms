@@ -147,4 +147,31 @@ TEST_F(arbTest, test_wrap_3)
     EXPECT_EQ(arb.size(), 4);
     dbg_print<size_t, 4>(arb);
 }
+
+TEST_F(arbTest, test_pop_1)
+{
+    ds::arb<int, 3> arb{ 0, 1, 2 };
+    EXPECT_EQ(arb.empty(), false);
+    ASSERT_EQ(arb.pop(),  0);
+    ASSERT_EQ(arb.size(), 2);
+    ASSERT_EQ(arb.pop(),  1);
+    ASSERT_EQ(arb.size(), 1);
+    ASSERT_EQ(arb.pop(),  2);
+    ASSERT_EQ(arb.size(), 0);
+    EXPECT_EQ(arb.empty(), true);
+}
+
+TEST_F(arbTest, test_pop_2)
+{
+    ds::arb<int, 4> arb{ 0, 1, 2, 3 };
+    EXPECT_EQ(arb.empty(), false);
+    ASSERT_EQ(arb.pop(),  0);
+    ASSERT_EQ(arb.size(), 3);
+    ASSERT_EQ(arb.pop(),  1);
+    ASSERT_EQ(arb.size(), 2);
+    ASSERT_EQ(arb.pop(),  2);
+    ASSERT_EQ(arb.size(), 1);
+    ASSERT_EQ(arb.pop(),  3);
+    ASSERT_EQ(arb.size(), 0);
+    EXPECT_EQ(arb.empty(), true);
 }
