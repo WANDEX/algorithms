@@ -23,6 +23,7 @@ target_sources(tests_units PRIVATE
   ds/UnionFind.t.cpp
 )
 
+target_link_libraries(tests_units PRIVATE wndx::algo::src)
 target_link_libraries(tests_units PRIVATE wndx::algo::dev)
 
 if(TARGET code_coverage)
