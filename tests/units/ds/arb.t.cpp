@@ -1,7 +1,8 @@
 #include "wndx/algo/ds/arb.hpp"
 
-#include "wndx/sane/log.hpp" // XXX
-#include <fmt/ranges.h> // XXX fmt::join
+#include "wndx/sane/log.hpp"
+
+#include <fmt/ranges.h>         // fmt::join
 
 #include <gtest/gtest.h>
 
@@ -174,4 +175,40 @@ TEST_F(arbTest, test_pop_2)
     ASSERT_EQ(arb.pop(),  3);
     ASSERT_EQ(arb.size(), 0);
     EXPECT_EQ(arb.empty(), true);
+}
+
+/// ```python3
+/// >>> sum([i for i in range(0, 64)])
+/// 2016
+/// ```
+TEST_F(arbTest, test_accumulator_1)
+{
+    static constexpr size_t CAPACITY{ 64 };
+    ds::arb<size_t, CAPACITY> arb;
+    size_t acc{ 0 };
+    for (size_t i = 0, e = 0; i < CAPACITY; i++) {
+        arb.push(i);
+        e = arb.pop();
+        EXPECT_EQ(e, i);
+        acc += e;
+    }
+    EXPECT_EQ(acc, 2016);
+}
+
+/// ```python3
+/// >>> sum([i for i in range(0, 64, 2)])
+/// 992
+/// ```
+TEST_F(arbTest, test_accumulator_2)
+{
+    static constexpr size_t CAPACITY{ 64 };
+    ds::arb<size_t, CAPACITY> arb;
+    for (size_t i = 0; i < CAPACITY; i+=2) {
+        arb.push(i);
+    }
+    size_t acc{ 0 };
+    while (!arb.empty()) {
+        acc += arb.pop();
+    }
+    EXPECT_EQ(acc, 992);
 }
