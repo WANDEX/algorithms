@@ -132,6 +132,14 @@ jobs:
       run  : |
         echo "dir_path_env=${{ steps.str2.outputs.dir_path_build }}/env" >> "$GITHUB_OUTPUT"
         echo "dir_path_deploy=${{ steps.str2.outputs.dir_path_build }}/deploy" >> "$GITHUB_OUTPUT"
+        case "${{ matrix.gen }}" in
+        "Visual Studio"*)
+          echo "cplname=x64" >> "$GITHUB_OUTPUT"
+        ;;
+        *)
+          echo "cplname=" >> "$GITHUB_OUTPUT"
+        ;;
+        esac
 
     - name: --strip will be used on the binaries of build type Release
       if   : ${{ matrix.bt == 'Release' }}
@@ -192,10 +200,17 @@ jobs:
       if  : ${{ runner.os == 'Windows' && matrix.pl == 'windows-2022' }}
       uses: Cyberboss/install-winget@v1
 
+      ## https://github.com/microsoft/winget-cli/issues/2879#issuecomment-1411114420
+      ## $ winget settings --enable BypassCertificatePinningForMicrosoftStore
+      ## $ winget settings export
+      ## winget upgrade winget --accept-package-agreements --disable-interactivity --accept-source-agreements
     - name: get/install WingetPathUpdater
       if  : ${{ runner.os == 'Windows' }}
       working-directory: ${{ github.workspace }}
-      run : winget install jazzdelightsme.WingetPathUpdater --disable-interactivity --accept-source-agreements
+      run : |
+        winget settings --enable BypassCertificatePinningForMicrosoftStore || true
+        winget settings export || true
+        winget install jazzdelightsme.WingetPathUpdater --disable-interactivity --accept-source-agreements || true
 
     - name: install drmemory
       if  : ${{ runner.os == 'Windows' }}
@@ -223,6 +238,7 @@ jobs:
 
     ## install libc6-dbg and/or use previously installed files from cache.
     ## LD_LIBRARY_PATH cannot be set in github workflow, thus manual copy to the system lib dir.
+    ## update -> https://github.com/actions/runner/issues/3720
     - name: get/install valgrind deps
       if  : ${{ runner.os == 'Linux' }}
       working-directory: ${{ github.workspace }}
@@ -230,6 +246,7 @@ jobs:
         lib_debug_usr="/usr/lib/debug"
         lib_debug_lcl="${{ steps.str1.outputs.dir_cache_local }}/lib/debug"
         if [ ! -d "$lib_debug_usr" ] && [ ! -d "$lib_debug_lcl" ]; then
+          sudo apt-get update
           sudo apt-get install libc6-dbg
         fi
         if [   -d "$lib_debug_usr" ] && [ ! -d "$lib_debug_lcl" ]; then
@@ -269,7 +286,7 @@ jobs:
     - name: Configure CMake
       working-directory: ${{ steps.str2.outputs.dir_path_build }}
       run : >
-        cmake -S .. -B . -G "${{ matrix.gen }}" --log-level=DEBUG
+        cmake -S .. -B . -G "${{ matrix.gen }}" -A "${{ steps.str3.outputs.cplname }}" --log-level=DEBUG
         -D CMAKE_INSTALL_PREFIX=${{ steps.str3.outputs.dir_path_deploy }}
         -D CMAKE_CXX_COMPILER=${{ matrix.cxx }}
         -D CMAKE_C_COMPILER=${{ matrix.cc }}
@@ -363,8 +380,9 @@ jobs:
       uses : softprops/action-gh-release@v2
       if   : ${{ github.ref_type == 'tag' && matrix.bt == 'Release' }}
       with :
-        body : ${{ steps.git.outputs.annotation }}
         generate_release_notes: true
+        append_body: false
+        body : ${{ steps.git.outputs.annotation }}
         draft: false
         token: ${{ secrets.GITHUB_TOKEN }}
         files: |
