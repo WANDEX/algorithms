@@ -31,8 +31,8 @@ at_path() { hash "$1" >/dev/null 2>&1 ;} # if $1 is found at $PATH -> return 0
 ## "OPTION DEFAULTS" - project specific, they may be changed between the projects freely.
 ## In other cases, version should be bumped, then updated script must be propagated
 ## to older versions of the script and changes must be merged except "OPTION DEFAULTS".
-VERSION="1.3.2"
-VERSION_DATE="2026-03-17" # update at each VERSION bump
+VERSION="1.3.3"
+VERSION_DATE="2026-06-05" # update at each VERSION bump
 
 bname="wndx_cmake_build.sh"; at_path basename && bname=$(basename "$0")
 USAGE="\
@@ -49,7 +49,7 @@ POSITIONAL
     c  , clean   , --clean    built-in cmake clean build
     cc , cleaner , --cleaner  built-in cmake clean configure & build
     ccc, cleanest, --cleanest rm build dir & build from scratch
-    ctest, ct, ctp, ctr       (optional) arg - filter regex    (default: '.*')
+    ctest, ct, ctf, ctp, ctr  (optional) arg - filter regex    (default: '.*')
     gtest, gt                 (optional) arg - filter wildcard (default:  '*')
                               special chars (:,*,?,-), ':' separator, '-' negative
 EXAMPLES
@@ -68,6 +68,8 @@ EXAMPLES
 ./scripts/$bname ctest .*regex.*
 # ====== or
 ./scripts/$bname gtest *wildcard*
+# ====== tests repeat - find sporadic failures in test cases
+TESTS_REPEAT=10 ./scripts/$bname ctf .*thread.*
 # ====== override default env vars
 CC=clang CXX=clang++ BUILD_TYPE=Release COPTS='-Wno-dev -Wno-error=dev' ./scripts/$bname x
 # ====== or export modified env vars
@@ -230,7 +232,7 @@ trailing_args() {
       continue
     fi
     case "$arg" in
-    ctest|ctp|ctr|ct|gtest|gt)
+    ctest|ctf|ctp|ctr|ct|gtest|gt)
       arg_type="$arg" # tmp var type
       RUN_TESTS=1
       RUN_TESTS_TYPE="$arg_type"
@@ -291,6 +293,7 @@ get_opt() {
   RUN_TESTS=0
   RUN_TESTS_TYPE=''
   TESTS_FILTER='.*'
+  TESTS_REPEAT="${TESTS_REPEAT:-3}"
   ##
   _compiler="${CC:-_}"
   cmbn=$(basename "$_compiler") # get compiler basename in case declared via full path
@@ -435,6 +438,9 @@ if [ "$RUN_TESTS" = 1 ]; then
   case "$RUN_TESTS_TYPE" in
   ct|ctest) # optionally filter by regex
     run_ctest -R "$TESTS_FILTER"
+  ;;
+  ctf) # repeat until-fail - useful in finding sporadic failures in test cases
+    run_ctest --progress -R "$TESTS_FILTER" --repeat "until-fail:$TESTS_REPEAT"
   ;;
   ctp) # shortcut for terse progress output
     run_ctest --progress -R "$TESTS_FILTER"
