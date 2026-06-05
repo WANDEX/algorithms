@@ -1,15 +1,20 @@
 #pragma once
+/// \brief thread-safe atomic ring buffer with static capacity.
+///
+/// \see
+///   https://en.wikipedia.org/wiki/Circular_buffer
+///   https://en.cppreference.com/cpp/atomic/atomic
+///   https://en.cppreference.com/cpp/atomic/memory_order
+///
 /// AUTHOR : github.com/WANDEX
 /// LICENSE: MIT
-///
-/// \brief thread-safe atomic ring buffer with static capacity.
 
 #include <array>
 #include <atomic>
+#include <concepts>             // std::copyable
 #include <cstddef>              // size_t
 #include <initializer_list>
 #include <type_traits>          // std::is_trivially_copyable
-#include <concepts>             // std::copyable
 
 namespace wndx::algo {
 namespace ds {
@@ -20,7 +25,7 @@ namespace ds {
 ///   https://en.cppreference.com/cpp/atomic/atomic
 ///   https://en.cppreference.com/cpp/concepts/copyable.html
 ///   https://en.cppreference.com/cpp/types/is_trivially_copyable.html
-template<class T>
+template<typename T>
 concept arb_copyable = std::is_trivially_copyable<T>::value && std::copyable<T>;
 
 /// \brief thread-safe atomic ring buffer with static capacity.
@@ -37,14 +42,14 @@ public:
 
     explicit constexpr arb(std::initializer_list<T> const& il) noexcept
     {
-        for (const T &e : il) {
+        for (T e : il) {
             push(e);
         }
     }
 
     explicit constexpr arb(std::array<T, CAPACITY> const& a) noexcept
     {
-        for (const T &e : a) {
+        for (T e : a) {
             push(e);
         }
     }
@@ -58,10 +63,16 @@ public:
         }
     }
 
-private:
     //////////////////////////////////////////////////////////////////
     /// helper functions
 
+    /// \brief helper - do not use except in the single-threaded tests.
+    constexpr T operator[](size_t idx) const
+    {
+        return m_buf[idx];
+    }
+
+private:
     /// \brief helper - get read index.
     inline constexpr size_t get_ridx() const noexcept
     {
@@ -77,8 +88,7 @@ private:
     /// \brief helper - increment read index with wrap around behavior.
     inline constexpr void inc_ridx() noexcept
     {
-        m_ridx.store(get_ridx() + 1, std::memory_order_relaxed);
-        if (get_ridx() >= CAPACITY) {
+        if (++m_ridx >= CAPACITY) {
             m_ridx.store(0, std::memory_order_relaxed);
         }
     }
@@ -86,30 +96,24 @@ private:
     /// \brief helper - increment write index with wrap around behavior.
     inline constexpr void inc_widx() noexcept
     {
-        m_widx.store(get_widx() + 1, std::memory_order_relaxed);
-        if (get_widx() >= CAPACITY) {
+        if (++m_widx >= CAPACITY) {
             m_widx.store(0, std::memory_order_relaxed);
         }
-        // WNDX_LOG(wndx::sane::LL::DBUG, "widx: {} size:{}\n", get_widx(), size());
     }
 
     /// \brief helper - increment size with wrap around behavior.
     inline constexpr void inc_size() noexcept
     {
-        if (size() + 1 > CAPACITY) {
+        if (++m_size > CAPACITY) {
             m_size.store(CAPACITY, std::memory_order_relaxed);
-        } else {
-            m_size.store(size() + 1, std::memory_order_relaxed);
         }
     }
 
     /// \brief helper - decrement size with wrap around behavior.
     inline constexpr void dec_size() noexcept
     {
-        if (size() - 1 > CAPACITY) {
+        if (--m_size > CAPACITY) {
             m_size.store(CAPACITY, std::memory_order_relaxed);
-        } else {
-            m_size.store(size() - 1, std::memory_order_relaxed);
         }
     }
 
@@ -134,26 +138,29 @@ public:
         return m_buf.cend();
     }
 
-    constexpr T operator[](size_t idx) const
-    {
-        return m_buf[idx];
-    }
-
+    /// \brief push data into ring buffer write index.
+    ///
+    /// \param data to store.
     constexpr void push(T const& data) noexcept
     {
         inc_size();
-        // WNDX_LOG(wndx::sane::LL::DBUG, "BEF widx: {} size:{}\n", get_widx(), size());
         m_buf[get_widx()] = data;
-        // std::atomic_thread_fence(std::memory_order_acquire);
-        inc_widx();
         // std::atomic_thread_fence(std::memory_order_release);
-        // WNDX_LOG(wndx::sane::LL::DBUG, "AFT widx: {} size:{}\n", get_widx(), size());
+        inc_widx();
     }
 
+    /// \brief pop data from ring buffer read index.
+    ///
+    /// Does immediate cleanup after pop for cleaning ring buffer data,
+    /// additional extra write is being done, for replacing potentially
+    /// sensitive content in memory with the default value for the type.
+    ///
+    /// \return popped data.
     constexpr T pop() noexcept
     {
         dec_size();
         T data{ m_buf[get_ridx()] };
+        m_buf[get_ridx()] = {}; // cleanup by replacing with default.
         inc_ridx();
         return data;
     }
