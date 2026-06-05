@@ -5,6 +5,7 @@
 #include <fmt/ranges.h>         // fmt::join
 #include <gtest/gtest.h>
 
+#include <chrono>
 #include <functional>           // std::ref
 #include <thread>               // std::thread
 
@@ -12,13 +13,59 @@ using namespace wndx::algo;
 
 class arbTest : public ::testing::Test
 {
-public:
+protected:
+    static constexpr std::chrono::nanoseconds m_sleep_ns{ 10'000'000 };
+
+    template<typename T, size_t CAPACITY>
+    static void write_th(ds::arb<T, CAPACITY> &arb_) {
+        for (T i = 0; i < CAPACITY; i++) {
+            arb_.push(i);
+        }
+    }
+
+    template<typename T, size_t CAPACITY>
+    static void read_th(ds::arb<T, CAPACITY> &arb, size_t &acc)
+    {
+        /// Small sleep is required because thread needs time to start.
+        /// Otherwise race condition occurs:
+        ///   The read thread finishes work before the write thread!
+        std::this_thread::sleep_for(m_sleep_ns);
+        while (!arb.empty()) {
+            acc += arb.pop();
+        }
+    }
+
+    template<typename T, size_t CAPACITY, size_t SUM>
+    static void accumulate_wr_th()
+    {
+        size_t acc{ 0 };
+        ds::arb<T, CAPACITY> arb{ 0 }; // init with first element is 0, to avoid race condition
+        std::thread wth{ write_th<T, CAPACITY>, std::ref(arb) };
+        std::thread rth{  read_th<T, CAPACITY>, std::ref(arb), std::ref(acc) };
+        wth.join();
+        rth.join();
+        EXPECT_EQ(acc, SUM);
+    }
+
+    template<typename T, size_t CAPACITY, size_t SUM>
+    static void accumulate_wr()
+    {
+        size_t acc{ 0 };
+        ds::arb<T, CAPACITY> arb;
+        for (T i = 0; i < CAPACITY; i++) {
+            arb.push(i);
+        }
+        while (!arb.empty()) {
+            acc += arb.pop();
+        }
+        EXPECT_EQ(acc, SUM);
+    }
+
     template<typename T, size_t CAPACITY>
     void dbg_print(ds::arb<T, CAPACITY> const& arb)
     {
         WNDX_LOG(wndx::sane::LL::DBUG, "[{}]\n", fmt::join(arb.begin(), arb.end(), ", "));
     }
-
 };
 
 TEST_F(arbTest, test_empty)
@@ -185,34 +232,16 @@ TEST_F(arbTest, test_pop_2)
 /// ```
 TEST_F(arbTest, test_accumulator_1)
 {
-    static constexpr size_t CAPACITY{ 64 };
-    ds::arb<size_t, CAPACITY> arb;
-    size_t acc{ 0 };
-    for (size_t i = 0, e = 0; i < CAPACITY; i++) {
-        arb.push(i);
-        e = arb.pop();
-        EXPECT_EQ(e, i);
-        acc += e;
-    }
-    EXPECT_EQ(acc, 2016);
+    accumulate_wr<size_t, 64, 2016>();
 }
 
 /// ```python3
-/// >>> sum([i for i in range(0, 64, 2)])
-/// 992
+/// >>> sum([i for i in range(0, 2048)])
+/// 2096128
 /// ```
 TEST_F(arbTest, test_accumulator_2)
 {
-    static constexpr size_t CAPACITY{ 64 };
-    ds::arb<size_t, CAPACITY> arb;
-    for (size_t i = 0; i < CAPACITY; i+=2) {
-        arb.push(i);
-    }
-    size_t acc{ 0 };
-    while (!arb.empty()) {
-        acc += arb.pop();
-    }
-    EXPECT_EQ(acc, 992);
+    accumulate_wr<size_t, 2048, 2096128>();
 }
 
 /// ```python3
@@ -221,80 +250,20 @@ TEST_F(arbTest, test_accumulator_2)
 /// ```
 TEST_F(arbTest, test_accumulator_3)
 {
-    static constexpr size_t CAPACITY{ 4096 };
-    ds::arb<size_t, CAPACITY> arb;
-    for (size_t i = 0; i < CAPACITY; i++) {
-        arb.push(i);
-    }
-    size_t acc{ 0 };
-    while (!arb.empty()) {
-        acc += arb.pop();
-    }
-    EXPECT_EQ(acc, 8386560);
+    accumulate_wr<size_t, 4096, 8386560>();
 }
 
 TEST_F(arbTest, test_accumulator_threads_1)
 {
-    static constexpr size_t CAPACITY{ 64 };
-    auto write = [&](ds::arb<size_t, CAPACITY> &arb_) {
-        for (size_t i = 0; i < CAPACITY; i++) {
-            arb_.push(i);
-        }
-    };
-    auto read = [&](ds::arb<size_t, CAPACITY> &arb_, size_t &acc_) {
-        while (!arb_.empty()) {
-            acc_ += arb_.pop();
-        }
-    };
-    ds::arb<size_t, CAPACITY> arb;
-    size_t acc{ 0 };
-    std::thread wth{ write, std::ref(arb) };
-    std::thread rth{ read,  std::ref(arb), std::ref(acc) };
-    wth.join();
-    rth.join();
-    EXPECT_EQ(acc, 2016);
+    accumulate_wr_th<size_t, 64, 2016>();
 }
 
 TEST_F(arbTest, test_accumulator_threads_2)
 {
-    static constexpr size_t CAPACITY{ 64 };
-    auto write = [&](ds::arb<size_t, CAPACITY> &arb_) {
-        for (size_t i = 0; i < CAPACITY; i+=2) {
-            arb_.push(i);
-        }
-    };
-    auto read = [&](ds::arb<size_t, CAPACITY> &arb_, size_t &acc_) {
-        while (!arb_.empty()) {
-            acc_ += arb_.pop();
-        }
-    };
-    ds::arb<size_t, CAPACITY> arb;
-    size_t acc{ 0 };
-    std::thread wth{ write, std::ref(arb) };
-    std::thread rth{ read,  std::ref(arb), std::ref(acc) };
-    wth.join();
-    rth.join();
-    EXPECT_EQ(acc, 992);
+    accumulate_wr_th<size_t, 2048, 2096128>();
 }
 
 TEST_F(arbTest, test_accumulator_threads_3)
 {
-    static constexpr size_t CAPACITY{ 4096 };
-    auto write = [&](ds::arb<size_t, CAPACITY> &arb_) {
-        for (size_t i = 0; i < CAPACITY; i++) {
-            arb_.push(i);
-        }
-    };
-    auto read = [&](ds::arb<size_t, CAPACITY> &arb_, size_t &acc_) {
-        while (!arb_.empty()) {
-            acc_ += arb_.pop();
-        }
-    };
-    ds::arb<size_t, CAPACITY> arb;
-    size_t acc{ 0 };
-    std::thread wth{ write, std::ref(arb) };
-    std::thread rth{ read,  std::ref(arb), std::ref(acc) };
-    wth.join();
-    rth.join();
-    EXPECT_EQ(acc, 8386560);
+    accumulate_wr_th<size_t, 4096, 8386560>();
 }
