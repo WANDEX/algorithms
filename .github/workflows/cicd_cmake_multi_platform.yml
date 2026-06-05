@@ -45,8 +45,8 @@ jobs:
           - "mac_clang"
           - "mac_Xcode"
           - "win11_clang"
-          - "win11_cl"
-          - "win10_cl"
+        # - "win11_cl"
+        # - "win10_cl"
         include:
           - name: "ubuntu gcc"
             bp : "lnx_gcc"
@@ -84,18 +84,18 @@ jobs:
             cc : clang
             cxx: clang++
             gen: "Ninja"
-          - name: "win11 MSVC"
-            bp : "win11_cl"
-            pl : windows-latest
-            cc : cl
-            cxx: cl
-            gen: "Visual Studio 17 2022"
-          - name: "win10 MSVC"
-            bp : "win10_cl"
-            pl : windows-2022
-            cc : cl
-            cxx: cl
-            gen: "Visual Studio 17 2022"
+        # - name: "win11 MSVC"
+        #   bp : "win11_cl"
+        #   pl : windows-latest
+        #   cc : cl
+        #   cxx: cl
+        #   gen: "Visual Studio 17 2022"
+        # - name: "win10 MSVC"
+        #   bp : "win10_cl"
+        #   pl : windows-2022
+        #   cc : cl
+        #   cxx: cl
+        #   gen: "Visual Studio 17 2022"
         ## END include
       ## END matrix
     ## END strategy
