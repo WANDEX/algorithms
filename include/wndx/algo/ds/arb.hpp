@@ -8,12 +8,24 @@
 #include <atomic>
 #include <cstddef>              // size_t
 #include <initializer_list>
+#include <type_traits>          // std::is_trivially_copyable
+#include <concepts>             // std::copyable
 
 namespace wndx::algo {
 namespace ds {
 
+/// \brief concept which satisfy to atomic constrains:
+///   TriviallyCopyable, CopyConstructible, CopyAssignable.
+/// \see
+///   https://en.cppreference.com/cpp/atomic/atomic
+///   https://en.cppreference.com/cpp/concepts/copyable.html
+///   https://en.cppreference.com/cpp/types/is_trivially_copyable.html
+template<class T>
+concept arb_copyable = std::is_trivially_copyable<T>::value && std::copyable<T>;
+
 /// \brief thread-safe atomic ring buffer with static capacity.
 template<typename T, size_t CAPACITY>
+requires arb_copyable<T>
 class arb final {
 public:
     arb() noexcept                      = default;
