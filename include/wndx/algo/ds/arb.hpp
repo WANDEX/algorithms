@@ -1,13 +1,31 @@
 #pragma once
 /// \brief thread-safe atomic ring buffer with static capacity.
 ///
+/// AUTHOR : github.com/WANDEX
+/// LICENSE: MIT
+///
 /// \see
 ///   https://en.wikipedia.org/wiki/Circular_buffer
 ///   https://en.cppreference.com/cpp/atomic/atomic
+///   https://en.cppreference.com/cpp/atomic/atomic_thread_fence
+///
+/// \see ref NOTE
 ///   https://en.cppreference.com/cpp/atomic/memory_order
 ///
-/// AUTHOR : github.com/WANDEX
-/// LICENSE: MIT
+/// load & store:
+///   memory_order_relaxed - no synchronization or ordering constraints
+///   memory_order_seq_cst - load performs a acquire operation, store performs a release operation,
+///     read-modify-write performs both an acquire operation and a release operation,
+///     plus a single total order exists in which all threads observe all modifications in the same order.
+///
+/// load:
+///   memory_order_acquire - no reads or writes in the current thread can be reordered before this load.
+///     All writes in other threads that release the same atomic variable are visible in the current thread.
+///
+/// store:
+///   memory_order_release - no reads or writes in the current thread can be reordered after this store.
+///     All writes in the current thread are visible in other threads that acquire the same atomic variable.
+///     And writes that carry a dependency into the atomic variable become visible in other threads
 
 #include <array>
 #include <atomic>
@@ -145,7 +163,6 @@ public:
     {
         inc_size();
         m_buf[get_widx()] = data;
-        // std::atomic_thread_fence(std::memory_order_release);
         inc_widx();
     }
 
