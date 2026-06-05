@@ -91,6 +91,7 @@ include/\
 └── wndx/\
     └── algo/\
         ├── ds/\
+        │   ├── [arb.hpp] ( *[arb.t.cpp]* )\
         │   ├── [BinaryHeapQ.hpp] ( *[BinaryHeapQ.t.cpp]* )\
         │   ├── [BITreeRQPU.hpp] ( *[BITreeRQPU.t.cpp]* )\
         │   ├── [BSTuptr.hpp] ( *[BSTuptr.t.cpp]* )\
@@ -127,6 +128,8 @@ include/\
 [ListStack.t.cpp             ]: ./tests/units/ds/ListStack.t.cpp
 [UnionFind.hpp               ]: ./include/wndx/algo/ds/UnionFind.hpp
 [UnionFind.t.cpp             ]: ./tests/units/ds/UnionFind.t.cpp
+[arb.hpp                     ]: ./include/wndx/algo/ds/arb.hpp
+[arb.t.cpp                   ]: ./tests/units/ds/arb.t.cpp
 [bubble_sort.hpp             ]: ./include/wndx/algo/sort/bubble_sort.hpp
 [insertion_sort.hpp          ]: ./include/wndx/algo/sort/insertion_sort.hpp
 [merge_sort.hpp              ]: ./include/wndx/algo/sort/merge_sort.hpp
